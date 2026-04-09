@@ -725,13 +725,6 @@
       profitAmountEl.innerText = `$${profit}`;
       const now = new Date();
       resultTimeEl.innerText = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    } OTC`;
-      proPairEl.innerText = `${pair} OTC`;
-      profitPercentEl.innerText = data.percent;
-      stakeAmountEl.innerText = data.stake;
-      profitTotalEl.innerText = data.total;
-      profitAmountEl.innerText = data.profit;
-      resultTimeEl.innerText = data.time;
     }
 
     const currencyContainer = document.getElementById('currencyList');
