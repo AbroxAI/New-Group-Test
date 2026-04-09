@@ -1,97 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Pocket Option Signal Pro – Trading Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .progress-ring { transform: rotate(-90deg); }
-    .progress-ring__circle {
-      stroke-dasharray: 283;
-      stroke-dashoffset: calc(283 - (283 * 69.1299) / 100);
-      transition: stroke-dashoffset 0.5s ease;
+    :root{
+      --app-bg:#eef3fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --blue:#2ea6ff;
+      --blue-dark:#162039;
+      --green:#44b04b;
+      --gold:#f6c63f;
+      --rail:#d8deeb;
+      --shadow:0 8px 30px rgba(15,23,42,.08);
+      --soft-shadow:0 4px 18px rgba(15,23,42,.06);
     }
-    body { background-color: white; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #2ea6ff; border-radius: 4px; }
-    .currency-scroll {
-      overflow-x: auto;
-      white-space: nowrap;
-      scrollbar-width: thin;
-      -webkit-overflow-scrolling: touch;
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at top, rgba(46,166,255,.12), transparent 28%),
+        linear-gradient(180deg, #f7f9fc 0%, var(--app-bg) 100%);
+      color:var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
     }
-    .currency-pill {
-      display: inline-flex;
-      align-items: center;
-      background-color: #f3f4f6;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #374151;
-      transition: all 0.2s;
-      cursor: pointer;
-      margin-right: 10px;
+
+    ::-webkit-scrollbar{width:4px;height:4px;}
+    ::-webkit-scrollbar-track{background:#edf2f7;}
+    ::-webkit-scrollbar-thumb{background:#9ecfff;border-radius:999px;}
+
+    .shell{
+      max-width:430px;
+      margin:0 auto;
+      padding:16px 16px 108px;
     }
-    .currency-pill.active {
-      background-color: #2ea6ff;
-      color: white;
+
+    .page{display:none;}
+    .page.active{display:block;}
+
+    .currency-scroll{
+      overflow-x:auto;
+      white-space:nowrap;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
+      padding-bottom:2px;
+      margin-bottom:12px;
     }
-    .timer-container {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      background: #f3f4f6;
-      padding: 6px 16px;
-      border-radius: 60px;
-      width: fit-content;
-      margin: 12px auto 0;
+    .currency-list{display:flex;gap:10px;align-items:center;}
+    .currency-pill{
+      flex:0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      height:40px;
+      padding:0 14px;
+      border-radius:14px;
+      background:#f7f8fb;
+      border:1px solid #dfe6f2;
+      box-shadow:0 2px 4px rgba(15,23,42,.04) inset;
+      color:#394150;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      user-select:none;
     }
-    .timer-btn {
-      background: white;
-      border: none;
-      padding: 6px 16px;
-      border-radius: 40px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #1f2937;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      transition: all 0.2s;
-      cursor: pointer;
+    .currency-pill.active{
+      background:#151b2c;
+      border-color:#0f1320;
+      color:#fff;
+      box-shadow:0 10px 20px rgba(21,27,44,.22);
     }
-    .timer-btn.active {
-      background-color: #2ea6ff;
-      color: white;
+    .flag-set{display:inline-flex;align-items:center;margin-right:1px;}
+    .flag{
+      width:16px;height:16px;border-radius:999px;display:inline-block;overflow:hidden;flex:0 0 auto;
+      box-shadow:0 0 0 1px rgba(0,0,0,.04);
+      margin-left:-4px;
     }
-    .stat-img {
-      width: auto;
-      height: 40px;
-      object-fit: contain;
+    .flag:first-child{margin-left:0;}
+    .flag img{width:100%;height:100%;object-fit:cover;display:block;}
+
+    .time-block{padding-top:8px;margin-bottom:12px;text-align:left;}
+    .time-label{font-size:15px;color:#7a8598;line-height:1.1;margin-bottom:4px;font-weight:500;}
+    .time-value{font-size:22px;font-weight:600;color:#2f3747;letter-spacing:.2px;}
+
+    .timer-wrap{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#eceff5;
+      border:1px solid #e1e7f2;
+      padding:6px;
+      border-radius:18px;
+      box-shadow:var(--soft-shadow);
     }
-    .support-pill {
-      background: #f3f4f6;
-      border-radius: 60px;
-      padding: 4px 16px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 12px;
+    .timer-btn{
+      height:36px;
+      min-width:76px;
+      border:none;
+      border-radius:14px;
+      background:#fff;
+      color:#6a7280;
+      font-size:14px;
+      font-weight:600;
+      box-shadow:0 1px 2px rgba(15,23,42,.05);
+      cursor:pointer;
+      padding:0 14px;
     }
-    .plan-card {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      transition: all 0.2s;
-      cursor: pointer;
+    .timer-btn.active{
+      background:#151b2c;
+      color:#fff;
+      box-shadow:0 8px 18px rgba(21,27,44,.22);
     }
-    .plan-card:hover, .plan-card.selected {
-      border-color: #3b82f6;
-      background-color: #eff6ff;
+
+    .frame{
+      background:#fff;
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      border:1px solid #edf1f7;
+      overflow:hidden;
     }
+
+    .result-row{
+      display:flex;
+      gap:0;
+      align-items:stretch;
+      min-height:426px;
+    }
+    .rail{
+      width:58px;
+      flex:0 0 58px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#d8deeb;
+      color:#4f596b;
+      font-size:18px;
+      font-weight:500;
+      writing-mode:vertical-rl;
+      transform:rotate(180deg);
+      letter-spacing:.2px;
+      position:relative;
+    }
+    .rail.green{
+      background:linear-gradient(180deg, #5dc44a 0%, #42b038 100%);
+      color:#fff;
+      border-radius:18px 0 0 18px;
+      width:64px;
+      flex-basis:64px;
+      box-shadow:inset -1px 0 0 rgba(255,255,255,.16);
+    }
+    .rail.gold{
+      background:linear-gradient(180deg, #ffd336 0%, #f4b800 100%);
+      color:#3a3000;
+      border-radius:0 18px 18px 0;
+      width:66px;
+      flex-basis:66px;
+      font-size:12px;
+      font-weight:700;
+      line-height:1.1;
+      text-align:center;
+    }
+    .rail-text{white-space:nowrap;}
+
+    .main-panel{
+      flex:1 1 auto;
+      background:#fff;
+      border-left:1px solid rgba(255,255,255,.8);
+      border-right:1px solid rgba(217,222,235,.8);
+      padding:16px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      min-height:426px;
+    }
+
+    .result-card{
+      background:#202642;
+      border-radius:8px;
+      padding:8px 10px 9px;
+      color:#fff;
+      box-shadow:0 6px 14px rgba(13,17,34,.16);
+      margin:2px 0 14px;
+    }
+    .result-top,
+    .result-bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .pair-inline{display:flex;align-items:center;gap:6px;min-width:0;}
+    .star{font-size:17px;opacity:.95;transform:translateY(-1px);}
+    .pair-name{font-size:16px;font-weight:500;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .profit{font-size:16px;font-weight:700;color:#43c36a;line-height:1;}
+    .result-time{font-size:16px;font-weight:500;opacity:.95;}
+    .stake-row{display:flex;align-items:center;gap:8px;font-size:15px;margin-top:2px;}
+    .stake-row .up{color:#43c36a;font-size:18px;line-height:1;}
+    .amt{font-weight:700;color:#5fe17f;}
+    .amt-center{font-weight:600;color:#85f0a3;}
+
+    .signal-btn{
+      width:100%;
+      height:58px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(180deg, #39a6ef 0%, #2b96e6 100%);
+      color:#fff;
+      font-size:18px;
+      font-weight:700;
+      box-shadow:0 10px 18px rgba(43,150,230,.28);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      cursor:pointer;
+    }
+
+    .signal-box{
+      margin-top:18px;
+      background:#fff;
+      border-radius:18px;
+      border:1px solid #edf1f7;
+      padding:18px 14px 16px;
+      box-shadow:0 4px 16px rgba(15,23,42,.04);
+      min-height:164px;
+    }
+    .signal-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:20px;
+      font-weight:800;
+      color:#0f172a;
+      margin-bottom:8px;
+    }
+    .signal-line{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#4e5869;
+      font-size:16px;
+      margin:12px 0 10px;
+    }
+    .signal-line i{color:#31a7f3;}
+    .signal-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid #bde5c5;
+      background:#f7fff8;
+      color:#69b76f;
+      font-size:17px;
+      font-weight:700;
+      border-radius:8px;
+      padding:5px 12px;
+      width:max-content;
+    }
+
+    .support-wrap{
+      margin-top:16px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .support-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#2d99ea;
+      color:#fff;
+      font-size:16px;
+      font-weight:700;
+      border-radius:12px;
+      padding:10px 18px;
+      box-shadow:0 8px 18px rgba(45,153,234,.25);
+      min-width:132px;
+      justify-content:center;
+    }
+    .accuracy{
+      margin-top:10px;
+      color:#4caf50;
+      font-size:28px;
+      font-weight:700;
+      line-height:1;
+    }
+    .accuracy-note{
+      margin-top:10px;
+      color:#6f7786;
+      font-size:15px;
+      line-height:1.35;
+    }
+
+    .pulse-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;}
+
+    .bottom-nav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      background:#fff;
+      border-top:1px solid #e4e9f2;
+      box-shadow:0 -2px 12px rgba(15,23,42,.05);
+      z-index:40;
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+    .bottom-nav-inner{
+      max-width:430px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      padding:9px 6px 8px;
+    }
+    .nav-btn{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      font-size:11px;
+      color:#8d95a3;
+      background:none;
+      border:none;
+      cursor:pointer;
+      min-width:54px;
+    }
+    .nav-btn.active{color:#289cf2;}
+    .nav-btn i{width:22px;height:22px;}
+
+    .support-float{
+      position:fixed;
+      right:14px;
+      bottom:86px;
+      z-index:45;
+      background:#2d99ea;
+      color:#fff;
+      border-radius:999px;
+      padding:11px 14px;
+      font-size:14px;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:0 10px 22px rgba(45,153,234,.28);
+      text-decoration:none;
+    }
+
+    .modal-backdrop{
+      position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
+      padding:16px;background:rgba(8,12,20,.58);backdrop-filter:blur(5px);
+    }
+    .modal-backdrop.flex{display:flex;}
+    .modal-card{
+      width:min(100%, 420px);
+      max-height:90vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:22px;
+      box-shadow:0 24px 80px rgba(0,0,0,.28);
+    }
+    .modal-head{
+      position:sticky;top:0;z-index:1;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 16px;
+      background:#fff;border-bottom:1px solid #e7ebf3;
+      border-radius:22px 22px 0 0;
+    }
+    .modal-title{font-size:20px;font-weight:800;color:#0f172a;}
+    .close-btn{border:none;background:none;font-size:30px;line-height:1;color:#717784;cursor:pointer;}
+
+    .alert-box{
+      background:#fff2f2;
+      border:1px solid #ffd7d7;
+      border-radius:16px;
+      padding:12px 12px 10px;
+      text-align:center;
+      margin-bottom:14px;
+    }
+    .alert-title{color:#e05959;font-size:14px;font-weight:700;}
+    .alert-sub{color:#e36b6b;font-size:11px;margin-top:4px;}
+    .countdown{margin-top:8px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;font-size:20px;font-weight:700;color:#111827;letter-spacing:1px;}
+
+    .plan-card{
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      border-radius:16px;
+      padding:13px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      transition:.15s ease;
+      margin-bottom:10px;
+    }
+    .plan-card.selected{
+      background:#eef6ff;
+      border-color:#69aef0;
+      box-shadow:0 8px 18px rgba(41,156,242,.08);
+    }
+    .plan-title{font-weight:800;color:#1f2937;font-size:14px;line-height:1.2;}
+    .plan-desc{font-size:11px;color:#6b7280;margin-top:4px;line-height:1.35;}
+    .plan-price{font-size:17px;font-weight:800;color:#12a150;white-space:nowrap;}
+
+    .section-box{background:#f8fafc;border:1px solid #e5eaf2;border-radius:16px;padding:14px;}
+    .method-btn{
+      height:34px;border-radius:999px;border:1px solid #b8d8f5;background:#eaf5ff;color:#1474bd;
+      font-size:12px;font-weight:700;padding:0 12px;cursor:pointer;
+    }
+    .primary-btn{
+      width:100%;height:44px;border:none;border-radius:999px;background:#19a35b;color:#fff;
+      font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+    }
+
     .loader {
       width: 40px;
       height: 40px;
@@ -102,384 +430,451 @@
       margin: 0 auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .page { display: none; }
-    .page.active { display: block; }
+    .overlay-card{background:#fff;border-radius:18px;padding:22px 18px;text-align:center;max-width:280px;width:100%;box-shadow:0 18px 60px rgba(0,0,0,.22);}
+
+    @media (max-width:390px){
+      .rail{width:52px;flex-basis:52px;font-size:16px;}
+      .rail.green,.rail.gold{width:56px;flex-basis:56px;}
+      .main-panel{padding:14px 12px;}
+      .signal-title{font-size:18px;}
+      .accuracy{font-size:26px;}
+    }
   </style>
 </head>
-<body class="bg-white text-gray-900 font-sans antialiased">
-
-<div class="max-w-md mx-auto px-4 pt-6 pb-24">
-  
-  <!-- PAGE: HOME -->
-  <div id="homePage" class="page">
-    <div class="text-center mt-10">
-      <i data-lucide="home" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
-      <h1 class="text-2xl font-bold text-gray-800">Welcome to Pocket Option Signal Pro</h1>
-      <p class="text-gray-600 mt-2">Your trusted trading companion.</p>
-      <p class="text-gray-500 text-sm mt-4">Get real‑time signals, improve your accuracy, and grow your portfolio.</p>
-    </div>
-  </div>
-
-  <!-- PAGE: SIGNALS (main dashboard) -->
-  <div id="signalsPage" class="page active">
-    
-    <!-- Scrollable currency pills -->
-    <div class="currency-scroll mb-6 pb-1">
-      <div class="flex" id="currencyList"></div>
-    </div>
-
-    <!-- Current time + timer pills -->
-    <div class="text-center mb-6">
-      <div class="text-2xl font-mono font-light text-gray-800" id="currentTime">--:--:--</div>
-      <div class="timer-container">
-        <button data-seconds="5" class="timer-btn">5 sec</button>
-        <button data-seconds="30" class="timer-btn">30 sec</button>
-        <button data-seconds="60" class="timer-btn">1 min</button>
+<body>
+  <div class="shell">
+    <!-- HOME -->
+    <div id="homePage" class="page">
+      <div class="frame p-6 text-center mt-4">
+        <i data-lucide="home" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h1 class="text-2xl font-bold text-slate-800">Welcome to Pocket Option Signal Pro</h1>
+        <p class="text-slate-600 mt-2">Your trusted trading companion.</p>
+        <p class="text-slate-500 text-sm mt-4">Get real-time signals, improve your accuracy, and grow your portfolio.</p>
       </div>
     </div>
 
-    <!-- Result card -->
-    <div class="bg-white rounded-2xl p-5 mb-5 shadow-lg border border-gray-100">
-      <div class="flex justify-between items-start">
-        <div>
-          <div class="text-lg font-bold text-gray-800" id="signalPair">EUR/USD OTC</div>
-          <div class="text-3xl font-bold text-green-600 mt-1" id="profitPercent">+92%</div>
-        </div>
-        <div class="text-right">
-          <div class="text-gray-500 text-sm">Result</div>
-          <div class="text-2xl font-bold text-green-600" id="profitAmount">$92</div>
+    <!-- SIGNALS -->
+    <div id="signalsPage" class="page active">
+      <div class="currency-scroll">
+        <div class="currency-list" id="currencyList"></div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">Current time:</div>
+        <div class="time-value" id="currentTime">--:--:--</div>
+      </div>
+
+      <div class="text-center mb-4">
+        <div class="timer-wrap">
+          <button data-seconds="5" class="timer-btn">5 sec.</button>
+          <button data-seconds="30" class="timer-btn">30 sec.</button>
+          <button data-seconds="60" class="timer-btn active">1 min.</button>
         </div>
       </div>
-      <!-- Investment and Return images (replace with your own) -->
-      <div class="flex justify-between mt-4">
-        <img id="investmentImg" src="assets/investment.png" alt="Investment" class="stat-img" onerror="this.src='https://placehold.co/120x40?text=Investment+$100'">
-        <img id="returnImg" src="assets/return.png" alt="Return" class="stat-img" onerror="this.src='https://placehold.co/120x40?text=Return+$192'">
-      </div>
-      <!-- Get next signal button with Lucide radio (antenna) icon – no emoji -->
-      <button id="getSignalBtn" class="w-full mt-5 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-full transition flex items-center justify-center gap-2">
-        <i data-lucide="radio" class="w-4 h-4"></i> Get next signal
-      </button>
-    </div>
 
-    <!-- Signal PRO card -->
-    <div class="bg-gray-50 rounded-xl p-4 mb-6 flex justify-between items-center border border-gray-200">
-      <div>
-        <div class="text-xs text-gray-500 uppercase tracking-wider">Pocket Option Signal Pro</div>
-        <div class="text-lg font-bold text-gray-800" id="proPair">EUR/USD OTC</div>
-        <div class="text-sm text-gray-600">Trade time: <span class="text-green-600">1 minute</span></div>
-      </div>
-      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-1">
-        Increase <i data-lucide="chevron-up" class="w-4 h-4"></i>
-      </button>
-    </div>
+      <div class="frame">
+        <div class="result-row">
+          <div class="rail green"><span class="rail-text">Signal PRO</span></div>
 
-    <!-- Support pill + accuracy ring -->
-    <div class="flex flex-col items-center text-center">
-      <div class="support-pill">
-        <i data-lucide="chevron-up" class="w-3 h-3"></i> <span>Support</span>
-      </div>
-      <div class="relative w-28 h-28">
-        <svg class="progress-ring w-full h-full" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"/>
-          <circle id="progressCircle" cx="50" cy="50" r="45" fill="none" stroke="#2ea6ff" stroke-width="8" stroke-linecap="round" class="progress-ring__circle" />
-          <text x="50" y="55" text-anchor="middle" fill="#2ea6ff" font-size="16" font-weight="bold" dy=".3em">69.1299%</text>
-        </svg>
-      </div>
-      <div class="text-xs text-gray-500 mt-2">Signal accuracy for today | 2025.08.02</div>
-    </div>
-  </div>
-
-  <!-- PAGE: TRAINING -->
-  <div id="trainingPage" class="page">
-    <div class="text-center mt-10">
-      <i data-lucide="book-open" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
-      <h2 class="text-xl font-bold text-gray-800">Training & Education</h2>
-      <div class="mt-6 space-y-4">
-        <div class="bg-gray-50 p-4 rounded-xl text-left"><h3 class="font-semibold">📈 How to read signals</h3><p class="text-sm text-gray-600">Learn the basics of our signal system.</p></div>
-        <div class="bg-gray-50 p-4 rounded-xl text-left"><h3 class="font-semibold">⚡ Risk management</h3><p class="text-sm text-gray-600">Protect your capital with simple rules.</p></div>
-        <div class="bg-gray-50 p-4 rounded-xl text-left"><h3 class="font-semibold">🎯 Psychology of trading</h3><p class="text-sm text-gray-600">Stay disciplined and avoid emotional trades.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: REFERRALS -->
-  <div id="referralsPage" class="page">
-    <div class="text-center mt-10">
-      <i data-lucide="users" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
-      <h2 class="text-xl font-bold text-gray-800">Referrals</h2>
-      <p class="text-gray-600 mt-2">You have no referrals yet.</p>
-      <p class="text-sm text-gray-500 mt-4">Invite friends and earn up to 20% commission.</p>
-      <div class="mt-6 bg-gray-100 p-3 rounded-lg inline-block">
-        <span class="text-sm font-mono">https://pocketoptionsignalpro.com/ref/user123</span>
-        <button id="copyReferralLink" class="ml-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">Copy</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: PROGRESS -->
-  <div id="progressPage" class="page">
-    <div class="text-center mt-10">
-      <i data-lucide="bar-chart-3" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
-      <h2 class="text-xl font-bold text-gray-800">Your Progress</h2>
-      <div class="mt-6 space-y-3">
-        <div class="flex justify-between text-sm"><span>Total trades</span><span class="font-semibold">0</span></div>
-        <div class="flex justify-between text-sm"><span>Win rate</span><span class="font-semibold">0%</span></div>
-        <div class="flex justify-between text-sm"><span>Profit (USD)</span><span class="font-semibold">$0</span></div>
-      </div>
-      <p class="text-gray-500 text-sm mt-6">Start trading to see your statistics.</p>
-    </div>
-  </div>
-
-  <!-- PAGE: CHAT (placeholder) -->
-  <div id="chatPage" class="page">
-    <div class="text-center mt-10">
-      <i data-lucide="message-circle" class="w-12 h-12 text-blue-500 mx-auto mb-4"></i>
-      <h2 class="text-xl font-bold text-gray-800">Community Chat</h2>
-      <p class="text-gray-600 mt-2">Coming soon – stay tuned!</p>
-      <div class="mt-6 bg-gray-100 p-4 rounded-xl"><p class="text-sm text-gray-500">Chat with other traders, share insights, and get real‑time support.</p></div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Bottom navigation -->
-<div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center py-2 px-2 z-50 shadow-md">
-  <button data-page="home" class="nav-btn flex flex-col items-center text-xs text-gray-500 hover:text-blue-600"><i data-lucide="home" class="w-5 h-5"></i><span>Home</span></button>
-  <button data-page="signals" class="nav-btn flex flex-col items-center text-xs text-blue-600"><i data-lucide="trending-up" class="w-5 h-5"></i><span>Signals</span></button>
-  <button data-page="training" class="nav-btn flex flex-col items-center text-xs text-gray-500 hover:text-blue-600"><i data-lucide="book-open" class="w-5 h-5"></i><span>Training</span></button>
-  <button data-page="chat" class="nav-btn flex flex-col items-center text-xs text-gray-500 hover:text-blue-600"><i data-lucide="message-circle" class="w-5 h-5"></i><span>Chat</span></button>
-  <button data-page="referrals" class="nav-btn flex flex-col items-center text-xs text-gray-500 hover:text-blue-600"><i data-lucide="users" class="w-5 h-5"></i><span>Referrals</span></button>
-  <button data-page="progress" class="nav-btn flex flex-col items-center text-xs text-gray-500 hover:text-blue-600"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span>Progress</span></button>
-</div>
-
-<!-- Floating Telegram support (optional) -->
-<a href="https://t.me/ph_suppp" target="_blank" class="fixed bottom-24 right-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full py-2 px-4 flex items-center gap-2 shadow-lg transition z-50 text-sm font-medium">
-  <i data-lucide="send" class="w-4 h-4"></i> Support <i data-lucide="arrow-right" class="w-3 h-3"></i>
-</a>
-
-<!-- Subscription Modal -->
-<div id="subscriptionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
-  <div class="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-    <div class="sticky top-0 bg-white p-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-xl font-bold text-gray-900">🚀 Unlock Signals</h2>
-      <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
-    </div>
-    <div class="p-5">
-      <div class="bg-red-50 border border-red-200 rounded-xl p-3 mb-5 text-center">
-        <div class="text-red-600 text-sm font-semibold">⚠️ Only 7 activation slots remaining today.</div>
-        <div class="text-red-500 text-xs mt-1">Inactive users lose their spot when timer ends.</div>
-        <div class="mt-2 flex justify-center gap-2 text-gray-800 font-mono text-lg" id="countdownTimer">23:59:59</div>
-      </div>
-      <div class="space-y-3 mb-6">
-        <div data-plan="weekly" class="plan-card rounded-xl p-3 flex justify-between items-center"><div><span class="font-bold text-gray-800">🔥 Most Popular — WEEKLY ACCESS</span><div class="text-xs text-gray-500">Safe, consistent and perfect for growth-minded traders.</div></div><div class="text-green-600 font-bold">$99</div></div>
-        <div data-plan="trial" class="plan-card rounded-xl p-3 flex justify-between items-center"><div><span class="font-bold text-gray-800">💰 24H Trial</span><div class="text-xs text-gray-500">Test results immediately with low commitment.</div></div><div class="text-green-600 font-bold">$35</div></div>
-        <div data-plan="monthly" class="plan-card rounded-xl p-3 flex justify-between items-center"><div><span class="font-bold text-gray-800">🚀 VIP Monthly</span><div class="text-xs text-gray-500">For traders who want the highest accuracy and speed.</div></div><div class="text-green-600 font-bold">$299</div></div>
-        <div data-plan="lifetime" class="plan-card rounded-xl p-3 flex justify-between items-center"><div><span class="font-bold text-gray-800">👑 Lifetime</span><div class="text-xs text-gray-500">Pay once. Trade forever. No renewals. No limits.</div></div><div class="text-green-600 font-bold">$749</div></div>
-      </div>
-      <div id="paymentSection" class="hidden bg-gray-50 rounded-xl p-4 mb-4">
-        <div class="text-sm font-semibold text-gray-800 mb-2">👉 Selected plan: <span id="selectedPlanName"></span> — <span id="selectedPlanPrice"></span></div>
-        <div class="text-xs text-gray-600 mb-2">Select payment method:</div>
-        <div class="flex gap-3 mb-3"><button id="usdtBtn" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium border border-blue-300">USDT (TRC20)</button></div>
-        <div id="usdtDetails" class="hidden">
-          <div class="bg-gray-100 p-3 rounded-lg mt-2">
-            <div class="text-xs text-gray-700 mb-1">📤 Send exact amount to this USDT (TRC20) address:</div>
-            <div class="flex justify-between items-center bg-white rounded p-2 font-mono text-xs break-all border">
-              <span id="walletAddress">TYwpHcKq5VrWXpL7jZqKf8sM3nJ2hG9aBvC</span>
-              <button id="copyWalletBtn" class="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs px-2 py-1 rounded">Copy</button>
+          <div class="main-panel">
+            <div class="result-card">
+              <div class="result-top">
+                <div class="pair-inline">
+                  <span class="star">☆</span>
+                  <span class="pair-name" id="signalPair">EUR/USD OTC</span>
+                  <span class="profit" id="profitPercent">+92%</span>
+                </div>
+                <div class="result-time" id="resultTime">10:22</div>
+              </div>
+              <div class="result-bottom">
+                <div class="stake-row"><span class="up">↗</span><span class="amt" id="stakeAmount">$100</span></div>
+                <div class="amt-center" id="profitTotal">$192</div>
+                <div class="amt" id="profitAmount">$92</div>
+              </div>
             </div>
-            <div class="text-xs text-gray-500 mt-2">⚠️ After sending, click "I have sent payment". Verification takes ~6 seconds.</div>
+
+            <button id="getSignalBtn" class="signal-btn">
+              Get next signal
+              <span class="pulse-icon"><i data-lucide="radio" class="w-5 h-5"></i></span>
+            </button>
+
+            <div class="signal-box">
+              <div class="signal-title"><i data-lucide="trending-up" class="w-6 h-6 text-sky-500"></i> <span id="proPair">EUR/USD OTC</span></div>
+              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5"></i> <span>Trade time: 1 minute</span></div>
+              <div class="signal-badge"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> Increase</div>
+            </div>
+
+            <div class="support-wrap">
+              <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i> Support</div>
+              <div class="accuracy">69.1299%</div>
+              <div class="accuracy-note">Signal accuracy for today | 2025.08.02</div>
+            </div>
+          </div>
+
+          <div class="rail gold"><span class="rail-text">PRO level activated! Copy the signal and enter on time</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAINING -->
+    <div id="trainingPage" class="page">
+      <div class="frame p-6 text-center mt-4">
+        <i data-lucide="book-open" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-bold text-slate-800">Training & Education</h2>
+        <div class="mt-6 space-y-4 text-left">
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">📈 How to read signals</h3><p class="text-sm text-slate-600 mt-1">Learn the basics of our signal system.</p></div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">⚡ Risk management</h3><p class="text-sm text-slate-600 mt-1">Protect your capital with simple rules.</p></div>
+          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">🎯 Psychology of trading</h3><p class="text-sm text-slate-600 mt-1">Stay disciplined and avoid emotional trades.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERRALS -->
+    <div id="referralsPage" class="page">
+      <div class="frame p-6 text-center mt-4">
+        <i data-lucide="users" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-bold text-slate-800">Referrals</h2>
+        <p class="text-slate-600 mt-2">You have no referrals yet.</p>
+        <p class="text-sm text-slate-500 mt-4">Invite friends and earn up to 20% commission.</p>
+        <div class="mt-6 bg-slate-100 p-3 rounded-xl inline-flex items-center gap-2 border border-slate-200 max-w-full">
+          <span class="text-xs sm:text-sm font-mono break-all">https://pocketoptionsignalpro.com/ref/user123</span>
+          <button id="copyReferralLink" class="bg-sky-500 text-white text-xs px-3 py-1.5 rounded-lg">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="progressPage" class="page">
+      <div class="frame p-6 text-center mt-4">
+        <i data-lucide="bar-chart-3" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-bold text-slate-800">Your Progress</h2>
+        <div class="mt-6 space-y-3 text-left">
+          <div class="flex justify-between text-sm"><span>Total trades</span><span class="font-semibold">0</span></div>
+          <div class="flex justify-between text-sm"><span>Win rate</span><span class="font-semibold">0%</span></div>
+          <div class="flex justify-between text-sm"><span>Profit (USD)</span><span class="font-semibold">$0</span></div>
+        </div>
+        <p class="text-slate-500 text-sm mt-6">Start trading to see your statistics.</p>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="chatPage" class="page">
+      <div class="frame p-6 text-center mt-4">
+        <i data-lucide="message-circle" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-bold text-slate-800">Community Chat</h2>
+        <p class="text-slate-600 mt-2">Coming soon – stay tuned!</p>
+        <div class="mt-6 bg-slate-100 p-4 rounded-2xl border border-slate-200"><p class="text-sm text-slate-500">Chat with other traders, share insights, and get real-time support.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <button data-page="home" class="nav-btn"><i data-lucide="home"></i><span>Home</span></button>
+      <button data-page="signals" class="nav-btn active"><i data-lucide="radio-tower"></i><span>Signals</span></button>
+      <button data-page="training" class="nav-btn"><i data-lucide="book-open"></i><span>Training</span></button>
+      <button data-page="chat" class="nav-btn"><i data-lucide="message-circle"></i><span>Chat</span></button>
+      <button data-page="referrals" class="nav-btn"><i data-lucide="users"></i><span>Referrals</span></button>
+      <button data-page="progress" class="nav-btn"><i data-lucide="trending-up"></i><span>Progress</span></button>
+    </div>
+  </div>
+
+  <a href="https://t.me/ph_suppp" target="_blank" class="support-float">
+    <i data-lucide="send" class="w-4 h-4"></i> Support
+  </a>
+
+  <!-- Subscription Modal -->
+  <div id="subscriptionModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 class="modal-title">🚀 Unlock Signals</h2>
+        <button id="closeModalBtn" class="close-btn" aria-label="Close">&times;</button>
+      </div>
+      <div class="p-4">
+        <div class="alert-box">
+          <div class="alert-title">⚠️ Only 7 activation slots remaining today.</div>
+          <div class="alert-sub">Inactive users lose their spot when timer ends.</div>
+          <div class="countdown" id="countdownTimer">23:59:59</div>
+        </div>
+
+        <div class="space-y-0 mb-4">
+          <div data-plan="weekly" class="plan-card">
+            <div>
+              <div class="plan-title">🔥 Most Popular — WEEKLY ACCESS</div>
+              <div class="plan-desc">Safe, consistent and perfect for growth-minded traders.</div>
+            </div>
+            <div class="plan-price">$99</div>
+          </div>
+          <div data-plan="trial" class="plan-card">
+            <div>
+              <div class="plan-title">💰 24H Trial</div>
+              <div class="plan-desc">Test results immediately with low commitment.</div>
+            </div>
+            <div class="plan-price">$35</div>
+          </div>
+          <div data-plan="monthly" class="plan-card">
+            <div>
+              <div class="plan-title">🚀 VIP Monthly</div>
+              <div class="plan-desc">For traders who want the highest accuracy and speed.</div>
+            </div>
+            <div class="plan-price">$299</div>
+          </div>
+          <div data-plan="lifetime" class="plan-card">
+            <div>
+              <div class="plan-title">👑 Lifetime</div>
+              <div class="plan-desc">Pay once. Trade forever. No renewals. No limits.</div>
+            </div>
+            <div class="plan-price">$749</div>
           </div>
         </div>
-        <button id="paymentSentBtn" class="w-full mt-3 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-full transition flex items-center justify-center gap-2"><i data-lucide="check-circle" class="w-5 h-5"></i> I have sent payment</button>
+
+        <div id="paymentSection" class="hidden section-box mb-3">
+          <div class="text-sm font-semibold text-slate-800 mb-2">👉 Selected plan: <span id="selectedPlanName"></span> — <span id="selectedPlanPrice"></span></div>
+          <div class="text-xs text-slate-600 mb-2">Select payment method:</div>
+          <div class="flex gap-3 mb-3"><button id="usdtBtn" class="method-btn">USDT (TRC20)</button></div>
+          <div id="usdtDetails" class="hidden">
+            <div class="bg-white p-3 rounded-xl mt-2 border border-slate-200">
+              <div class="text-xs text-slate-700 mb-2">📤 Send exact amount to this USDT (TRC20) address:</div>
+              <div class="flex justify-between items-center gap-2 bg-slate-50 rounded-lg p-2 font-mono text-[11px] break-all border border-slate-200">
+                <span id="walletAddress">TYwpHcKq5VrWXpL7jZqKf8sM3nJ2hG9aBvC</span>
+                <button id="copyWalletBtn" class="shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-2 py-1 rounded-lg">Copy</button>
+              </div>
+              <div class="text-xs text-slate-500 mt-2">⚠️ After sending, click "I have sent payment". Verification takes ~6 seconds.</div>
+            </div>
+          </div>
+          <button id="paymentSentBtn" class="primary-btn mt-3"><i data-lucide="check-circle" class="w-5 h-5"></i> I have sent payment</button>
+        </div>
+
+        <div class="text-center text-xs text-slate-400 mt-4">By subscribing you agree to our terms. No refunds after activation.</div>
       </div>
-      <div class="text-center text-xs text-gray-400 mt-4"><p>By subscribing you agree to our terms. No refunds after activation.</p></div>
     </div>
   </div>
-</div>
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="fixed inset-0 z-50 hidden items-center justify-center" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
-  <div class="bg-white rounded-xl p-6 text-center max-w-xs w-full"><div class="loader mb-4"></div><p class="text-gray-800 font-medium">Verifying payment...</p><p class="text-gray-500 text-sm mt-1">Please wait</p></div>
-</div>
-
-<!-- Payment not detected modal -->
-<div id="paymentNotDetectedModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
-  <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center">
-    <div class="text-red-500 text-4xl mb-3">⚠️</div>
-    <h3 class="text-lg font-bold text-gray-800 mb-2">Payment not detected</h3>
-    <p class="text-gray-600 text-sm mb-4">We couldn't confirm your payment. Please contact support for assistance.</p>
-    <a href="https://t.me/ph_suppp" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm font-medium"><i data-lucide="send" class="w-4 h-4"></i> Contact Support <i data-lucide="arrow-right" class="w-3 h-3"></i></a>
-    <button id="closeNotDetectedBtn" class="block w-full mt-3 text-gray-500 text-sm">Close</button>
+  <!-- Loading overlay -->
+  <div id="loadingOverlay" class="modal-backdrop">
+    <div class="overlay-card">
+      <div class="loader mb-4"></div>
+      <p class="text-slate-800 font-medium">Verifying payment...</p>
+      <p class="text-slate-500 text-sm mt-1">Please wait</p>
+    </div>
   </div>
-</div>
 
-<script>
-  // Currency list (scrollable)
-  const currencyList = ["EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CHF", "BTC/USD", "ETH/USD"];
-  let currentPair = "EUR/USD";
-  let isSubscribed = false;
-  let activeTimer = null;
+  <!-- Payment not detected modal -->
+  <div id="paymentNotDetectedModal" class="modal-backdrop">
+    <div class="modal-card p-6 text-center" style="width:min(100%, 380px);">
+      <div class="text-red-500 text-4xl mb-3">⚠️</div>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">Payment not detected</h3>
+      <p class="text-slate-600 text-sm mb-4">We couldn't confirm your payment. Please contact support for assistance.</p>
+      <a href="https://t.me/ph_suppp" target="_blank" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-full text-sm font-medium">
+        <i data-lucide="send" class="w-4 h-4"></i> Contact Support <i data-lucide="arrow-right" class="w-3 h-3"></i>
+      </a>
+      <button id="closeNotDetectedBtn" class="block w-full mt-3 text-slate-500 text-sm">Close</button>
+    </div>
+  </div>
 
-  const currencyContainer = document.getElementById('currencyList');
-  currencyList.forEach(curr => {
-    const pill = document.createElement('div');
-    pill.className = `currency-pill ${curr === currentPair ? 'active' : ''}`;
-    pill.innerText = curr;
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      currentPair = curr;
-      document.getElementById('signalPair').innerText = `${currentPair} OTC`;
-      document.getElementById('proPair').innerText = `${currentPair} OTC`;
-      document.getElementById('profitPercent').innerText = "+0%";
-      document.getElementById('profitAmount').innerText = "$0";
+  <script>
+    const currencyList = [
+      { pair: 'EUR/USD', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/us.png'] },
+      { pair: 'GBP/USD', flags: ['https://flagcdn.com/w20/gb.png', 'https://flagcdn.com/w20/us.png'] },
+      { pair: 'USD/JPY', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/jp.png'] },
+      { pair: 'EUR/GBP', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/gb.png'] },
+      { pair: 'AUD/USD', flags: ['https://flagcdn.com/w20/au.png', 'https://flagcdn.com/w20/us.png'] },
+      { pair: 'USD/CHF', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/ch.png'] }
+    ];
+
+    const signalData = {
+      'EUR/USD': { percent: '+92%', stake: '$100', total: '$192', profit: '$92', time: '10:22' },
+      'GBP/USD': { percent: '+86%', stake: '$100', total: '$186', profit: '$86', time: '10:22' },
+      'USD/JPY': { percent: '+88%', stake: '$100', total: '$188', profit: '$88', time: '10:22' },
+      'EUR/GBP': { percent: '+84%', stake: '$100', total: '$184', profit: '$84', time: '10:22' },
+      'AUD/USD': { percent: '+79%', stake: '$100', total: '$179', profit: '$79', time: '10:22' },
+      'USD/CHF': { percent: '+81%', stake: '$100', total: '$181', profit: '$81', time: '10:22' }
+    };
+
+    let currentPair = 'EUR/USD';
+    let isSubscribed = false;
+    let activeTimer = null;
+    let selectedPlan = null;
+
+    const signalPairEl = document.getElementById('signalPair');
+    const proPairEl = document.getElementById('proPair');
+    const profitPercentEl = document.getElementById('profitPercent');
+    const stakeAmountEl = document.getElementById('stakeAmount');
+    const profitTotalEl = document.getElementById('profitTotal');
+    const profitAmountEl = document.getElementById('profitAmount');
+    const resultTimeEl = document.getElementById('resultTime');
+
+    function renderSignal(pair = currentPair) {
+      const data = signalData[pair] || signalData['EUR/USD'];
+      signalPairEl.innerText = `${pair} OTC`;
+      proPairEl.innerText = `${pair} OTC`;
+      profitPercentEl.innerText = data.percent;
+      stakeAmountEl.innerText = data.stake;
+      profitTotalEl.innerText = data.total;
+      profitAmountEl.innerText = data.profit;
+      resultTimeEl.innerText = data.time;
+    }
+
+    const currencyContainer = document.getElementById('currencyList');
+    currencyList.forEach(({ pair, flags }) => {
+      const pill = document.createElement('div');
+      pill.className = `currency-pill ${pair === currentPair ? 'active' : ''}`;
+      pill.innerHTML = `
+        <span class="flag-set">
+          <span class="flag"><img src="${flags[0]}" alt=""></span>
+          <span class="flag"><img src="${flags[1]}" alt=""></span>
+        </span>
+        <span>${pair}</span>
+      `;
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentPair = pair;
+        renderSignal(currentPair);
+      });
+      currencyContainer.appendChild(pill);
     });
-    currencyContainer.appendChild(pill);
-  });
 
-  lucide.createIcons();
-
-  // Live clock
-  function updateClock() {
-    document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  // Progress ring
-  const circle = document.getElementById('progressCircle');
-  if (circle) {
-    const percent = 69.1299, radius = 45, circum = 2 * Math.PI * radius;
-    circle.style.strokeDasharray = circum;
-    circle.style.strokeDashoffset = circum - (circum * percent) / 100;
-  }
-
-  function simulateSignal() {
-    if (!isSubscribed) { showSubscriptionModal(); return; }
-    // Not used – always false
-  }
-  function startTimer(seconds) {
-    if (activeTimer) clearTimeout(activeTimer);
-    activeTimer = setTimeout(() => { simulateSignal(); activeTimer = null; }, seconds * 1000);
-  }
-
-  const timerBtns = document.querySelectorAll('.timer-btn');
-  timerBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!isSubscribed) { showSubscriptionModal(); return; }
-      const seconds = parseInt(btn.getAttribute('data-seconds'), 10);
-      startTimer(seconds);
-      timerBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  document.getElementById('getSignalBtn').addEventListener('click', () => {
-    if (!isSubscribed) { showSubscriptionModal(); return; }
-    if (activeTimer) clearTimeout(activeTimer);
-    simulateSignal();
-    timerBtns.forEach(b => b.classList.remove('active'));
-  });
-
-  // Subscription modal logic
-  const modal = document.getElementById('subscriptionModal');
-  const closeModalBtn = document.getElementById('closeModalBtn');
-  const paymentSection = document.getElementById('paymentSection');
-  const usdtBtn = document.getElementById('usdtBtn');
-  const usdtDetails = document.getElementById('usdtDetails');
-  const paymentSentBtn = document.getElementById('paymentSentBtn');
-  const copyWalletBtn = document.getElementById('copyWalletBtn');
-  const walletAddressSpan = document.getElementById('walletAddress');
-  const selectedPlanNameSpan = document.getElementById('selectedPlanName');
-  const selectedPlanPriceSpan = document.getElementById('selectedPlanPrice');
-  const loadingOverlay = document.getElementById('loadingOverlay');
-  const paymentNotDetectedModal = document.getElementById('paymentNotDetectedModal');
-  const closeNotDetectedBtn = document.getElementById('closeNotDetectedBtn');
-
-  let countdownSeconds = 24 * 3600;
-  const countdownElem = document.getElementById('countdownTimer');
-  function updateCountdown() {
-    if (countdownSeconds <= 0) { countdownElem.innerText = "00:00:00"; return; }
-    const h = Math.floor(countdownSeconds / 3600);
-    const m = Math.floor((countdownSeconds % 3600) / 60);
-    const s = countdownSeconds % 60;
-    countdownElem.innerText = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-    countdownSeconds--;
-  }
-  setInterval(updateCountdown, 1000);
-  updateCountdown();
-
-  let selectedPlan = null;
-  const planCards = document.querySelectorAll('.plan-card');
-  planCards.forEach(card => {
-    card.addEventListener('click', () => {
-      planCards.forEach(c => c.classList.remove('selected'));
-      card.classList.add('selected');
-      selectedPlan = card.getAttribute('data-plan');
-      let planName = '', planPrice = '';
-      if (selectedPlan === 'weekly') { planName = 'WEEKLY ACCESS'; planPrice = '$99'; }
-      else if (selectedPlan === 'trial') { planName = '24H Trial'; planPrice = '$35'; }
-      else if (selectedPlan === 'monthly') { planName = 'VIP Monthly'; planPrice = '$299'; }
-      else if (selectedPlan === 'lifetime') { planName = 'Lifetime'; planPrice = '$749'; }
-      selectedPlanNameSpan.innerText = planName;
-      selectedPlanPriceSpan.innerText = planPrice;
-      paymentSection.classList.remove('hidden');
-      usdtDetails.classList.add('hidden');
-    });
-  });
-
-  usdtBtn.addEventListener('click', () => usdtDetails.classList.remove('hidden'));
-  copyWalletBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(walletAddressSpan.innerText).then(() => {
-      copyWalletBtn.innerText = 'Copied!';
-      setTimeout(() => copyWalletBtn.innerText = 'Copy', 1500);
-    });
-  });
-  paymentSentBtn.addEventListener('click', () => {
-    if (!selectedPlan) { alert('Please select a plan first.'); return; }
-    modal.classList.add('hidden');
-    loadingOverlay.classList.remove('hidden');
-    loadingOverlay.classList.add('flex');
-    setTimeout(() => {
-      loadingOverlay.classList.add('hidden');
-      loadingOverlay.classList.remove('flex');
-      paymentNotDetectedModal.classList.remove('hidden');
-      paymentNotDetectedModal.classList.add('flex');
-    }, 6000);
-  });
-
-  function showSubscriptionModal() { modal.classList.remove('hidden'); modal.classList.add('flex'); }
-  closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.add('hidden'); });
-  closeNotDetectedBtn.addEventListener('click', () => paymentNotDetectedModal.classList.add('hidden'));
-  paymentNotDetectedModal.addEventListener('click', (e) => { if (e.target === paymentNotDetectedModal) paymentNotDetectedModal.classList.add('hidden'); });
-
-  // Page navigation
-  const pages = { home: document.getElementById('homePage'), signals: document.getElementById('signalsPage'), training: document.getElementById('trainingPage'), referrals: document.getElementById('referralsPage'), progress: document.getElementById('progressPage'), chat: document.getElementById('chatPage') };
-  const navBtns = document.querySelectorAll('.nav-btn');
-  function showPage(pageId) {
-    Object.values(pages).forEach(p => p.classList.remove('active'));
-    pages[pageId].classList.add('active');
-    navBtns.forEach(btn => {
-      if (btn.getAttribute('data-page') === pageId) { btn.classList.add('text-blue-600'); btn.classList.remove('text-gray-500'); }
-      else { btn.classList.remove('text-blue-600'); btn.classList.add('text-gray-500'); }
-    });
     lucide.createIcons();
-  }
-  navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.getAttribute('data-page'))));
-  showPage('signals');
 
-  // Copy referral link
-  const copyReferralBtn = document.getElementById('copyReferralLink');
-  if (copyReferralBtn) {
-    copyReferralBtn.addEventListener('click', () => {
-      const link = document.querySelector('#referralsPage .bg-gray-100 span')?.innerText || 'https://pocketoptionsignalpro.com/ref/user123';
-      navigator.clipboard.writeText(link).then(() => {
-        copyReferralBtn.innerText = 'Copied!';
-        setTimeout(() => copyReferralBtn.innerText = 'Copy', 1500);
+    function updateClock(){
+      document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    renderSignal();
+
+    function startTimer(seconds){
+      if (activeTimer) clearTimeout(activeTimer);
+      activeTimer = setTimeout(() => {
+        if (!isSubscribed) showSubscriptionModal();
+        activeTimer = null;
+      }, seconds * 1000);
+    }
+
+    const timerBtns = document.querySelectorAll('.timer-btn');
+    timerBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!isSubscribed) return showSubscriptionModal();
+        const seconds = parseInt(btn.dataset.seconds, 10);
+        startTimer(seconds);
+        timerBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
       });
     });
-  }
-</script>
+
+    document.getElementById('getSignalBtn').addEventListener('click', () => {
+      if (!isSubscribed) return showSubscriptionModal();
+      if (activeTimer) clearTimeout(activeTimer);
+      renderSignal(currentPair);
+      timerBtns.forEach(b => b.classList.remove('active'));
+    });
+
+    // Countdown
+    let countdownSeconds = 24 * 3600;
+    const countdownElem = document.getElementById('countdownTimer');
+    function updateCountdown() {
+      if (countdownSeconds <= 0) return countdownElem.innerText = '00:00:00';
+      const h = Math.floor(countdownSeconds / 3600);
+      const m = Math.floor((countdownSeconds % 3600) / 60);
+      const s = countdownSeconds % 60;
+      countdownElem.innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      countdownSeconds--;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    const modal = document.getElementById('subscriptionModal');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const paymentNotDetectedModal = document.getElementById('paymentNotDetectedModal');
+    const paymentSection = document.getElementById('paymentSection');
+    const usdtBtn = document.getElementById('usdtBtn');
+    const usdtDetails = document.getElementById('usdtDetails');
+    const selectedPlanNameSpan = document.getElementById('selectedPlanName');
+    const selectedPlanPriceSpan = document.getElementById('selectedPlanPrice');
+    const walletAddressSpan = document.getElementById('walletAddress');
+    const copyWalletBtn = document.getElementById('copyWalletBtn');
+
+    function showSubscriptionModal(){
+      modal.classList.add('flex');
+    }
+    function hideSubscriptionModal(){
+      modal.classList.remove('flex');
+    }
+    document.getElementById('closeModalBtn').addEventListener('click', hideSubscriptionModal);
+    modal.addEventListener('click', e => { if (e.target === modal) hideSubscriptionModal(); });
+
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedPlan = card.dataset.plan;
+        const map = {
+          weekly: ['WEEKLY ACCESS', '$99'],
+          trial: ['24H Trial', '$35'],
+          monthly: ['VIP Monthly', '$299'],
+          lifetime: ['Lifetime', '$749']
+        };
+        const [name, price] = map[selectedPlan];
+        selectedPlanNameSpan.innerText = name;
+        selectedPlanPriceSpan.innerText = price;
+        paymentSection.classList.remove('hidden');
+        usdtDetails.classList.add('hidden');
+      });
+    });
+
+    usdtBtn.addEventListener('click', () => usdtDetails.classList.remove('hidden'));
+    copyWalletBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(walletAddressSpan.innerText).then(() => {
+        copyWalletBtn.innerText = 'Copied!';
+        setTimeout(() => copyWalletBtn.innerText = 'Copy', 1500);
+      });
+    });
+
+    document.getElementById('paymentSentBtn').addEventListener('click', () => {
+      if (!selectedPlan) return alert('Please select a plan first.');
+      hideSubscriptionModal();
+      loadingOverlay.classList.add('flex');
+      setTimeout(() => {
+        loadingOverlay.classList.remove('flex');
+        paymentNotDetectedModal.classList.add('flex');
+      }, 6000);
+    });
+
+    document.getElementById('closeNotDetectedBtn').addEventListener('click', () => paymentNotDetectedModal.classList.remove('flex'));
+    paymentNotDetectedModal.addEventListener('click', e => { if (e.target === paymentNotDetectedModal) paymentNotDetectedModal.classList.remove('flex'); });
+    loadingOverlay.addEventListener('click', e => { if (e.target === loadingOverlay) loadingOverlay.classList.remove('flex'); });
+
+    const pages = {
+      home: document.getElementById('homePage'),
+      signals: document.getElementById('signalsPage'),
+      training: document.getElementById('trainingPage'),
+      referrals: document.getElementById('referralsPage'),
+      progress: document.getElementById('progressPage'),
+      chat: document.getElementById('chatPage')
+    };
+    const navBtns = document.querySelectorAll('.nav-btn');
+    function showPage(pageId){
+      Object.values(pages).forEach(p => p.classList.remove('active'));
+      pages[pageId].classList.add('active');
+      navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
+      lucide.createIcons();
+    }
+    navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+    showPage('signals');
+
+    const copyReferralBtn = document.getElementById('copyReferralLink');
+    if (copyReferralBtn) {
+      copyReferralBtn.addEventListener('click', () => {
+        const link = document.querySelector('#referralsPage .font-mono')?.innerText || 'https://pocketoptionsignalpro.com/ref/user123';
+        navigator.clipboard.writeText(link).then(() => {
+          copyReferralBtn.innerText = 'Copied!';
+          setTimeout(() => copyReferralBtn.innerText = 'Copy', 1500);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
