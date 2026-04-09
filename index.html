@@ -189,6 +189,7 @@
       color:#fff;
       box-shadow:0 6px 14px rgba(13,17,34,.16);
       margin:2px 0 14px;
+      min-height:76px;
     }
     .result-top,
     .result-bottom{
@@ -231,7 +232,10 @@
       border:1px solid #edf1f7;
       padding:18px 14px 16px;
       box-shadow:0 4px 16px rgba(15,23,42,.04);
-      min-height:164px;
+      min-height:176px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
     }
     .signal-title{
       display:flex;
@@ -272,6 +276,7 @@
       align-items:center;
       justify-content:center;
       text-align:center;
+      min-height:128px;
     }
     .support-pill{
       display:inline-flex;
@@ -684,18 +689,19 @@
     ];
 
     const signalData = {
-      'EUR/USD': { percent: '+92%', stake: '$100', total: '$192', profit: '$92', time: '10:22' },
-      'GBP/USD': { percent: '+86%', stake: '$100', total: '$186', profit: '$86', time: '10:22' },
-      'USD/JPY': { percent: '+88%', stake: '$100', total: '$188', profit: '$88', time: '10:22' },
-      'EUR/GBP': { percent: '+84%', stake: '$100', total: '$184', profit: '$84', time: '10:22' },
-      'AUD/USD': { percent: '+79%', stake: '$100', total: '$179', profit: '$79', time: '10:22' },
-      'USD/CHF': { percent: '+81%', stake: '$100', total: '$181', profit: '$81', time: '10:22' }
+      'EUR/USD': { percent: 92, stake: 100, time: '10:22' },
+      'GBP/USD': { percent: 86, stake: 100, time: '10:22' },
+      'USD/JPY': { percent: 88, stake: 100, time: '10:22' },
+      'EUR/GBP': { percent: 84, stake: 100, time: '10:22' },
+      'AUD/USD': { percent: 79, stake: 100, time: '10:22' },
+      'USD/CHF': { percent: 81, stake: 100, time: '10:22' }
     };
 
     let currentPair = 'EUR/USD';
     let isSubscribed = false;
     let activeTimer = null;
     let selectedPlan = null;
+    let liveSignalIndex = 0;
 
     const signalPairEl = document.getElementById('signalPair');
     const proPairEl = document.getElementById('proPair');
@@ -706,8 +712,20 @@
     const resultTimeEl = document.getElementById('resultTime');
 
     function renderSignal(pair = currentPair) {
-      const data = signalData[pair] || signalData['EUR/USD'];
+      const base = signalData[pair] || signalData['EUR/USD'];
+      const drift = ((liveSignalIndex % 3) - 1) * 2;
+      const percent = Math.max(65, Math.min(97, base.percent + drift));
+      const total = base.stake + Math.round(base.stake * percent / 100);
+      const profit = total - base.stake;
       signalPairEl.innerText = `${pair} OTC`;
+      proPairEl.innerText = `${pair} OTC`;
+      profitPercentEl.innerText = `+${percent}%`;
+      stakeAmountEl.innerText = `$${base.stake}`;
+      profitTotalEl.innerText = `$${total}`;
+      profitAmountEl.innerText = `$${profit}`;
+      const now = new Date();
+      resultTimeEl.innerText = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    } OTC`;
       proPairEl.innerText = `${pair} OTC`;
       profitPercentEl.innerText = data.percent;
       stakeAmountEl.innerText = data.stake;
@@ -731,6 +749,7 @@
         document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         currentPair = pair;
+        liveSignalIndex = 0;
         renderSignal(currentPair);
       });
       currencyContainer.appendChild(pill);
@@ -768,6 +787,7 @@
     document.getElementById('getSignalBtn').addEventListener('click', () => {
       if (!isSubscribed) return showSubscriptionModal();
       if (activeTimer) clearTimeout(activeTimer);
+      liveSignalIndex += 1;
       renderSignal(currentPair);
       timerBtns.forEach(b => b.classList.remove('active'));
     });
@@ -861,6 +881,9 @@
       pages[pageId].classList.add('active');
       navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
       lucide.createIcons();
+      if (pageId === 'signals') {
+        renderSignal(currentPair);
+      }
     }
     navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
     showPage('signals');
