@@ -3,30 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Pocket Option Signal Pro – Trading Dashboard</title>
+  <title>PocketOptionInside</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root{
-      --app-bg:#eef3fb;
+      --bg:#ebf1fa;
       --card:#ffffff;
-      --ink:#1f2937;
-      --muted:#6b7280;
-      --blue:#2ea6ff;
-      --blue-dark:#162039;
-      --green:#44b04b;
-      --gold:#f6c63f;
-      --rail:#d8deeb;
-      --shadow:0 8px 30px rgba(15,23,42,.08);
-      --soft-shadow:0 4px 18px rgba(15,23,42,.06);
+      --ink:#1f2633;
+      --muted:#7f8794;
+      --nav:#ffffff;
+      --blue:#2e9fe8;
+      --blue-dark:#24263d;
+      --green:#4ab54d;
+      --yellow:#f3bf23;
+      --line:#dfe6f1;
+      --shadow:0 8px 26px rgba(15,23,42,.08);
+      --soft:0 4px 14px rgba(15,23,42,.05);
     }
 
     html,body{height:100%;}
     body{
       margin:0;
-      background:
-        radial-gradient(circle at top, rgba(46,166,255,.12), transparent 28%),
-        linear-gradient(180deg, #f7f9fc 0%, var(--app-bg) 100%);
+      background:var(--bg);
       color:var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-font-smoothing:antialiased;
@@ -34,162 +33,227 @@
     }
 
     ::-webkit-scrollbar{width:4px;height:4px;}
-    ::-webkit-scrollbar-track{background:#edf2f7;}
-    ::-webkit-scrollbar-thumb{background:#9ecfff;border-radius:999px;}
+    ::-webkit-scrollbar-thumb{background:#b6c5dd;border-radius:999px;}
 
-    .shell{
+    .app{
       max-width:430px;
       margin:0 auto;
-      padding:16px 16px 108px;
+      padding:10px 10px 104px;
+      box-sizing:border-box;
     }
 
     .page{display:none;}
     .page.active{display:block;}
 
-    .currency-scroll{
-      overflow-x:auto;
-      white-space:nowrap;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-width:thin;
-      padding-bottom:2px;
-      margin-bottom:12px;
+    .topbar{
+      height:56px;
+      background:#26263e;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 12px 0 10px;
+      box-shadow:0 2px 8px rgba(0,0,0,.12);
+      overflow:hidden;
     }
-    .currency-list{display:flex;gap:10px;align-items:center;}
-    .currency-pill{
-      flex:0 0 auto;
-      display:inline-flex;
+    .brand{
+      display:flex;
       align-items:center;
       gap:7px;
-      height:40px;
-      padding:0 14px;
-      border-radius:14px;
-      background:#f7f8fb;
-      border:1px solid #dfe6f2;
-      box-shadow:0 2px 4px rgba(15,23,42,.04) inset;
-      color:#394150;
-      font-size:14px;
-      font-weight:600;
+      color:#fff;
+      min-width:0;
+    }
+    .brand-mark{
+      width:36px;height:26px;border-radius:6px 16px 6px 16px;
+      background:linear-gradient(135deg,#0e75ef 0%,#4cb3ff 100%);
+      position:relative;flex:0 0 auto;
+    }
+    .brand-mark::after{
+      content:"";position:absolute;left:11px;top:0;width:16px;height:26px;border-radius:0 16px 16px 0;background:#1228c8;opacity:.96;
+    }
+    .brand-text{
+      font-size:16px;
+      font-weight:500;
+      letter-spacing:-.2px;
+      white-space:nowrap;
+    }
+    .user-chip{
+      display:flex;align-items:center;gap:7px;color:#e7ebf2;font-size:15px;white-space:nowrap;flex:0 0 auto;
+    }
+    .lvl-badge{
+      height:25px;min-width:60px;padding:0 11px;border-radius:7px;background:#f6f7fb;color:#22263d;
+      display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+    }
+    .flag-round{
+      width:25px;height:25px;border-radius:999px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,.15);
+      flex:0 0 auto;
+    }
+    .flag-round img{width:100%;height:100%;object-fit:cover;display:block;}
+
+    .currency-scroll{
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      margin:11px 0 7px;
+      padding-bottom:2px;
+    }
+    .currency-list{display:flex;gap:9px;align-items:center;min-width:max-content;}
+    .currency-pill{
+      height:29px;
+      padding:0 12px 0 8px;
+      border-radius:9px;
+      border:1px solid #d7dce7;
+      background:#fff;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.03);
+      color:#3a4150;
+      font-size:13px;
+      font-weight:500;
       cursor:pointer;
       user-select:none;
+      flex:0 0 auto;
     }
     .currency-pill.active{
-      background:#151b2c;
-      border-color:#0f1320;
+      background:#23263b;
       color:#fff;
-      box-shadow:0 10px 20px rgba(21,27,44,.22);
+      border-color:#1b1d2e;
+      box-shadow:0 6px 16px rgba(35,38,59,.18);
     }
-    .flag-set{display:inline-flex;align-items:center;margin-right:1px;}
-    .flag{
-      width:16px;height:16px;border-radius:999px;display:inline-block;overflow:hidden;flex:0 0 auto;
-      box-shadow:0 0 0 1px rgba(0,0,0,.04);
-      margin-left:-4px;
+    .pair-icon-group{display:inline-flex;align-items:center;}
+    .pair-icon{
+      width:18px;height:18px;border-radius:999px;overflow:hidden;display:inline-block;box-shadow:0 0 0 1px rgba(0,0,0,.08);margin-left:-4px;background:#fff;
     }
-    .flag:first-child{margin-left:0;}
-    .flag img{width:100%;height:100%;object-fit:cover;display:block;}
+    .pair-icon:first-child{margin-left:0;}
+    .pair-icon img{width:100%;height:100%;object-fit:cover;display:block;}
 
-    .time-block{padding-top:8px;margin-bottom:12px;text-align:left;}
-    .time-label{font-size:15px;color:#7a8598;line-height:1.1;margin-bottom:4px;font-weight:500;}
-    .time-value{font-size:22px;font-weight:600;color:#2f3747;letter-spacing:.2px;}
+    .time-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      margin:8px 0 9px;
+    }
+    .current-time{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .time-label{font-size:13px;color:#8a93a2;line-height:1.1;font-weight:400;}
+    .time-value{font-size:18px;color:#303747;font-weight:600;line-height:1.1;letter-spacing:-.2px;}
 
     .timer-wrap{
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      background:#eceff5;
-      border:1px solid #e1e7f2;
-      padding:6px;
-      border-radius:18px;
-      box-shadow:var(--soft-shadow);
+      gap:0;
+      background:#fff;
+      border:1px solid #edf0f5;
+      border-radius:12px;
+      box-shadow:var(--soft);
+      overflow:hidden;
+      flex:0 0 auto;
     }
     .timer-btn{
-      height:36px;
-      min-width:76px;
+      height:38px;
+      min-width:84px;
       border:none;
-      border-radius:14px;
       background:#fff;
-      color:#6a7280;
+      color:#8d94a4;
       font-size:14px;
-      font-weight:600;
-      box-shadow:0 1px 2px rgba(15,23,42,.05);
+      font-weight:500;
       cursor:pointer;
-      padding:0 14px;
+      padding:0 12px;
+      border-right:1px solid #f0f2f6;
     }
+    .timer-btn:last-child{border-right:none;}
     .timer-btn.active{
-      background:#151b2c;
+      background:#23263b;
       color:#fff;
-      box-shadow:0 8px 18px rgba(21,27,44,.22);
+      font-weight:600;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
     }
 
     .frame{
       background:#fff;
-      border-radius:26px;
+      border-radius:18px;
       box-shadow:var(--shadow);
-      border:1px solid #edf1f7;
+      border:1px solid #e8edf5;
       overflow:hidden;
     }
 
     .result-row{
       display:flex;
-      gap:0;
       align-items:stretch;
-      min-height:426px;
+      min-height:424px;
     }
     .rail{
-      width:58px;
-      flex:0 0 58px;
+      width:54px;
+      flex:0 0 54px;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#d8deeb;
-      color:#4f596b;
-      font-size:18px;
-      font-weight:500;
       writing-mode:vertical-rl;
       transform:rotate(180deg);
-      letter-spacing:.2px;
-      position:relative;
+      font-size:17px;
+      line-height:1;
+      font-weight:500;
+      letter-spacing:.1px;
     }
     .rail.green{
-      background:linear-gradient(180deg, #5dc44a 0%, #42b038 100%);
+      background:linear-gradient(180deg,#58bd4d 0%,#49b343 100%);
       color:#fff;
       border-radius:18px 0 0 18px;
-      width:64px;
-      flex-basis:64px;
-      box-shadow:inset -1px 0 0 rgba(255,255,255,.16);
+      width:52px;
+      flex-basis:52px;
     }
-    .rail.gold{
-      background:linear-gradient(180deg, #ffd336 0%, #f4b800 100%);
-      color:#3a3000;
+    .rail.yellow{
+      background:linear-gradient(180deg,#f8cf3d 0%,#f2bc12 100%);
+      color:#342900;
       border-radius:0 18px 18px 0;
-      width:66px;
-      flex-basis:66px;
-      font-size:12px;
+      width:54px;
+      flex-basis:54px;
+      font-size:11px;
       font-weight:700;
-      line-height:1.1;
       text-align:center;
     }
-    .rail-text{white-space:nowrap;}
+
+    .result-strip{
+      width:60px;
+      flex:0 0 60px;
+      background:#dde3ef;
+      color:#263044;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      writing-mode:vertical-rl;
+      transform:rotate(180deg);
+      font-size:16px;
+      font-weight:400;
+      border-left:1px solid rgba(255,255,255,.35);
+      border-right:1px solid rgba(255,255,255,.6);
+    }
 
     .main-panel{
       flex:1 1 auto;
+      padding:13px 11px 11px;
       background:#fff;
-      border-left:1px solid rgba(255,255,255,.8);
-      border-right:1px solid rgba(217,222,235,.8);
-      padding:16px 14px 14px;
       display:flex;
       flex-direction:column;
+      align-items:stretch;
       justify-content:flex-start;
-      min-height:426px;
+      border-right:1px solid #eef2f8;
     }
 
     .result-card{
-      background:#202642;
-      border-radius:8px;
-      padding:8px 10px 9px;
+      background:#24263b;
+      border-radius:7px;
+      padding:7px 8px 6px;
       color:#fff;
-      box-shadow:0 6px 14px rgba(13,17,34,.16);
-      margin:2px 0 14px;
-      min-height:76px;
+      box-shadow:0 5px 12px rgba(15,18,35,.14);
+      min-height:66px;
+      margin:0 auto 12px;
+      width:100%;
+      box-sizing:border-box;
     }
     .result-top,
     .result-bottom{
@@ -198,122 +262,123 @@
       justify-content:space-between;
       gap:8px;
     }
+    .result-top{margin-bottom:4px;}
     .pair-inline{display:flex;align-items:center;gap:6px;min-width:0;}
-    .star{font-size:17px;opacity:.95;transform:translateY(-1px);}
-    .pair-name{font-size:16px;font-weight:500;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .profit{font-size:16px;font-weight:700;color:#43c36a;line-height:1;}
-    .result-time{font-size:16px;font-weight:500;opacity:.95;}
-    .stake-row{display:flex;align-items:center;gap:8px;font-size:15px;margin-top:2px;}
-    .stake-row .up{color:#43c36a;font-size:18px;line-height:1;}
-    .amt{font-weight:700;color:#5fe17f;}
-    .amt-center{font-weight:600;color:#85f0a3;}
+    .star{font-size:15px;color:#d9c08a;transform:translateY(-1px);flex:0 0 auto;}
+    .pair-name{font-size:13px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;}
+    .profit{font-size:13px;font-weight:500;color:#64d17f;white-space:nowrap;}
+    .result-time{font-size:13px;font-weight:400;color:#fff;opacity:.96;white-space:nowrap;}
+    .stake-row{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1;}
+    .stake-row .up{color:#58c15f;font-size:15px;line-height:1;}
+    .amt{font-weight:600;color:#67d478;font-size:12px;}
+    .amt-center{font-weight:500;color:#66d378;font-size:12px;}
 
     .signal-btn{
       width:100%;
-      height:58px;
+      height:44px;
       border:none;
-      border-radius:16px;
-      background:linear-gradient(180deg, #39a6ef 0%, #2b96e6 100%);
+      border-radius:11px;
+      background:linear-gradient(180deg,#39a7ed 0%,#309de8 100%);
       color:#fff;
-      font-size:18px;
-      font-weight:700;
-      box-shadow:0 10px 18px rgba(43,150,230,.28);
+      font-size:17px;
+      font-weight:600;
+      box-shadow:0 8px 16px rgba(48,157,232,.22);
       display:flex;
       align-items:center;
       justify-content:center;
       gap:10px;
       cursor:pointer;
+      margin-bottom:12px;
     }
 
     .signal-box{
-      margin-top:18px;
       background:#fff;
-      border-radius:18px;
-      border:1px solid #edf1f7;
-      padding:18px 14px 16px;
-      box-shadow:0 4px 16px rgba(15,23,42,.04);
-      min-height:176px;
+      border-radius:12px;
+      border:1px solid #e8edf5;
+      padding:15px 13px 13px;
       display:flex;
       flex-direction:column;
       justify-content:center;
+      min-height:166px;
+      box-sizing:border-box;
     }
     .signal-title{
       display:flex;
       align-items:center;
-      gap:10px;
-      font-size:20px;
-      font-weight:800;
-      color:#0f172a;
-      margin-bottom:8px;
+      gap:9px;
+      color:#121826;
+      font-size:17px;
+      font-weight:700;
+      margin-bottom:10px;
     }
     .signal-line{
       display:flex;
       align-items:center;
-      gap:10px;
-      color:#4e5869;
-      font-size:16px;
-      margin:12px 0 10px;
+      gap:9px;
+      color:#4d586a;
+      font-size:15px;
+      margin:8px 0;
+      font-weight:400;
     }
-    .signal-line i{color:#31a7f3;}
+    .signal-line i{color:#2fa5ef;}
     .signal-badge{
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      border:1px solid #bde5c5;
-      background:#f7fff8;
-      color:#69b76f;
-      font-size:17px;
-      font-weight:700;
-      border-radius:8px;
-      padding:5px 12px;
+      gap:6px;
       width:max-content;
+      border:1px solid #b9d7ba;
+      color:#6db26f;
+      background:#f9fff9;
+      border-radius:6px;
+      padding:3px 11px;
+      font-size:15px;
+      font-weight:500;
     }
 
     .support-wrap{
-      margin-top:16px;
+      margin-top:12px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
       text-align:center;
-      min-height:128px;
     }
     .support-pill{
+      width:100%;
+      max-width:216px;
+      height:40px;
+      border-radius:8px;
+      background:#2f9fe9;
+      color:#fff;
       display:inline-flex;
       align-items:center;
-      gap:8px;
-      background:#2d99ea;
-      color:#fff;
-      font-size:16px;
-      font-weight:700;
-      border-radius:12px;
-      padding:10px 18px;
-      box-shadow:0 8px 18px rgba(45,153,234,.25);
-      min-width:132px;
       justify-content:center;
+      gap:8px;
+      font-size:17px;
+      font-weight:600;
+      box-shadow:0 8px 16px rgba(47,159,233,.22);
     }
     .accuracy{
-      margin-top:10px;
-      color:#4caf50;
-      font-size:28px;
-      font-weight:700;
+      margin-top:11px;
+      color:#55ad63;
+      font-size:25px;
       line-height:1;
+      font-weight:700;
+      letter-spacing:-.2px;
     }
     .accuracy-note{
       margin-top:10px;
-      color:#6f7786;
-      font-size:15px;
-      line-height:1.35;
+      color:#788191;
+      font-size:14px;
+      line-height:1.2;
+      font-weight:400;
     }
-
-    .pulse-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;}
 
     .bottom-nav{
       position:fixed;
       left:0;right:0;bottom:0;
       background:#fff;
-      border-top:1px solid #e4e9f2;
-      box-shadow:0 -2px 12px rgba(15,23,42,.05);
+      border-top:1px solid #e5eaf2;
+      box-shadow:0 -2px 10px rgba(15,23,42,.04);
       z-index:40;
       padding-bottom:env(safe-area-inset-bottom);
     }
@@ -322,155 +387,86 @@
       margin:0 auto;
       display:flex;
       justify-content:space-around;
-      align-items:center;
-      padding:9px 6px 8px;
+      align-items:flex-end;
+      padding:10px 6px 8px;
     }
     .nav-btn{
+      border:none;
+      background:none;
       display:flex;
       flex-direction:column;
       align-items:center;
       gap:4px;
+      color:#97a1b2;
       font-size:11px;
-      color:#8d95a3;
-      background:none;
-      border:none;
       cursor:pointer;
-      min-width:54px;
+      min-width:52px;
     }
-    .nav-btn.active{color:#289cf2;}
+    .nav-btn.active{color:#2f98e5;}
     .nav-btn i{width:22px;height:22px;}
 
-    .support-float{
-      position:fixed;
-      right:14px;
-      bottom:86px;
-      z-index:45;
-      background:#2d99ea;
-      color:#fff;
-      border-radius:999px;
-      padding:11px 14px;
-      font-size:14px;
-      font-weight:700;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      box-shadow:0 10px 22px rgba(45,153,234,.28);
-      text-decoration:none;
-    }
-
-    .modal-backdrop{
-      position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
-      padding:16px;background:rgba(8,12,20,.58);backdrop-filter:blur(5px);
-    }
-    .modal-backdrop.flex{display:flex;}
-    .modal-card{
-      width:min(100%, 420px);
-      max-height:90vh;
-      overflow:auto;
+    .simple-page{
+      margin-top:10px;
       background:#fff;
-      border-radius:22px;
-      box-shadow:0 24px 80px rgba(0,0,0,.28);
-    }
-    .modal-head{
-      position:sticky;top:0;z-index:1;
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 16px;
-      background:#fff;border-bottom:1px solid #e7ebf3;
-      border-radius:22px 22px 0 0;
-    }
-    .modal-title{font-size:20px;font-weight:800;color:#0f172a;}
-    .close-btn{border:none;background:none;font-size:30px;line-height:1;color:#717784;cursor:pointer;}
-
-    .alert-box{
-      background:#fff2f2;
-      border:1px solid #ffd7d7;
-      border-radius:16px;
-      padding:12px 12px 10px;
-      text-align:center;
-      margin-bottom:14px;
-    }
-    .alert-title{color:#e05959;font-size:14px;font-weight:700;}
-    .alert-sub{color:#e36b6b;font-size:11px;margin-top:4px;}
-    .countdown{margin-top:8px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;font-size:20px;font-weight:700;color:#111827;letter-spacing:1px;}
-
-    .plan-card{
-      border:1px solid #e2e8f0;
-      background:#f8fafc;
-      border-radius:16px;
-      padding:13px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      cursor:pointer;
-      transition:.15s ease;
-      margin-bottom:10px;
-    }
-    .plan-card.selected{
-      background:#eef6ff;
-      border-color:#69aef0;
-      box-shadow:0 8px 18px rgba(41,156,242,.08);
-    }
-    .plan-title{font-weight:800;color:#1f2937;font-size:14px;line-height:1.2;}
-    .plan-desc{font-size:11px;color:#6b7280;margin-top:4px;line-height:1.35;}
-    .plan-price{font-size:17px;font-weight:800;color:#12a150;white-space:nowrap;}
-
-    .section-box{background:#f8fafc;border:1px solid #e5eaf2;border-radius:16px;padding:14px;}
-    .method-btn{
-      height:34px;border-radius:999px;border:1px solid #b8d8f5;background:#eaf5ff;color:#1474bd;
-      font-size:12px;font-weight:700;padding:0 12px;cursor:pointer;
-    }
-    .primary-btn{
-      width:100%;height:44px;border:none;border-radius:999px;background:#19a35b;color:#fff;
-      font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+      border:1px solid #e8edf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:24px 16px;
     }
 
-    .loader {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #e5e7eb;
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .overlay-card{background:#fff;border-radius:18px;padding:22px 18px;text-align:center;max-width:280px;width:100%;box-shadow:0 18px 60px rgba(0,0,0,.22);}
+    svg.lucide, i[data-lucide] svg{stroke-width:1.7;}
 
     @media (max-width:390px){
-      .rail{width:52px;flex-basis:52px;font-size:16px;}
-      .rail.green,.rail.gold{width:56px;flex-basis:56px;}
-      .main-panel{padding:14px 12px;}
-      .signal-title{font-size:18px;}
-      .accuracy{font-size:26px;}
+      .app{padding-left:8px;padding-right:8px;}
+      .brand-text{font-size:15px;}
+      .user-chip{font-size:14px;gap:6px;}
+      .lvl-badge{min-width:58px;height:24px;font-size:13px;}
+      .timer-btn{min-width:78px;font-size:13px;height:38px;}
+      .time-value{font-size:18px;}
+      .signal-title{font-size:17px;}
+      .accuracy{font-size:25px;}
+      .rail{width:50px;flex-basis:50px;font-size:15px;}
+      .rail.yellow{width:56px;flex-basis:56px;font-size:11px;}
+      .result-strip{width:58px;font-size:15px;}
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <!-- HOME -->
+  <div class="app">
     <div id="homePage" class="page">
-      <div class="frame p-6 text-center mt-4">
+      <div class="simple-page text-center">
         <i data-lucide="home" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h1 class="text-2xl font-bold text-slate-800">Welcome to Pocket Option Signal Pro</h1>
-        <p class="text-slate-600 mt-2">Your trusted trading companion.</p>
-        <p class="text-slate-500 text-sm mt-4">Get real-time signals, improve your accuracy, and grow your portfolio.</p>
+        <h1 class="text-2xl font-semibold text-slate-800">PocketOptionInside</h1>
+        <p class="text-slate-500 mt-2">Trading dashboard preview.</p>
       </div>
     </div>
 
-    <!-- SIGNALS -->
     <div id="signalsPage" class="page active">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div class="brand-text">PocketOptionInside</div>
+        </div>
+        <div class="user-chip">
+          <span>User</span>
+          <span class="lvl-badge">0 LVL</span>
+          <span class="flag-round" title="language">
+            <img src="https://flagcdn.com/w40/gb.png" alt="UK flag">
+          </span>
+        </div>
+      </div>
+
       <div class="currency-scroll">
         <div class="currency-list" id="currencyList"></div>
       </div>
 
-      <div class="time-block">
-        <div class="time-label">Current time:</div>
-        <div class="time-value" id="currentTime">--:--:--</div>
-      </div>
+      <div class="time-row">
+        <div class="current-time">
+          <div class="time-label">Current time:</div>
+          <div class="time-value" id="currentTime">10:22:48</div>
+        </div>
 
-      <div class="text-center mb-4">
-        <div class="timer-wrap">
+        <div class="timer-wrap" aria-label="Trade duration selector">
           <button data-seconds="5" class="timer-btn">5 sec.</button>
           <button data-seconds="30" class="timer-btn">30 sec.</button>
           <button data-seconds="60" class="timer-btn active">1 min.</button>
@@ -479,7 +475,8 @@
 
       <div class="frame">
         <div class="result-row">
-          <div class="rail green"><span class="rail-text">Signal PRO</span></div>
+          <div class="rail green"><span>Signal PRO</span></div>
+          <div class="result-strip"><span>Result</span></div>
 
           <div class="main-panel">
             <div class="result-card">
@@ -504,76 +501,56 @@
             </button>
 
             <div class="signal-box">
-              <div class="signal-title"><i data-lucide="trending-up" class="w-6 h-6 text-sky-500"></i> <span id="proPair">EUR/USD OTC</span></div>
-              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5"></i> <span>Trade time: 1 minute</span></div>
-              <div class="signal-badge"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> Increase</div>
+              <div class="signal-title"><i data-lucide="chart-column" class="w-6 h-6 text-sky-500"></i><span id="proPair">EUR/USD OTC</span></div>
+              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5"></i><span>Trade time: 1 minute</span></div>
+              <div class="signal-badge"><i data-lucide="radio" class="w-4 h-4"></i><span>Increase</span></div>
             </div>
 
             <div class="support-wrap">
-              <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i> Support</div>
+              <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i>Support</div>
               <div class="accuracy">69.1299%</div>
               <div class="accuracy-note">Signal accuracy for today | 2025.08.02</div>
             </div>
           </div>
 
-          <div class="rail gold"><span class="rail-text">PRO level activated! Copy the signal and enter on time</span></div>
+          <div class="rail yellow"><span>PRO level activated! Copy the signal and enter on time</span></div>
         </div>
       </div>
     </div>
 
-    <!-- TRAINING -->
     <div id="trainingPage" class="page">
-      <div class="frame p-6 text-center mt-4">
+      <div class="simple-page text-center">
         <i data-lucide="book-open" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-bold text-slate-800">Training & Education</h2>
-        <div class="mt-6 space-y-4 text-left">
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">📈 How to read signals</h3><p class="text-sm text-slate-600 mt-1">Learn the basics of our signal system.</p></div>
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">⚡ Risk management</h3><p class="text-sm text-slate-600 mt-1">Protect your capital with simple rules.</p></div>
-          <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><h3 class="font-semibold">🎯 Psychology of trading</h3><p class="text-sm text-slate-600 mt-1">Stay disciplined and avoid emotional trades.</p></div>
-        </div>
+        <h2 class="text-xl font-semibold text-slate-800">Training & Education</h2>
+        <p class="text-slate-500 mt-2">Content placeholder.</p>
       </div>
     </div>
 
-    <!-- REFERRALS -->
-    <div id="referralsPage" class="page">
-      <div class="frame p-6 text-center mt-4">
-        <i data-lucide="users" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-bold text-slate-800">Referrals</h2>
-        <p class="text-slate-600 mt-2">You have no referrals yet.</p>
-        <p class="text-sm text-slate-500 mt-4">Invite friends and earn up to 20% commission.</p>
-        <div class="mt-6 bg-slate-100 p-3 rounded-xl inline-flex items-center gap-2 border border-slate-200 max-w-full">
-          <span class="text-xs sm:text-sm font-mono break-all">https://pocketoptionsignalpro.com/ref/user123</span>
-          <button id="copyReferralLink" class="bg-sky-500 text-white text-xs px-3 py-1.5 rounded-lg">Copy</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PROGRESS -->
-    <div id="progressPage" class="page">
-      <div class="frame p-6 text-center mt-4">
-        <i data-lucide="bar-chart-3" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-bold text-slate-800">Your Progress</h2>
-        <div class="mt-6 space-y-3 text-left">
-          <div class="flex justify-between text-sm"><span>Total trades</span><span class="font-semibold">0</span></div>
-          <div class="flex justify-between text-sm"><span>Win rate</span><span class="font-semibold">0%</span></div>
-          <div class="flex justify-between text-sm"><span>Profit (USD)</span><span class="font-semibold">$0</span></div>
-        </div>
-        <p class="text-slate-500 text-sm mt-6">Start trading to see your statistics.</p>
-      </div>
-    </div>
-
-    <!-- CHAT -->
     <div id="chatPage" class="page">
-      <div class="frame p-6 text-center mt-4">
+      <div class="simple-page text-center">
         <i data-lucide="message-circle" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-bold text-slate-800">Community Chat</h2>
-        <p class="text-slate-600 mt-2">Coming soon – stay tuned!</p>
-        <div class="mt-6 bg-slate-100 p-4 rounded-2xl border border-slate-200"><p class="text-sm text-slate-500">Chat with other traders, share insights, and get real-time support.</p></div>
+        <h2 class="text-xl font-semibold text-slate-800">Community Chat</h2>
+        <p class="text-slate-500 mt-2">Coming soon.</p>
+      </div>
+    </div>
+
+    <div id="referralsPage" class="page">
+      <div class="simple-page text-center">
+        <i data-lucide="users" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-semibold text-slate-800">Referrals</h2>
+        <p class="text-slate-500 mt-2">No referrals yet.</p>
+      </div>
+    </div>
+
+    <div id="progressPage" class="page">
+      <div class="simple-page text-center">
+        <i data-lucide="trending-up" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
+        <h2 class="text-xl font-semibold text-slate-800">Your Progress</h2>
+        <p class="text-slate-500 mt-2">Statistics placeholder.</p>
       </div>
     </div>
   </div>
 
-  <!-- Bottom navigation -->
   <div class="bottom-nav">
     <div class="bottom-nav-inner">
       <button data-page="home" class="nav-btn"><i data-lucide="home"></i><span>Home</span></button>
@@ -582,99 +559,6 @@
       <button data-page="chat" class="nav-btn"><i data-lucide="message-circle"></i><span>Chat</span></button>
       <button data-page="referrals" class="nav-btn"><i data-lucide="users"></i><span>Referrals</span></button>
       <button data-page="progress" class="nav-btn"><i data-lucide="trending-up"></i><span>Progress</span></button>
-    </div>
-  </div>
-
-  <a href="https://t.me/ph_suppp" target="_blank" class="support-float">
-    <i data-lucide="send" class="w-4 h-4"></i> Support
-  </a>
-
-  <!-- Subscription Modal -->
-  <div id="subscriptionModal" class="modal-backdrop">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h2 class="modal-title">🚀 Unlock Signals</h2>
-        <button id="closeModalBtn" class="close-btn" aria-label="Close">&times;</button>
-      </div>
-      <div class="p-4">
-        <div class="alert-box">
-          <div class="alert-title">⚠️ Only 7 activation slots remaining today.</div>
-          <div class="alert-sub">Inactive users lose their spot when timer ends.</div>
-          <div class="countdown" id="countdownTimer">23:59:59</div>
-        </div>
-
-        <div class="space-y-0 mb-4">
-          <div data-plan="weekly" class="plan-card">
-            <div>
-              <div class="plan-title">🔥 Most Popular — WEEKLY ACCESS</div>
-              <div class="plan-desc">Safe, consistent and perfect for growth-minded traders.</div>
-            </div>
-            <div class="plan-price">$99</div>
-          </div>
-          <div data-plan="trial" class="plan-card">
-            <div>
-              <div class="plan-title">💰 24H Trial</div>
-              <div class="plan-desc">Test results immediately with low commitment.</div>
-            </div>
-            <div class="plan-price">$35</div>
-          </div>
-          <div data-plan="monthly" class="plan-card">
-            <div>
-              <div class="plan-title">🚀 VIP Monthly</div>
-              <div class="plan-desc">For traders who want the highest accuracy and speed.</div>
-            </div>
-            <div class="plan-price">$299</div>
-          </div>
-          <div data-plan="lifetime" class="plan-card">
-            <div>
-              <div class="plan-title">👑 Lifetime</div>
-              <div class="plan-desc">Pay once. Trade forever. No renewals. No limits.</div>
-            </div>
-            <div class="plan-price">$749</div>
-          </div>
-        </div>
-
-        <div id="paymentSection" class="hidden section-box mb-3">
-          <div class="text-sm font-semibold text-slate-800 mb-2">👉 Selected plan: <span id="selectedPlanName"></span> — <span id="selectedPlanPrice"></span></div>
-          <div class="text-xs text-slate-600 mb-2">Select payment method:</div>
-          <div class="flex gap-3 mb-3"><button id="usdtBtn" class="method-btn">USDT (TRC20)</button></div>
-          <div id="usdtDetails" class="hidden">
-            <div class="bg-white p-3 rounded-xl mt-2 border border-slate-200">
-              <div class="text-xs text-slate-700 mb-2">📤 Send exact amount to this USDT (TRC20) address:</div>
-              <div class="flex justify-between items-center gap-2 bg-slate-50 rounded-lg p-2 font-mono text-[11px] break-all border border-slate-200">
-                <span id="walletAddress">TYwpHcKq5VrWXpL7jZqKf8sM3nJ2hG9aBvC</span>
-                <button id="copyWalletBtn" class="shrink-0 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs px-2 py-1 rounded-lg">Copy</button>
-              </div>
-              <div class="text-xs text-slate-500 mt-2">⚠️ After sending, click "I have sent payment". Verification takes ~6 seconds.</div>
-            </div>
-          </div>
-          <button id="paymentSentBtn" class="primary-btn mt-3"><i data-lucide="check-circle" class="w-5 h-5"></i> I have sent payment</button>
-        </div>
-
-        <div class="text-center text-xs text-slate-400 mt-4">By subscribing you agree to our terms. No refunds after activation.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading overlay -->
-  <div id="loadingOverlay" class="modal-backdrop">
-    <div class="overlay-card">
-      <div class="loader mb-4"></div>
-      <p class="text-slate-800 font-medium">Verifying payment...</p>
-      <p class="text-slate-500 text-sm mt-1">Please wait</p>
-    </div>
-  </div>
-
-  <!-- Payment not detected modal -->
-  <div id="paymentNotDetectedModal" class="modal-backdrop">
-    <div class="modal-card p-6 text-center" style="width:min(100%, 380px);">
-      <div class="text-red-500 text-4xl mb-3">⚠️</div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">Payment not detected</h3>
-      <p class="text-slate-600 text-sm mb-4">We couldn't confirm your payment. Please contact support for assistance.</p>
-      <a href="https://t.me/ph_suppp" target="_blank" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-full text-sm font-medium">
-        <i data-lucide="send" class="w-4 h-4"></i> Contact Support <i data-lucide="arrow-right" class="w-3 h-3"></i>
-      </a>
-      <button id="closeNotDetectedBtn" class="block w-full mt-3 text-slate-500 text-sm">Close</button>
     </div>
   </div>
 
@@ -700,7 +584,6 @@
     let currentPair = 'EUR/USD';
     let isSubscribed = false;
     let activeTimer = null;
-    let selectedPlan = null;
     let liveSignalIndex = 0;
 
     const signalPairEl = document.getElementById('signalPair');
@@ -717,14 +600,14 @@
       const percent = Math.max(65, Math.min(97, base.percent + drift));
       const total = base.stake + Math.round(base.stake * percent / 100);
       const profit = total - base.stake;
+
       signalPairEl.innerText = `${pair} OTC`;
       proPairEl.innerText = `${pair} OTC`;
       profitPercentEl.innerText = `+${percent}%`;
       stakeAmountEl.innerText = `$${base.stake}`;
       profitTotalEl.innerText = `$${total}`;
       profitAmountEl.innerText = `$${profit}`;
-      const now = new Date();
-      resultTimeEl.innerText = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      resultTimeEl.innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
     const currencyContainer = document.getElementById('currencyList');
@@ -732,9 +615,9 @@
       const pill = document.createElement('div');
       pill.className = `currency-pill ${pair === currentPair ? 'active' : ''}`;
       pill.innerHTML = `
-        <span class="flag-set">
-          <span class="flag"><img src="${flags[0]}" alt=""></span>
-          <span class="flag"><img src="${flags[1]}" alt=""></span>
+        <span class="pair-icon-group">
+          <span class="pair-icon"><img src="${flags[0]}" alt=""></span>
+          <span class="pair-icon"><img src="${flags[1]}" alt=""></span>
         </span>
         <span>${pair}</span>
       `;
@@ -748,8 +631,6 @@
       currencyContainer.appendChild(pill);
     });
 
-    lucide.createIcons();
-
     function updateClock(){
       document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
@@ -757,11 +638,12 @@
     setInterval(updateClock, 1000);
 
     renderSignal();
+    lucide.createIcons();
 
     function startTimer(seconds){
       if (activeTimer) clearTimeout(activeTimer);
       activeTimer = setTimeout(() => {
-        if (!isSubscribed) showSubscriptionModal();
+        if (!isSubscribed) return;
         activeTimer = null;
       }, seconds * 1000);
     }
@@ -769,7 +651,7 @@
     const timerBtns = document.querySelectorAll('.timer-btn');
     timerBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        if (!isSubscribed) return showSubscriptionModal();
+        if (!isSubscribed) return;
         const seconds = parseInt(btn.dataset.seconds, 10);
         startTimer(seconds);
         timerBtns.forEach(b => b.classList.remove('active'));
@@ -778,119 +660,32 @@
     });
 
     document.getElementById('getSignalBtn').addEventListener('click', () => {
-      if (!isSubscribed) return showSubscriptionModal();
+      if (!isSubscribed) return;
       if (activeTimer) clearTimeout(activeTimer);
       liveSignalIndex += 1;
       renderSignal(currentPair);
-      timerBtns.forEach(b => b.classList.remove('active'));
     });
-
-    // Countdown
-    let countdownSeconds = 24 * 3600;
-    const countdownElem = document.getElementById('countdownTimer');
-    function updateCountdown() {
-      if (countdownSeconds <= 0) return countdownElem.innerText = '00:00:00';
-      const h = Math.floor(countdownSeconds / 3600);
-      const m = Math.floor((countdownSeconds % 3600) / 60);
-      const s = countdownSeconds % 60;
-      countdownElem.innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      countdownSeconds--;
-    }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-
-    const modal = document.getElementById('subscriptionModal');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const paymentNotDetectedModal = document.getElementById('paymentNotDetectedModal');
-    const paymentSection = document.getElementById('paymentSection');
-    const usdtBtn = document.getElementById('usdtBtn');
-    const usdtDetails = document.getElementById('usdtDetails');
-    const selectedPlanNameSpan = document.getElementById('selectedPlanName');
-    const selectedPlanPriceSpan = document.getElementById('selectedPlanPrice');
-    const walletAddressSpan = document.getElementById('walletAddress');
-    const copyWalletBtn = document.getElementById('copyWalletBtn');
-
-    function showSubscriptionModal(){
-      modal.classList.add('flex');
-    }
-    function hideSubscriptionModal(){
-      modal.classList.remove('flex');
-    }
-    document.getElementById('closeModalBtn').addEventListener('click', hideSubscriptionModal);
-    modal.addEventListener('click', e => { if (e.target === modal) hideSubscriptionModal(); });
-
-    document.querySelectorAll('.plan-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        selectedPlan = card.dataset.plan;
-        const map = {
-          weekly: ['WEEKLY ACCESS', '$99'],
-          trial: ['24H Trial', '$35'],
-          monthly: ['VIP Monthly', '$299'],
-          lifetime: ['Lifetime', '$749']
-        };
-        const [name, price] = map[selectedPlan];
-        selectedPlanNameSpan.innerText = name;
-        selectedPlanPriceSpan.innerText = price;
-        paymentSection.classList.remove('hidden');
-        usdtDetails.classList.add('hidden');
-      });
-    });
-
-    usdtBtn.addEventListener('click', () => usdtDetails.classList.remove('hidden'));
-    copyWalletBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(walletAddressSpan.innerText).then(() => {
-        copyWalletBtn.innerText = 'Copied!';
-        setTimeout(() => copyWalletBtn.innerText = 'Copy', 1500);
-      });
-    });
-
-    document.getElementById('paymentSentBtn').addEventListener('click', () => {
-      if (!selectedPlan) return alert('Please select a plan first.');
-      hideSubscriptionModal();
-      loadingOverlay.classList.add('flex');
-      setTimeout(() => {
-        loadingOverlay.classList.remove('flex');
-        paymentNotDetectedModal.classList.add('flex');
-      }, 6000);
-    });
-
-    document.getElementById('closeNotDetectedBtn').addEventListener('click', () => paymentNotDetectedModal.classList.remove('flex'));
-    paymentNotDetectedModal.addEventListener('click', e => { if (e.target === paymentNotDetectedModal) paymentNotDetectedModal.classList.remove('flex'); });
-    loadingOverlay.addEventListener('click', e => { if (e.target === loadingOverlay) loadingOverlay.classList.remove('flex'); });
 
     const pages = {
       home: document.getElementById('homePage'),
       signals: document.getElementById('signalsPage'),
       training: document.getElementById('trainingPage'),
+      chat: document.getElementById('chatPage'),
       referrals: document.getElementById('referralsPage'),
-      progress: document.getElementById('progressPage'),
-      chat: document.getElementById('chatPage')
+      progress: document.getElementById('progressPage')
     };
+
     const navBtns = document.querySelectorAll('.nav-btn');
     function showPage(pageId){
       Object.values(pages).forEach(p => p.classList.remove('active'));
       pages[pageId].classList.add('active');
       navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
       lucide.createIcons();
-      if (pageId === 'signals') {
-        renderSignal(currentPair);
-      }
+      if (pageId === 'signals') renderSignal(currentPair);
     }
+
     navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
     showPage('signals');
-
-    const copyReferralBtn = document.getElementById('copyReferralLink');
-    if (copyReferralBtn) {
-      copyReferralBtn.addEventListener('click', () => {
-        const link = document.querySelector('#referralsPage .font-mono')?.innerText || 'https://pocketoptionsignalpro.com/ref/user123';
-        navigator.clipboard.writeText(link).then(() => {
-          copyReferralBtn.innerText = 'Copied!';
-          setTimeout(() => copyReferralBtn.innerText = 'Copy', 1500);
-        });
-      });
-    }
   </script>
 </body>
 </html>
