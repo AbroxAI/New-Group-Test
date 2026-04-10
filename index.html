@@ -300,10 +300,10 @@
     .result-card{
       background:#24263b;
       border-radius:7px;
-      padding:7px 8px 6px;
+      padding:8px 9px 7px;
       color:#fff;
       box-shadow:0 5px 12px rgba(15,18,35,.14);
-      min-height:66px;
+      min-height:72px;
       margin:0 auto 12px;
       width:100%;
       box-sizing:border-box;
@@ -315,17 +315,33 @@
       align-items:center;
       justify-content:space-between;
       gap:8px;
+      flex-wrap:wrap;
     }
-    .result-top{margin-bottom:4px;}
-    .pair-inline{display:flex;align-items:center;gap:6px;min-width:0;}
+    .result-top{margin-bottom:6px; align-items:flex-start;}
+    .pair-inline{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      min-width:0;
+      flex:1 1 auto;
+      flex-wrap:wrap;
+    }
     .star{font-size:15px;color:#d9c08a;transform:translateY(-1px);flex:0 0 auto;}
-    .pair-name{font-size:13px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;}
-    .profit{font-size:13px;font-weight:500;color:#64d17f;white-space:nowrap;}
-    .result-time{font-size:13px;font-weight:400;color:#fff;opacity:.96;white-space:nowrap;}
-    .stake-row{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1;}
+    .pair-name{
+      font-size:12px;
+      font-weight:400;
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
+      line-height:1.15;
+      word-break:break-word;
+    }
+    .profit{font-size:12px;font-weight:500;color:#64d17f;white-space:nowrap;}
+    .result-time{font-size:12px;font-weight:400;color:#fff;opacity:.96;white-space:nowrap;flex:0 0 auto;}
+    .stake-row{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1;white-space:nowrap;}
     .stake-row .up{color:#58c15f;font-size:15px;line-height:1;}
-    .amt{font-weight:600;color:#67d478;font-size:12px;}
-    .amt-center{font-weight:500;color:#66d378;font-size:12px;}
+    .amt{font-weight:600;color:#67d478;font-size:12px;white-space:nowrap;}
+    .amt-center{font-weight:500;color:#66d378;font-size:12px;white-space:nowrap;}
 
     .signal-btn{
       width:100%;
@@ -538,11 +554,14 @@
       border-radius:999px;
     }
     .home-signal-pair{
-      font-size:20px;
+      font-size:18px;
       font-weight:800;
       color:#24263b;
       letter-spacing:-.2px;
       margin-top:2px;
+      white-space:normal;
+      overflow:visible;
+      word-break:break-word;
     }
     .home-signal-row,
     .progress-row,
@@ -555,6 +574,7 @@
     }
     .home-signal-row{margin-top:8px;color:#5a6475;font-size:14px;}
     .home-signal-direction{font-weight:600;color:#49b343;}
+    .home-signal-time{white-space:nowrap;}
     .home-signal-meta{
       display:flex;
       flex-wrap:wrap;
@@ -568,6 +588,7 @@
       border:1px solid #edf2f8;
       border-radius:999px;
       padding:6px 9px;
+      white-space:nowrap;
     }
     .home-grid{
       margin-top:0;
@@ -810,15 +831,18 @@
           <span class="home-card-title">Latest signal</span>
           <span class="home-badge">Preview</span>
         </div>
+
         <div class="home-signal-pair" id="homeSignalPair">EUR/USD OTC</div>
+
         <div class="home-signal-row">
-          <span class="home-signal-direction">↗ Increase</span>
-          <span class="home-signal-time" id="homeSignalTime">10:22</span>
+          <span class="home-signal-direction" id="homeSignalDirection">↗ Increase</span>
+          <span class="home-signal-time" id="homeSignalTime">13:06</span>
         </div>
+
         <div class="home-signal-meta">
-          <span>Beginner view</span>
-          <span>Practice only</span>
-          <span>No activation</span>
+          <span id="homeStakeAmount">$100</span>
+          <span id="homeProfitTotal">$190</span>
+          <span id="homeProfitAmount">$90</span>
         </div>
       </div>
 
@@ -1099,7 +1123,11 @@
     const accuracyDateLineEl = document.getElementById('accuracyDateLine');
     const homeAccuracyEl = document.getElementById('homeAccuracy');
     const homeSignalPairEl = document.getElementById('homeSignalPair');
+    const homeSignalDirectionEl = document.getElementById('homeSignalDirection');
     const homeSignalTimeEl = document.getElementById('homeSignalTime');
+    const homeStakeAmountEl = document.getElementById('homeStakeAmount');
+    const homeProfitTotalEl = document.getElementById('homeProfitTotal');
+    const homeProfitAmountEl = document.getElementById('homeProfitAmount');
 
     function formatDateYMD(date) {
       const y = date.getFullYear();
@@ -1142,7 +1170,11 @@
       resultTimeEl.innerText = signalTime;
 
       if (homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`;
+      if (homeSignalDirectionEl) homeSignalDirectionEl.innerText = `↗ Increase`;
       if (homeSignalTimeEl) homeSignalTimeEl.innerText = signalTime;
+      if (homeStakeAmountEl) homeStakeAmountEl.innerText = `$${base.stake}`;
+      if (homeProfitTotalEl) homeProfitTotalEl.innerText = `$${total}`;
+      if (homeProfitAmountEl) homeProfitAmountEl.innerText = `$${profit}`;
     }
 
     const currencyContainer = document.getElementById('currencyList');
