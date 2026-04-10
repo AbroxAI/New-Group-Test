@@ -479,7 +479,17 @@
       background:#eff6ff;
       color:#2f98e5;
       flex:0 0 auto;
+      overflow:hidden;
     }
+    .home-logo{
+      background:transparent;
+      padding:0;
+    }
+    .home-logo .brand-mark{
+      width:42px;
+      height:30px;
+    }
+
     .home-stat-grid,
     .ref-grid{
       display:grid;
@@ -770,8 +780,8 @@
             <h1 class="home-title">PocketOptionInside</h1>
             <p class="home-subtitle">Everything here is set up for beginners before activation, so they can learn the system before touching anything risky.</p>
           </div>
-          <div class="home-avatar">
-            <i data-lucide="badge-check" class="w-5 h-5"></i>
+          <div class="home-avatar home-logo">
+            <div class="brand-mark" aria-hidden="true"></div>
           </div>
         </div>
 
@@ -782,7 +792,7 @@
           </div>
           <div class="mini-stat">
             <span class="mini-stat-label">Today</span>
-            <span class="mini-stat-value">12 signals</span>
+            <span class="mini-stat-value">0 signals</span>
           </div>
           <div class="mini-stat">
             <span class="mini-stat-label">Account</span>
@@ -981,19 +991,19 @@
       <div class="ref-grid">
         <div class="ref-stat-card">
           <span class="ref-stat-label">Invites</span>
-          <span class="ref-stat-value">24</span>
+          <span class="ref-stat-value">0</span>
         </div>
         <div class="ref-stat-card">
           <span class="ref-stat-label">Active</span>
-          <span class="ref-stat-value">8</span>
+          <span class="ref-stat-value">0</span>
         </div>
         <div class="ref-stat-card">
           <span class="ref-stat-label">Commission</span>
-          <span class="ref-stat-value">Up to 20%</span>
+          <span class="ref-stat-value">0%</span>
         </div>
         <div class="ref-stat-card">
           <span class="ref-stat-label">Rank</span>
-          <span class="ref-stat-value">#12</span>
+          <span class="ref-stat-value">#0</span>
         </div>
       </div>
 
@@ -1005,9 +1015,7 @@
 
       <div class="page-section-title">Referral activity</div>
       <div class="activity-list">
-        <div class="activity-item"><span>New user joined</span><span>2h ago</span></div>
-        <div class="activity-item"><span>Commission credited</span><span>20%</span></div>
-        <div class="activity-item"><span>Invite opened</span><span>Yesterday</span></div>
+        <div class="activity-item"><span>No referral activity yet</span><span>0</span></div>
       </div>
     </div>
 
@@ -1024,22 +1032,22 @@
       <div class="progress-card">
         <div class="progress-ring">
           <div class="progress-ring-inner">
-            <div class="progress-ring-value">24%</div>
+            <div class="progress-ring-value">0%</div>
             <div class="progress-ring-label">Learning</div>
           </div>
         </div>
         <div class="progress-summary">
-          <div class="progress-row"><span>Completed lessons</span><strong>3</strong></div>
-          <div class="progress-row"><span>Checklist progress</span><strong>24%</strong></div>
-          <div class="progress-row"><span>Practice mode</span><strong>On</strong></div>
-          <div class="progress-row"><span>Current tier</span><strong>Beginner</strong></div>
+          <div class="progress-row"><span>Completed lessons</span><strong>0</strong></div>
+          <div class="progress-row"><span>Checklist progress</span><strong>0%</strong></div>
+          <div class="progress-row"><span>Practice mode</span><strong>Off</strong></div>
+          <div class="progress-row"><span>Current tier</span><strong>New user</strong></div>
         </div>
       </div>
 
       <div class="page-section-title">Milestones</div>
       <div class="milestone-list">
         <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>App opened</span></div>
-        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>Beginner guide completed</span></div>
+        <div class="milestone-item"><i data-lucide="circle" class="w-5 h-5"></i><span>Beginner guide not started</span></div>
         <div class="milestone-item"><i data-lucide="circle" class="w-5 h-5"></i><span>Activation ready</span></div>
       </div>
     </div>
@@ -1067,12 +1075,12 @@
     ];
 
     const signalData = {
-      'EUR/USD': { percent: 92, stake: 100, time: '10:22' },
-      'GBP/USD': { percent: 86, stake: 100, time: '10:22' },
-      'USD/JPY': { percent: 88, stake: 100, time: '10:22' },
-      'EUR/GBP': { percent: 84, stake: 100, time: '10:22' },
-      'AUD/USD': { percent: 79, stake: 100, time: '10:22' },
-      'USD/CHF': { percent: 81, stake: 100, time: '10:22' }
+      'EUR/USD': { percent: 92, stake: 100 },
+      'GBP/USD': { percent: 86, stake: 100 },
+      'USD/JPY': { percent: 88, stake: 100 },
+      'EUR/GBP': { percent: 84, stake: 100 },
+      'AUD/USD': { percent: 79, stake: 100 },
+      'USD/CHF': { percent: 81, stake: 100 }
     };
 
     let currentPair = 'EUR/USD';
@@ -1100,6 +1108,15 @@
       return `${y}.${m}.${d}`;
     }
 
+    function oneMinuteBackTime(date = new Date()) {
+      const d = new Date(date);
+      d.setMinutes(d.getMinutes() - 1);
+      return d.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
     function updateAccuracy() {
       const now = new Date();
       const pct = (69 + Math.random() * 8).toFixed(4);
@@ -1114,6 +1131,7 @@
       const percent = Math.max(65, Math.min(97, base.percent + drift));
       const total = base.stake + Math.round(base.stake * percent / 100);
       const profit = total - base.stake;
+      const signalTime = oneMinuteBackTime();
 
       signalPairEl.innerText = `${pair} OTC`;
       proPairEl.innerText = `${pair} OTC`;
@@ -1121,9 +1139,10 @@
       stakeAmountEl.innerText = `$${base.stake}`;
       profitTotalEl.innerText = `$${total}`;
       profitAmountEl.innerText = `$${profit}`;
-      resultTimeEl.innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      resultTimeEl.innerText = signalTime;
+
       if (homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`;
-      if (homeSignalTimeEl) homeSignalTimeEl.innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      if (homeSignalTimeEl) homeSignalTimeEl.innerText = signalTime;
     }
 
     const currencyContainer = document.getElementById('currencyList');
@@ -1150,6 +1169,7 @@
     function updateClock(){
       document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
+
     updateClock();
     updateAccuracy();
     setInterval(updateClock, 1000);
