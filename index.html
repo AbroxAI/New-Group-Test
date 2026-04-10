@@ -732,6 +732,373 @@
     .milestone-item svg{flex:0 0 auto;}
     .referrals-header{align-items:center;}
 
+    .chat-header-card{
+      margin-top:10px;
+      padding:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .chat-header-badge{
+      width:48px;
+      height:48px;
+      border-radius:16px;
+      background:#eef7ff;
+      color:#2f98e5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      box-shadow:inset 0 0 0 1px rgba(47,152,229,.08);
+    }
+
+    .chat-section-label{
+      margin:14px 2px 8px;
+      font-size:12px;
+      color:#7f8794;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .chat-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .chat-item{
+      width:100%;
+      border:none;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+      text-align:left;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .chat-item.active-room{
+      border-color:#bcdcff;
+      box-shadow:0 10px 22px rgba(47,152,229,.12);
+    }
+
+    .chat-item:active{
+      transform:scale(.995);
+    }
+
+    .chat-avatar{
+      width:64px;
+      height:64px;
+      border-radius:20px;
+      background:#f8fbff;
+      border:1px solid #edf2f8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+
+    .chat-avatar-support{
+      background:linear-gradient(180deg,#fbfdff 0%,#f4f9ff 100%);
+    }
+
+    .chat-support-ring{
+      width:52px;
+      height:52px;
+      border-radius:50%;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 4px 12px rgba(15,23,42,.06), inset 0 0 0 1px #eef2f8;
+    }
+
+    .chat-brand-mark{
+      width:28px;
+      height:20px;
+    }
+
+    .chat-avatar-general{
+      background:linear-gradient(180deg,#ffffff 0%,#f7f9fc 100%);
+    }
+
+    .chat-content{
+      flex:1 1 auto;
+      min-width:0;
+    }
+
+    .chat-row-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .chat-title-wrap{
+      min-width:0;
+    }
+
+    .chat-title{
+      font-size:17px;
+      font-weight:800;
+      color:#1f2633;
+      line-height:1.1;
+    }
+
+    .chat-status{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:6px;
+      padding:4px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.2px;
+      width:max-content;
+    }
+
+    .chat-status.live{
+      background:#ecfdf3;
+      color:#1e7a3b;
+      border:1px solid #cdeed8;
+    }
+
+    .chat-status.muted{
+      background:#f3f6fb;
+      color:#6b7280;
+      border:1px solid #e4eaf3;
+    }
+
+    .chat-time{
+      font-size:13px;
+      color:#8a93a2;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+
+    .chat-preview{
+      margin-top:8px;
+      font-size:14px;
+      line-height:1.45;
+      color:#667085;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .chat-meta{
+      margin-top:11px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .chat-meta span{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      font-size:11px;
+      font-weight:700;
+      color:#5f6b7c;
+      background:#f7f9fc;
+      border:1px solid #edf2f8;
+      border-radius:999px;
+      padding:6px 9px;
+      white-space:nowrap;
+    }
+
+    .chat-action{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      background:#f7f9fc;
+      border:1px solid #edf2f8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#9aa3b2;
+      flex:0 0 auto;
+    }
+
+    .chat-live-shell{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    .chat-live-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .chat-live-kicker{
+      font-size:11px;
+      color:#7f8794;
+      text-transform:uppercase;
+      letter-spacing:.2px;
+      font-weight:700;
+    }
+
+    .chat-live-title{
+      margin-top:3px;
+      font-size:16px;
+      font-weight:800;
+      color:#1f2633;
+    }
+
+    .chat-live-pill{
+      padding:6px 10px;
+      border-radius:999px;
+      background:#eef7ff;
+      color:#2f98e5;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      border:1px solid #d8ebfb;
+    }
+
+    .chat-feed{
+      min-height:220px;
+      background:#f9fbfe;
+      border:1px solid #edf2f8;
+      border-radius:16px;
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:auto;
+    }
+
+    .chat-empty-state{
+      text-align:center;
+      color:#6b7280;
+      max-width:220px;
+    }
+
+    .chat-empty-state svg{
+      margin:0 auto 8px;
+      color:#2f98e5;
+    }
+
+    .chat-empty-title{
+      font-size:15px;
+      font-weight:800;
+      color:#1f2633;
+    }
+
+    .chat-empty-text{
+      margin-top:4px;
+      font-size:13px;
+      line-height:1.45;
+      color:#6b7280;
+    }
+
+    .chat-bubble{
+      max-width:82%;
+      padding:10px 12px;
+      border-radius:16px;
+      font-size:14px;
+      line-height:1.4;
+      margin-bottom:10px;
+      word-break:break-word;
+    }
+
+    .chat-bubble.me{
+      margin-left:auto;
+      background:#2f98e5;
+      color:#fff;
+      border-bottom-right-radius:6px;
+      box-shadow:0 8px 16px rgba(47,152,229,.12);
+    }
+
+    .chat-bubble.them{
+      margin-right:auto;
+      background:#fff;
+      color:#1f2633;
+      border:1px solid #e6ecf5;
+      border-bottom-left-radius:6px;
+      box-shadow:0 6px 14px rgba(15,23,42,.05);
+    }
+
+    .chat-bubble-time{
+      display:block;
+      margin-top:6px;
+      font-size:11px;
+      opacity:.75;
+    }
+
+    .chat-composer{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .chat-pill{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:999px;
+      background:#eef7ff;
+      color:#2f98e5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:inset 0 0 0 1px rgba(47,152,229,.08);
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .chat-pill-send{
+      background:#2f98e5;
+      color:#fff;
+      box-shadow:0 8px 16px rgba(47,152,229,.18);
+    }
+
+    .chat-input-pill{
+      flex:1 1 auto;
+      min-width:0;
+      height:42px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      padding:0 14px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .chat-input-pill input{
+      width:100%;
+      height:100%;
+      border:none;
+      outline:none;
+      background:transparent;
+      font-size:14px;
+      color:#1f2633;
+    }
+
+    .chat-input-pill input::placeholder{
+      color:#98a2b3;
+    }
+
     .bottom-nav{
       position:fixed;
       left:0;right:0;bottom:0;
@@ -788,6 +1155,12 @@
       .progress-card{flex-direction:column;align-items:flex-start;}
       .progress-ring{margin:0 auto;}
       .progress-summary{width:100%;}
+      .chat-item{padding:12px;}
+      .chat-avatar{width:58px;height:58px;border-radius:18px;}
+      .chat-support-ring{width:46px;height:46px;}
+      .chat-brand-mark{width:25px;height:18px;}
+      .chat-title{font-size:16px;}
+      .chat-feed{min-height:200px;}
     }
   </style>
 </head>
@@ -995,10 +1368,111 @@
     </div>
 
     <div id="chatPage" class="page">
-      <div class="simple-page text-center">
-        <i data-lucide="message-circle" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-semibold text-slate-800">Community Chat</h2>
-        <p class="text-slate-500 mt-2">Coming soon.</p>
+      <div class="page-header-card chat-header-card">
+        <div>
+          <div class="page-kicker">Community</div>
+          <h2 class="page-title">Chat</h2>
+          <p class="page-text">Choose between customer support and general chat in a clean premium layout.</p>
+        </div>
+        <div class="chat-header-badge">
+          <i data-lucide="messages-square" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <div class="chat-section-label">Choose a chat</div>
+
+      <div class="chat-list">
+        <button class="chat-item active-room" type="button" data-room="support" id="chatSupportBtn">
+          <div class="chat-avatar chat-avatar-support">
+            <div class="chat-support-ring">
+              <div class="brand-mark chat-brand-mark" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="chat-content">
+            <div class="chat-row-top">
+              <div class="chat-title-wrap">
+                <div class="chat-title">Customer Support</div>
+                <div class="chat-status live">Online</div>
+              </div>
+              <div class="chat-time">3:08 PM</div>
+            </div>
+
+            <div class="chat-preview">
+              Ask questions, get help, and receive account support from the team.
+            </div>
+
+            <div class="chat-meta">
+              <span><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified</span>
+              <span><i data-lucide="clock-3" class="w-3.5 h-3.5"></i> Fast reply</span>
+            </div>
+          </div>
+
+          <div class="chat-action">
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </div>
+        </button>
+
+        <button class="chat-item" type="button" data-room="general" id="chatGeneralBtn">
+          <div class="chat-avatar chat-avatar-general">
+            <i data-lucide="messages-square" class="w-7 h-7 text-slate-600"></i>
+          </div>
+
+          <div class="chat-content">
+            <div class="chat-row-top">
+              <div class="chat-title-wrap">
+                <div class="chat-title">General Chat</div>
+                <div class="chat-status muted">Community</div>
+              </div>
+              <div class="chat-time">3:08 PM</div>
+            </div>
+
+            <div class="chat-preview">
+              Talk with members, share ideas, and stay updated with the group.
+            </div>
+
+            <div class="chat-meta">
+              <span><i data-lucide="users" class="w-3.5 h-3.5"></i> Active room</span>
+              <span><i data-lucide="message-circle-more" class="w-3.5 h-3.5"></i> Group chat</span>
+            </div>
+          </div>
+
+          <div class="chat-action">
+            <i data-lucide="chevron-right" class="w-5 h-5"></i>
+          </div>
+        </button>
+      </div>
+
+      <div class="chat-live-shell" id="chatLiveShell">
+        <div class="chat-live-top">
+          <div>
+            <div class="chat-live-kicker">Live room</div>
+            <div class="chat-live-title" id="chatRoomName">Customer Support</div>
+          </div>
+          <div class="chat-live-pill" id="chatRoomStatus">Online</div>
+        </div>
+
+        <div class="chat-feed" id="chatMessages">
+          <div class="chat-empty-state">
+            <i data-lucide="message-circle-more" class="w-6 h-6"></i>
+            <div class="chat-empty-title">Chat container ready</div>
+            <div class="chat-empty-text">This space will hold the live messages when you wire it up.</div>
+          </div>
+        </div>
+
+        <div class="chat-composer">
+          <button class="chat-pill chat-pill-icon" type="button" aria-label="Add attachment">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </button>
+
+          <div class="chat-input-pill">
+            <input id="chatInput" type="text" placeholder="Type a message..." />
+          </div>
+
+          <button class="chat-pill chat-pill-send" type="button" id="chatSendBtn" aria-label="Send message">
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1129,6 +1603,55 @@
     const homeProfitTotalEl = document.getElementById('homeProfitTotal');
     const homeProfitAmountEl = document.getElementById('homeProfitAmount');
 
+    const chatRoomNameEl = document.getElementById('chatRoomName');
+    const chatRoomStatusEl = document.getElementById('chatRoomStatus');
+    const chatMessagesEl = document.getElementById('chatMessages');
+    const chatInputEl = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const chatSupportBtn = document.getElementById('chatSupportBtn');
+    const chatGeneralBtn = document.getElementById('chatGeneralBtn');
+
+    const chatRooms = {
+      support: {
+        name: 'Customer Support',
+        status: 'Online',
+        statusClass: 'chat-live-pill',
+        placeholder: 'Type a support message...',
+        emptyTitle: 'Support room ready',
+        emptyText: 'This is where support replies and quick help messages will appear.',
+        initialHtml: `
+          <div class="chat-bubble them">
+            Hello, support is ready.
+            <span class="chat-bubble-time">3:08 PM</span>
+          </div>
+          <div class="chat-bubble me">
+            I need help with my account.
+            <span class="chat-bubble-time">3:09 PM</span>
+          </div>
+        `
+      },
+      general: {
+        name: 'General Chat',
+        status: 'Community',
+        statusClass: 'chat-live-pill',
+        placeholder: 'Type in general chat...',
+        emptyTitle: 'General room ready',
+        emptyText: 'Community posts and member chat will show here.',
+        initialHtml: `
+          <div class="chat-bubble them">
+            Welcome to the general chat.
+            <span class="chat-bubble-time">3:08 PM</span>
+          </div>
+          <div class="chat-bubble me">
+            Glad to be here.
+            <span class="chat-bubble-time">3:09 PM</span>
+          </div>
+        `
+      }
+    };
+
+    let currentChatRoom = 'support';
+
     function formatDateYMD(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -1235,6 +1758,45 @@
       liveSignalIndex += 1;
       renderSignal(currentPair);
     });
+
+    function setActiveChatRoom(roomKey){
+      currentChatRoom = roomKey;
+      const room = chatRooms[roomKey];
+
+      chatRoomNameEl.innerText = room.name;
+      chatRoomStatusEl.innerText = room.status;
+      chatInputEl.placeholder = room.placeholder;
+
+      chatMessagesEl.innerHTML = room.initialHtml;
+
+      chatSupportBtn.classList.toggle('active-room', roomKey === 'support');
+      chatGeneralBtn.classList.toggle('active-room', roomKey === 'general');
+    }
+
+    chatSupportBtn?.addEventListener('click', () => setActiveChatRoom('support'));
+    chatGeneralBtn?.addEventListener('click', () => setActiveChatRoom('general'));
+
+    chatSendBtn?.addEventListener('click', () => {
+      const text = chatInputEl.value.trim();
+      if (!text) return;
+
+      const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      const msg = document.createElement('div');
+      msg.className = 'chat-bubble me';
+      msg.innerHTML = `${text}<span class="chat-bubble-time">${now}</span>`;
+      chatMessagesEl.appendChild(msg);
+      chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      chatInputEl.value = '';
+    });
+
+    chatInputEl?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+
+    setActiveChatRoom('support');
 
     const pages = {
       home: document.getElementById('homePage'),
