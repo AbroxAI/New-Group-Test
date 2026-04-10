@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    /* ---------- ROOT & BASE ---------- */
     :root{
       --bg:#ebf1fa;
       --card:#ffffff;
@@ -39,11 +40,18 @@
       margin:0 auto;
       padding:10px 10px 104px;
       box-sizing:border-box;
+      position:relative;
+      min-height:100vh;
+    }
+
+    .app.chat-open{
+      padding-bottom:10px;
     }
 
     .page{display:none;}
     .page.active{display:block;}
 
+    /* ---------- TOPBAR ---------- */
     .topbar{
       height:56px;
       background:#26263e;
@@ -89,6 +97,7 @@
     }
     .flag-round img{width:100%;height:100%;object-fit:cover;display:block;}
 
+    /* ---------- CURRENCY & SIGNAL UI ---------- */
     .currency-scroll{
       overflow-x:auto;
       -webkit-overflow-scrolling:touch;
@@ -278,6 +287,7 @@
       box-shadow:0 1px 0 rgba(255,255,255,.8);
     }
 
+    /* ---------- CARDS ---------- */
     .result-card,
     .signal-box,
     .simple-page,
@@ -451,6 +461,7 @@
       font-weight:400;
     }
 
+    /* ---------- HOME & OTHER PAGES ---------- */
     .home-hero{
       padding:16px;
       margin-top:10px;
@@ -732,6 +743,7 @@
     .milestone-item svg{flex:0 0 auto;}
     .referrals-header{align-items:center;}
 
+    /* ---------- CHAT LIST ---------- */
     .chat-section-label{
       margin:14px 2px 8px;
       font-size:12px;
@@ -909,17 +921,29 @@
       flex:0 0 auto;
     }
 
+    /* ---------- CHAT ROOM SHELL (FULLSCREEN) ---------- */
     .chat-room-shell{
-      margin-top:12px;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:100;
       background:#fff;
-      border:1px solid #e6ecf5;
-      border-radius:18px;
+      display:flex;
+      flex-direction:column;
+      padding:12px 12px 0;
+      max-width:430px;
+      margin:0 auto;
       box-shadow:var(--shadow);
-      padding:14px;
+      transform:translateX(100%);
+      transition:transform 0.25s ease;
+      visibility:hidden;
     }
 
-    .chat-room-shell[hidden]{
-      display:none !important;
+    .chat-room-shell.is-open{
+      transform:translateX(0);
+      visibility:visible;
     }
 
     .chat-room-header{
@@ -927,7 +951,8 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom:12px;
+      padding-bottom:12px;
+      border-bottom:1px solid #eef2f8;
     }
 
     .chat-back-btn{
@@ -959,7 +984,7 @@
     }
 
     .chat-room-title{
-      font-size:17px;
+      font-size:18px;
       font-weight:800;
       color:#1f2633;
     }
@@ -985,15 +1010,15 @@
     }
 
     .chat-feed{
-      min-height:320px;
+      flex:1;
       background:#f9fbfe;
-      border:1px solid #edf2f8;
       border-radius:18px;
       padding:14px;
-      overflow:auto;
+      overflow-y:auto;
       display:flex;
       flex-direction:column;
       gap:10px;
+      margin:12px 0;
     }
 
     .chat-date-sticker{
@@ -1024,9 +1049,10 @@
       margin-left:auto;
     }
 
+    /* Telegram-sized avatar bubble */
     .chat-avatar-bubble{
-      width:30px;
-      height:30px;
+      width:40px;
+      height:40px;
       border-radius:50%;
       background:#fff;
       border:1px solid #e6ecf5;
@@ -1052,6 +1078,7 @@
       display:none;
     }
 
+    /* MASK TAILS – incoming (left) */
     .chat-bubble.incoming{
       --bg:#ffffff;
       background:var(--bg);
@@ -1065,6 +1092,7 @@
         linear-gradient(#000 0 0);
     }
 
+    /* MASK TAILS – outgoing (right) */
     .chat-bubble.outgoing{
       --bg:#2f98e5;
       background:var(--bg);
@@ -1135,11 +1163,54 @@
       font-weight:700;
     }
 
+    /* REPLY PREVIEW BAR */
+    .reply-preview-bar{
+      background:#f4f7fc;
+      border-left:4px solid #2f98e5;
+      padding:10px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+      border-radius:12px;
+      border:1px solid #e6ecf5;
+    }
+    .reply-preview-content{
+      flex:1;
+      min-width:0;
+    }
+    .reply-preview-label{
+      font-size:12px;
+      font-weight:700;
+      color:#2f98e5;
+      margin-bottom:4px;
+    }
+    .reply-preview-text{
+      font-size:13px;
+      color:#4a5568;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .reply-preview-close{
+      background:none;
+      border:none;
+      padding:6px;
+      cursor:pointer;
+      color:#7f8794;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    /* COMPOSER */
     .chat-composer{
-      margin-top:12px;
+      padding:12px 0 20px;
       display:flex;
       align-items:center;
       gap:10px;
+      background:#fff;
+      border-top:1px solid #eef2f8;
     }
 
     .composer-btn{
@@ -1203,20 +1274,7 @@
       color:#98a2b3;
     }
 
-    .chat-room-shell.is-open{
-      display:block;
-    }
-
-    .chat-room-dots,
-    .chat-back-btn{
-      color:#2f3440;
-    }
-
-    .chat-room-dots svg,
-    .chat-back-btn svg{
-      stroke:#2f3440;
-    }
-
+    /* ---------- BOTTOM NAV ---------- */
     .bottom-nav{
       position:fixed;
       left:0;right:0;bottom:0;
@@ -1225,7 +1283,13 @@
       box-shadow:0 -2px 10px rgba(15,23,42,.04);
       z-index:40;
       padding-bottom:env(safe-area-inset-bottom);
+      transition:transform 0.2s;
     }
+
+    .app.chat-open .bottom-nav{
+      transform:translateY(100%);
+    }
+
     .bottom-nav-inner{
       max-width:430px;
       margin:0 auto;
@@ -1278,12 +1342,12 @@
       .chat-support-ring{width:46px;height:46px;}
       .chat-brand-mark{width:25px;height:18px;}
       .chat-title{font-size:16px;}
-      .chat-feed{min-height:200px;}
     }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="app" id="appContainer">
+    <!-- Home Page -->
     <div id="homePage" class="page">
       <div class="home-hero">
         <div class="home-top">
@@ -1355,6 +1419,7 @@
       </div>
     </div>
 
+    <!-- Signals Page -->
     <div id="signalsPage" class="page active">
       <div class="topbar">
         <div class="brand">
@@ -1390,13 +1455,11 @@
       <div class="frame">
         <div class="result-row">
           <div class="rail green"><span>Signal PRO</span></div>
-
           <div class="edge-strip">
             <div class="edge-half">Result</div>
             <div class="edge-divider"></div>
             <div class="edge-half">Signal</div>
           </div>
-
           <div class="main-panel">
             <div class="result-card">
               <div class="result-top">
@@ -1413,14 +1476,11 @@
                 <div class="amt" id="profitAmount">$92</div>
               </div>
             </div>
-
             <button id="getSignalBtn" class="signal-btn">
               Get next signal
               <span class="pulse-icon"><i data-lucide="radio" class="w-5 h-5"></i></span>
             </button>
-
             <div class="panel-divider"></div>
-
             <div class="signal-box">
               <div class="signal-title"><i data-lucide="chart-column" class="w-6 h-6 text-sky-500"></i><span id="proPair">EUR/USD OTC</span></div>
               <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5 text-blue-icon"></i><span>Trade time: 1 minute</span></div>
@@ -1429,19 +1489,18 @@
                 <div class="signal-badge"><i data-lucide="arrow-up-right" class="w-4 h-4"></i><span>Increase</span></div>
               </div>
             </div>
-
             <div class="support-wrap">
               <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i>Support</div>
               <div class="accuracy" id="accuracyPercent">69.1299%</div>
               <div class="accuracy-note" id="accuracyDateLine">Signal accuracy for today | 2026.04.10</div>
             </div>
           </div>
-
           <div class="rail yellow"><span>PRO level activated! Copy the signal and enter on time</span></div>
         </div>
       </div>
     </div>
 
+    <!-- Training Page -->
     <div id="trainingPage" class="page">
       <div class="page-header-card">
         <div>
@@ -1451,14 +1510,12 @@
         </div>
         <i data-lucide="book-open" class="w-10 h-10 text-sky-500"></i>
       </div>
-
       <div class="page-section-title">What members get</div>
       <div class="practice-card">
         <div class="practice-row"><span>Strategy</span><span>Clear entry rules</span></div>
         <div class="practice-row"><span>Signals</span><span>Trade direction and timing</span></div>
         <div class="practice-row"><span>Risk guide</span><span>Basic money management</span></div>
       </div>
-
       <div class="page-section-title">How it works</div>
       <div class="lesson-list">
         <div class="lesson-card">
@@ -1485,9 +1542,9 @@
       </div>
     </div>
 
+    <!-- Chat Page -->
     <div id="chatPage" class="page">
       <div class="chat-section-label">Choose a chat</div>
-
       <div class="chat-list" id="chatList">
         <button class="chat-item" type="button" data-room="support" id="chatSupportBtn">
           <div class="chat-avatar chat-avatar-support">
@@ -1495,7 +1552,6 @@
               <div class="brand-mark chat-brand-mark" aria-hidden="true"></div>
             </div>
           </div>
-
           <div class="chat-content">
             <div class="chat-row-top">
               <div class="chat-title-wrap">
@@ -1504,27 +1560,22 @@
               </div>
               <div class="chat-time">3:08 PM</div>
             </div>
-
             <div class="chat-preview">
               Ask questions, get help, and receive account support from the team.
             </div>
-
             <div class="chat-meta">
               <span><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified</span>
               <span><i data-lucide="clock-3" class="w-3.5 h-3.5"></i> Fast reply</span>
             </div>
           </div>
-
           <div class="chat-action">
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </div>
         </button>
-
         <button class="chat-item" type="button" data-room="general" id="chatGeneralBtn">
           <div class="chat-avatar chat-avatar-general">
             <i data-lucide="messages-square" class="w-7 h-7 text-slate-600"></i>
           </div>
-
           <div class="chat-content">
             <div class="chat-row-top">
               <div class="chat-title-wrap">
@@ -1533,66 +1584,22 @@
               </div>
               <div class="chat-time">3:08 PM</div>
             </div>
-
             <div class="chat-preview">
               Talk with members, share ideas, and stay updated with the group.
             </div>
-
             <div class="chat-meta">
               <span><i data-lucide="users" class="w-3.5 h-3.5"></i> Active room</span>
               <span><i data-lucide="message-circle-more" class="w-3.5 h-3.5"></i> Group chat</span>
             </div>
           </div>
-
           <div class="chat-action">
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </div>
         </button>
       </div>
-
-      <div class="chat-room-shell" id="chatRoomShell" hidden>
-        <div class="chat-room-header">
-          <button class="chat-back-btn" type="button" id="chatBackBtn" aria-label="Back">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-          </button>
-
-          <div class="chat-room-header-center">
-            <div class="chat-room-title-row">
-              <div class="chat-room-title" id="chatRoomName">General Chat</div>
-              <div class="chat-room-dots">
-                <i data-lucide="more-vertical" class="w-5 h-5"></i>
-              </div>
-            </div>
-            <div class="chat-room-subtitle" id="chatRoomStatus">Community</div>
-          </div>
-
-          <div class="chat-room-spacer"></div>
-        </div>
-
-        <div class="chat-feed" id="chatMessages"></div>
-
-        <div class="chat-composer">
-          <button class="composer-btn" type="button" aria-label="Emoji">
-            <i data-lucide="smile" class="w-5 h-5"></i>
-          </button>
-
-          <div class="composer-input-wrap">
-            <input id="chatInput" type="text" placeholder="Message..." />
-          </div>
-
-          <button class="composer-btn" type="button" aria-label="Gallery">
-            <i data-lucide="image" class="w-5 h-5"></i>
-          </button>
-
-          <button class="composer-send" type="button" id="chatSendBtn" aria-label="Voice or send">
-            <span id="chatSendIconWrap">
-              <i data-lucide="mic" class="w-5 h-5"></i>
-            </span>
-          </button>
-        </div>
-      </div>
     </div>
 
+    <!-- Referrals Page -->
     <div id="referralsPage" class="page">
       <div class="page-header-card referrals-header">
         <div>
@@ -1602,7 +1609,6 @@
         </div>
         <i data-lucide="users" class="w-10 h-10 text-sky-500"></i>
       </div>
-
       <div class="ref-grid">
         <div class="ref-stat-card">
           <span class="ref-stat-label">Invites</span>
@@ -1621,19 +1627,18 @@
           <span class="ref-stat-value">#0</span>
         </div>
       </div>
-
       <div class="invite-card">
         <div class="invite-label">Your invite link</div>
         <div class="invite-link">pocketoptioninside.com/invite/0LVL</div>
         <button class="invite-btn">Copy referral link</button>
       </div>
-
       <div class="page-section-title">Referral activity</div>
       <div class="activity-list">
         <div class="activity-item"><span>No referral activity yet</span><span>0</span></div>
       </div>
     </div>
 
+    <!-- Progress Page -->
     <div id="progressPage" class="page">
       <div class="page-header-card">
         <div>
@@ -1643,7 +1648,6 @@
         </div>
         <i data-lucide="trending-up" class="w-10 h-10 text-sky-500"></i>
       </div>
-
       <div class="progress-card">
         <div class="progress-ring">
           <div class="progress-ring-inner">
@@ -1658,7 +1662,6 @@
           <div class="progress-row"><span>Current tier</span><strong>New user</strong></div>
         </div>
       </div>
-
       <div class="page-section-title">Milestones</div>
       <div class="milestone-list">
         <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>App opened</span></div>
@@ -1668,6 +1671,56 @@
     </div>
   </div>
 
+  <!-- CHAT ROOM SHELL (fullscreen overlay) -->
+  <div class="chat-room-shell" id="chatRoomShell">
+    <div class="chat-room-header">
+      <button class="chat-back-btn" type="button" id="chatBackBtn" aria-label="Back">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </button>
+      <div class="chat-room-header-center">
+        <div class="chat-room-title-row">
+          <div class="chat-room-title" id="chatRoomName">General Chat</div>
+          <div class="chat-room-dots">
+            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+          </div>
+        </div>
+        <div class="chat-room-subtitle" id="chatRoomStatus">Community</div>
+      </div>
+      <div class="chat-room-spacer"></div>
+    </div>
+
+    <!-- Reply preview bar (hidden by default) -->
+    <div class="reply-preview-bar" id="replyPreviewBar" style="display:none;">
+      <div class="reply-preview-content">
+        <div class="reply-preview-label">Replying to</div>
+        <div class="reply-preview-text" id="replyPreviewText"></div>
+      </div>
+      <button class="reply-preview-close" id="replyPreviewCloseBtn">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div class="chat-feed" id="chatMessages"></div>
+
+    <div class="chat-composer">
+      <button class="composer-btn" type="button" aria-label="Emoji">
+        <i data-lucide="smile" class="w-5 h-5"></i>
+      </button>
+      <div class="composer-input-wrap">
+        <input id="chatInput" type="text" placeholder="Message..." />
+      </div>
+      <button class="composer-btn" type="button" aria-label="Gallery">
+        <i data-lucide="image" class="w-5 h-5"></i>
+      </button>
+      <button class="composer-send" type="button" id="chatSendBtn" aria-label="Voice or send">
+        <span id="chatSendIconWrap">
+          <i data-lucide="mic" class="w-5 h-5"></i>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <div class="bottom-nav-inner">
       <button data-page="home" class="nav-btn"><i data-lucide="home"></i><span>Home</span></button>
@@ -1680,380 +1733,436 @@
   </div>
 
   <script>
-    const currencyList = [
-      { pair: 'EUR/USD', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/us.png'] },
-      { pair: 'GBP/USD', flags: ['https://flagcdn.com/w20/gb.png', 'https://flagcdn.com/w20/us.png'] },
-      { pair: 'USD/JPY', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/jp.png'] },
-      { pair: 'EUR/GBP', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/gb.png'] },
-      { pair: 'AUD/USD', flags: ['https://flagcdn.com/w20/au.png', 'https://flagcdn.com/w20/us.png'] },
-      { pair: 'USD/CHF', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/ch.png'] }
-    ];
+    (function(){
+      // ---------- GLOBAL STATE & SIGNALS ----------
+      const currencyList = [
+        { pair: 'EUR/USD', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/us.png'] },
+        { pair: 'GBP/USD', flags: ['https://flagcdn.com/w20/gb.png', 'https://flagcdn.com/w20/us.png'] },
+        { pair: 'USD/JPY', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/jp.png'] },
+        { pair: 'EUR/GBP', flags: ['https://flagcdn.com/w20/eu.png', 'https://flagcdn.com/w20/gb.png'] },
+        { pair: 'AUD/USD', flags: ['https://flagcdn.com/w20/au.png', 'https://flagcdn.com/w20/us.png'] },
+        { pair: 'USD/CHF', flags: ['https://flagcdn.com/w20/us.png', 'https://flagcdn.com/w20/ch.png'] }
+      ];
 
-    const signalData = {
-      'EUR/USD': { percent: 92, stake: 100 },
-      'GBP/USD': { percent: 86, stake: 100 },
-      'USD/JPY': { percent: 88, stake: 100 },
-      'EUR/GBP': { percent: 84, stake: 100 },
-      'AUD/USD': { percent: 79, stake: 100 },
-      'USD/CHF': { percent: 81, stake: 100 }
-    };
+      const signalData = {
+        'EUR/USD': { percent: 92, stake: 100 },
+        'GBP/USD': { percent: 86, stake: 100 },
+        'USD/JPY': { percent: 88, stake: 100 },
+        'EUR/GBP': { percent: 84, stake: 100 },
+        'AUD/USD': { percent: 79, stake: 100 },
+        'USD/CHF': { percent: 81, stake: 100 }
+      };
 
-    let currentPair = 'EUR/USD';
-    let isSubscribed = false;
-    let activeTimer = null;
-    let liveSignalIndex = 0;
+      let currentPair = 'EUR/USD';
+      let isSubscribed = false;
+      let activeTimer = null;
+      let liveSignalIndex = 0;
 
-    const signalPairEl = document.getElementById('signalPair');
-    const proPairEl = document.getElementById('proPair');
-    const profitPercentEl = document.getElementById('profitPercent');
-    const stakeAmountEl = document.getElementById('stakeAmount');
-    const profitTotalEl = document.getElementById('profitTotal');
-    const profitAmountEl = document.getElementById('profitAmount');
-    const resultTimeEl = document.getElementById('resultTime');
-    const accuracyPercentEl = document.getElementById('accuracyPercent');
-    const accuracyDateLineEl = document.getElementById('accuracyDateLine');
-    const homeAccuracyEl = document.getElementById('homeAccuracy');
-    const homeSignalPairEl = document.getElementById('homeSignalPair');
-    const homeSignalDirectionEl = document.getElementById('homeSignalDirection');
-    const homeSignalTimeEl = document.getElementById('homeSignalTime');
-    const homeStakeAmountEl = document.getElementById('homeStakeAmount');
-    const homeProfitTotalEl = document.getElementById('homeProfitTotal');
-    const homeProfitAmountEl = document.getElementById('homeProfitAmount');
+      const signalPairEl = document.getElementById('signalPair');
+      const proPairEl = document.getElementById('proPair');
+      const profitPercentEl = document.getElementById('profitPercent');
+      const stakeAmountEl = document.getElementById('stakeAmount');
+      const profitTotalEl = document.getElementById('profitTotal');
+      const profitAmountEl = document.getElementById('profitAmount');
+      const resultTimeEl = document.getElementById('resultTime');
+      const accuracyPercentEl = document.getElementById('accuracyPercent');
+      const accuracyDateLineEl = document.getElementById('accuracyDateLine');
+      const homeAccuracyEl = document.getElementById('homeAccuracy');
+      const homeSignalPairEl = document.getElementById('homeSignalPair');
+      const homeSignalDirectionEl = document.getElementById('homeSignalDirection');
+      const homeSignalTimeEl = document.getElementById('homeSignalTime');
+      const homeStakeAmountEl = document.getElementById('homeStakeAmount');
+      const homeProfitTotalEl = document.getElementById('homeProfitTotal');
+      const homeProfitAmountEl = document.getElementById('homeProfitAmount');
 
-    function formatDateYMD(date) {
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}.${m}.${d}`;
-    }
+      function formatDateYMD(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}.${m}.${d}`;
+      }
 
-    function oneMinuteBackTime(date = new Date()) {
-      const d = new Date(date);
-      d.setMinutes(d.getMinutes() - 1);
-      return d.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit'
+      function oneMinuteBackTime(date = new Date()) {
+        const d = new Date(date);
+        d.setMinutes(d.getMinutes() - 1);
+        return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function updateAccuracy() {
+        const now = new Date();
+        const pct = (69 + Math.random() * 8).toFixed(4);
+        accuracyPercentEl.innerText = `${pct}%`;
+        accuracyDateLineEl.innerText = `Signal accuracy for today | ${formatDateYMD(now)}`;
+        if (homeAccuracyEl) homeAccuracyEl.innerText = `${pct}%`;
+      }
+
+      function renderSignal(pair = currentPair) {
+        const base = signalData[pair] || signalData['EUR/USD'];
+        const drift = ((liveSignalIndex % 3) - 1) * 2;
+        const percent = Math.max(65, Math.min(97, base.percent + drift));
+        const total = base.stake + Math.round(base.stake * percent / 100);
+        const profit = total - base.stake;
+        const signalTime = oneMinuteBackTime();
+
+        signalPairEl.innerText = `${pair} OTC`;
+        proPairEl.innerText = `${pair} OTC`;
+        profitPercentEl.innerText = `+${percent}%`;
+        stakeAmountEl.innerText = `$${base.stake}`;
+        profitTotalEl.innerText = `$${total}`;
+        profitAmountEl.innerText = `$${profit}`;
+        resultTimeEl.innerText = signalTime;
+
+        if (homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`;
+        if (homeSignalDirectionEl) homeSignalDirectionEl.innerText = `↗ Increase`;
+        if (homeSignalTimeEl) homeSignalTimeEl.innerText = signalTime;
+        if (homeStakeAmountEl) homeStakeAmountEl.innerText = `$${base.stake}`;
+        if (homeProfitTotalEl) homeProfitTotalEl.innerText = `$${total}`;
+        if (homeProfitAmountEl) homeProfitAmountEl.innerText = `$${profit}`;
+      }
+
+      const currencyContainer = document.getElementById('currencyList');
+      currencyList.forEach(({ pair, flags }) => {
+        const pill = document.createElement('div');
+        pill.className = `currency-pill ${pair === currentPair ? 'active' : ''}`;
+        pill.innerHTML = `
+          <span class="pair-icon-group">
+            <span class="pair-icon"><img src="${flags[0]}" alt=""></span>
+            <span class="pair-icon"><img src="${flags[1]}" alt=""></span>
+          </span>
+          <span>${pair}</span>
+        `;
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          currentPair = pair;
+          liveSignalIndex = 0;
+          renderSignal(currentPair);
+        });
+        currencyContainer.appendChild(pill);
       });
-    }
 
-    function updateAccuracy() {
-      const now = new Date();
-      const pct = (69 + Math.random() * 8).toFixed(4);
-      accuracyPercentEl.innerText = `${pct}%`;
-      accuracyDateLineEl.innerText = `Signal accuracy for today | ${formatDateYMD(now)}`;
-      if (homeAccuracyEl) homeAccuracyEl.innerText = `${pct}%`;
-    }
+      function updateClock(){
+        document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
 
-    function renderSignal(pair = currentPair) {
-      const base = signalData[pair] || signalData['EUR/USD'];
-      const drift = ((liveSignalIndex % 3) - 1) * 2;
-      const percent = Math.max(65, Math.min(97, base.percent + drift));
-      const total = base.stake + Math.round(base.stake * percent / 100);
-      const profit = total - base.stake;
-      const signalTime = oneMinuteBackTime();
+      updateClock();
+      updateAccuracy();
+      setInterval(updateClock, 1000);
+      setInterval(updateAccuracy, 60000);
+      renderSignal();
 
-      signalPairEl.innerText = `${pair} OTC`;
-      proPairEl.innerText = `${pair} OTC`;
-      profitPercentEl.innerText = `+${percent}%`;
-      stakeAmountEl.innerText = `$${base.stake}`;
-      profitTotalEl.innerText = `$${total}`;
-      profitAmountEl.innerText = `$${profit}`;
-      resultTimeEl.innerText = signalTime;
+      function startTimer(seconds){
+        if (activeTimer) clearTimeout(activeTimer);
+        activeTimer = setTimeout(() => {
+          if (!isSubscribed) return;
+          activeTimer = null;
+        }, seconds * 1000);
+      }
 
-      if (homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`;
-      if (homeSignalDirectionEl) homeSignalDirectionEl.innerText = `↗ Increase`;
-      if (homeSignalTimeEl) homeSignalTimeEl.innerText = signalTime;
-      if (homeStakeAmountEl) homeStakeAmountEl.innerText = `$${base.stake}`;
-      if (homeProfitTotalEl) homeProfitTotalEl.innerText = `$${total}`;
-      if (homeProfitAmountEl) homeProfitAmountEl.innerText = `$${profit}`;
-    }
+      const timerBtns = document.querySelectorAll('.timer-btn');
+      timerBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!isSubscribed) return;
+          const seconds = parseInt(btn.dataset.seconds, 10);
+          startTimer(seconds);
+          timerBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
 
-    const currencyContainer = document.getElementById('currencyList');
-    currencyList.forEach(({ pair, flags }) => {
-      const pill = document.createElement('div');
-      pill.className = `currency-pill ${pair === currentPair ? 'active' : ''}`;
-      pill.innerHTML = `
-        <span class="pair-icon-group">
-          <span class="pair-icon"><img src="${flags[0]}" alt=""></span>
-          <span class="pair-icon"><img src="${flags[1]}" alt=""></span>
-        </span>
-        <span>${pair}</span>
-      `;
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.currency-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        currentPair = pair;
-        liveSignalIndex = 0;
+      document.getElementById('getSignalBtn').addEventListener('click', () => {
+        if (!isSubscribed) return;
+        if (activeTimer) clearTimeout(activeTimer);
+        liveSignalIndex += 1;
         renderSignal(currentPair);
       });
-      currencyContainer.appendChild(pill);
-    });
 
-    function updateClock(){
-      document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
+      // ---------- CHAT LOGIC (with reply preview & jump) ----------
+      const appContainer = document.getElementById('appContainer');
+      const chatRoomShell = document.getElementById('chatRoomShell');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const chatSendBtn = document.getElementById('chatSendBtn');
+      const chatSendIconWrap = document.getElementById('chatSendIconWrap');
+      const chatBackBtn = document.getElementById('chatBackBtn');
+      const chatRoomName = document.getElementById('chatRoomName');
+      const chatRoomStatus = document.getElementById('chatRoomStatus');
+      const chatSupportBtn = document.getElementById('chatSupportBtn');
+      const chatGeneralBtn = document.getElementById('chatGeneralBtn');
+      const replyPreviewBar = document.getElementById('replyPreviewBar');
+      const replyPreviewText = document.getElementById('replyPreviewText');
+      const replyPreviewCloseBtn = document.getElementById('replyPreviewCloseBtn');
 
-    updateClock();
-    updateAccuracy();
-    setInterval(updateClock, 1000);
-    setInterval(updateAccuracy, 60000);
-
-    renderSignal();
-    lucide.createIcons();
-
-    function startTimer(seconds){
-      if (activeTimer) clearTimeout(activeTimer);
-      activeTimer = setTimeout(() => {
-        if (!isSubscribed) return;
-        activeTimer = null;
-      }, seconds * 1000);
-    }
-
-    const timerBtns = document.querySelectorAll('.timer-btn');
-    timerBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (!isSubscribed) return;
-        const seconds = parseInt(btn.dataset.seconds, 10);
-        startTimer(seconds);
-        timerBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    document.getElementById('getSignalBtn').addEventListener('click', () => {
-      if (!isSubscribed) return;
-      if (activeTimer) clearTimeout(activeTimer);
-      liveSignalIndex += 1;
-      renderSignal(currentPair);
-    });
-
-    // ------------------------------------------------------------
-    // CHAT LOGIC (with ticks, typing indicator, mask tails)
-    // ------------------------------------------------------------
-    const chatList = document.getElementById('chatList');
-    const chatRoomShell = document.getElementById('chatRoomShell');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const chatSendBtn = document.getElementById('chatSendBtn');
-    const chatSendIconWrap = document.getElementById('chatSendIconWrap');
-    const chatBackBtn = document.getElementById('chatBackBtn');
-    const chatRoomName = document.getElementById('chatRoomName');
-    const chatRoomStatus = document.getElementById('chatRoomStatus');
-    const chatSupportBtn = document.getElementById('chatSupportBtn');
-    const chatGeneralBtn = document.getElementById('chatGeneralBtn');
-
-    const chatRooms = {
-      general: {
-        name: 'General Chat',
-        status: 'Community',
-        statusClass: 'muted',
-        incomingAvatar: 'chat',
-        starter: [
-          { side: 'incoming', text: 'Welcome to General Chat.', time: '3:08 PM' },
-          { side: 'outgoing', text: 'Glad to be here.', time: '3:09 PM' }
-        ]
-      },
-      support: {
-        name: 'Customer Support',
-        status: 'Online',
-        statusClass: 'live',
-        incomingAvatar: 'brand',
-        starter: [
-          { side: 'incoming', text: 'Hello, support is ready.', time: '3:08 PM' },
-          { side: 'outgoing', text: 'I need help with my account.', time: '3:09 PM' }
-        ]
-      }
-    };
-
-    let currentChatRoom = 'general';
-
-    function todayStickerText() {
-      return `Today • ${new Date().toLocaleDateString('en-GB')}`;
-    }
-
-    function renderSendIcon(mode) {
-      chatSendIconWrap.innerHTML = mode === 'send'
-        ? '<i data-lucide="send" class="w-5 h-5"></i>'
-        : '<i data-lucide="mic" class="w-5 h-5"></i>';
-      lucide.createIcons();
-    }
-
-    function setComposerMode() {
-      const hasText = chatInput.value.trim().length > 0;
-      chatSendBtn.classList.toggle('is-send', hasText);
-      renderSendIcon(hasText ? 'send' : 'mic');
-    }
-
-    function buildIncomingAvatar(roomKey) {
-      if (roomKey === 'support') {
-        return `<div class="chat-avatar-bubble"><div class="brand-mark" aria-hidden="true" style="width:18px;height:12px;"></div></div>`;
-      }
-      return `<div class="chat-avatar-bubble"><i data-lucide="messages-square" class="w-4 h-4 text-slate-600"></i></div>`;
-    }
-
-    function renderChatRoom(roomKey) {
-      currentChatRoom = roomKey;
-      const room = chatRooms[roomKey];
-      chatList.hidden = true;
-      chatRoomShell.hidden = false;
-      chatRoomShell.classList.add('is-open');
-      chatRoomName.textContent = room.name;
-      chatRoomStatus.textContent = room.status;
-      chatRoomStatus.classList.remove('live', 'muted');
-      chatRoomStatus.classList.add(room.statusClass);
-      chatMessages.innerHTML = `
-        <div class="chat-date-sticker">${todayStickerText()}</div>
-        <div class="chat-bubble-preview"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>New messages</span></div>
-      `;
-      room.starter.forEach(msg => {
-        const row = document.createElement('div');
-        row.className = `chat-msg-row ${msg.side}`;
-        const bubble = document.createElement('div');
-        bubble.className = `chat-bubble ${msg.side}`;
-        if (msg.side === 'outgoing') {
-          bubble.innerHTML = `${msg.text}<span class="chat-bubble-meta"><span class="chat-bubble-time">${msg.time}</span><span class="chat-ticks seen">✓✓</span></span>`;
-        } else {
-          bubble.innerHTML = `${msg.text}<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${msg.time}</span>`;
+      const chatRooms = {
+        general: {
+          name: 'General Chat',
+          status: 'Community',
+          statusClass: 'muted',
+          incomingAvatar: 'chat',
+          starter: [
+            { side: 'incoming', text: 'Welcome to General Chat.', time: '3:08 PM' },
+            { side: 'outgoing', text: 'Glad to be here.', time: '3:09 PM' }
+          ]
+        },
+        support: {
+          name: 'Customer Support',
+          status: 'Online',
+          statusClass: 'live',
+          incomingAvatar: 'brand',
+          starter: [
+            { side: 'incoming', text: 'Hello, support is ready.', time: '3:08 PM' },
+            { side: 'outgoing', text: 'I need help with my account.', time: '3:09 PM' }
+          ]
         }
-        if (msg.side === 'incoming') {
-          row.innerHTML = buildIncomingAvatar(roomKey);
-          row.appendChild(bubble);
-        } else {
-          row.appendChild(bubble);
+      };
+
+      let currentChatRoom = 'general';
+      let replyingToMessage = null; // stores DOM element of message being replied to
+
+      function todayStickerText() {
+        return `Today • ${new Date().toLocaleDateString('en-GB')}`;
+      }
+
+      function renderSendIcon(mode) {
+        chatSendIconWrap.innerHTML = mode === 'send'
+          ? '<i data-lucide="send" class="w-5 h-5"></i>'
+          : '<i data-lucide="mic" class="w-5 h-5"></i>';
+        lucide.createIcons();
+      }
+
+      function setComposerMode() {
+        const hasText = chatInput.value.trim().length > 0;
+        chatSendBtn.classList.toggle('is-send', hasText);
+        renderSendIcon(hasText ? 'send' : 'mic');
+      }
+
+      function buildIncomingAvatar(roomKey) {
+        if (roomKey === 'support') {
+          return `<div class="chat-avatar-bubble"><div class="brand-mark" aria-hidden="true" style="width:22px;height:16px;"></div></div>`;
         }
-        chatMessages.appendChild(row);
-      });
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      chatInput.value = '';
-      setComposerMode();
-      lucide.createIcons();
-    }
+        return `<div class="chat-avatar-bubble"><i data-lucide="messages-square" class="w-5 h-5 text-slate-600"></i></div>`;
+      }
 
-    function closeChatRoom() {
-      chatRoomShell.hidden = true;
-      chatRoomShell.classList.remove('is-open');
-      chatList.hidden = false;
-      chatInput.value = '';
-      setComposerMode();
-    }
+      function openChatRoom(roomKey) {
+        currentChatRoom = roomKey;
+        const room = chatRooms[roomKey];
 
-    function showTypingIndicator() {
-      removeTypingIndicator();
-      const row = document.createElement('div');
-      row.className = 'chat-msg-row incoming typing-row';
-      row.id = 'typingIndicator';
-      row.innerHTML = `
-        ${buildIncomingAvatar(currentChatRoom)}
-        <div class="chat-bubble incoming typing-bubble">
-          <span></span><span></span><span></span>
-        </div>
-      `;
-      chatMessages.appendChild(row);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+        chatRoomShell.classList.add('is-open');
+        appContainer.classList.add('chat-open');
+        document.body.style.overflow = 'hidden';
+        replyingToMessage = null;
+        replyPreviewBar.style.display = 'none';
 
-    function removeTypingIndicator() {
-      const existing = document.getElementById('typingIndicator');
-      if (existing) existing.remove();
-    }
+        chatRoomName.textContent = room.name;
+        chatRoomStatus.textContent = room.status;
+        chatRoomStatus.classList.remove('live', 'muted');
+        chatRoomStatus.classList.add(room.statusClass);
 
-    function simulateReply() {
-      showTypingIndicator();
-      setTimeout(() => {
-        removeTypingIndicator();
-        const row = document.createElement('div');
-        row.className = 'chat-msg-row incoming';
-        const bubble = document.createElement('div');
-        bubble.className = 'chat-bubble incoming';
-        const replyTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-        bubble.innerHTML = `Got it 👍<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${replyTime}</span>`;
-        row.innerHTML = buildIncomingAvatar(currentChatRoom);
-        row.appendChild(bubble);
-        chatMessages.appendChild(row);
+        chatMessages.innerHTML = `
+          <div class="chat-date-sticker">${todayStickerText()}</div>
+          <div class="chat-bubble-preview"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>New messages</span></div>
+        `;
+
+        room.starter.forEach(msg => {
+          const row = document.createElement('div');
+          row.className = `chat-msg-row ${msg.side}`;
+          const bubble = document.createElement('div');
+          bubble.className = `chat-bubble ${msg.side}`;
+          if (msg.side === 'outgoing') {
+            bubble.innerHTML = `${msg.text}<span class="chat-bubble-meta"><span class="chat-bubble-time">${msg.time}</span><span class="chat-ticks seen">✓✓</span></span>`;
+          } else {
+            bubble.innerHTML = `${msg.text}<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${msg.time}</span>`;
+          }
+          if (msg.side === 'incoming') {
+            row.innerHTML = buildIncomingAvatar(roomKey);
+            row.appendChild(bubble);
+          } else {
+            row.appendChild(bubble);
+          }
+          // Add long-press / double-click to reply (simulate with contextmenu for demo)
+          bubble.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            setReplyToMessage(bubble);
+          });
+          chatMessages.appendChild(row);
+        });
+
         chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 2000);
-    }
-
-    function sendChatMessage() {
-      const text = chatInput.value.trim();
-      if (!text) return;
-
-      const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-      const row = document.createElement('div');
-      row.className = 'chat-msg-row outgoing';
-      const bubble = document.createElement('div');
-      bubble.className = 'chat-bubble outgoing';
-      bubble.innerHTML = `
-        ${text}
-        <span class="chat-bubble-meta">
-          <span class="chat-bubble-time">${now}</span>
-          <span class="chat-ticks sent">✓</span>
-        </span>
-      `;
-      row.appendChild(bubble);
-      chatMessages.appendChild(row);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-      chatInput.value = '';
-      setComposerMode();
-
-      const ticks = bubble.querySelector('.chat-ticks');
-      setTimeout(() => {
-        ticks.textContent = '✓✓';
-        ticks.classList.remove('sent');
-        ticks.classList.add('delivered');
-      }, 800);
-      setTimeout(() => {
-        ticks.classList.remove('delivered');
-        ticks.classList.add('seen');
-      }, 1800);
-
-      simulateReply();
-    }
-
-    chatGeneralBtn.addEventListener('click', () => renderChatRoom('general'));
-    chatSupportBtn.addEventListener('click', () => renderChatRoom('support'));
-    chatBackBtn.addEventListener('click', closeChatRoom);
-    chatInput.addEventListener('input', setComposerMode);
-    chatInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sendChatMessage();
+        chatInput.value = '';
+        setComposerMode();
+        lucide.createIcons();
       }
-    });
-    chatSendBtn.addEventListener('click', () => {
-      if (chatInput.value.trim()) {
-        sendChatMessage();
-      } else {
+
+      function closeChatRoom() {
+        chatRoomShell.classList.remove('is-open');
+        appContainer.classList.remove('chat-open');
+        document.body.style.overflow = '';
+        chatInput.value = '';
+        setComposerMode();
+        replyingToMessage = null;
+        replyPreviewBar.style.display = 'none';
+      }
+
+      function setReplyToMessage(bubbleElement) {
+        replyingToMessage = bubbleElement;
+        const textContent = bubbleElement.innerText.replace(/\n.*$/s, '').trim(); // remove time/tick lines
+        replyPreviewText.textContent = textContent.length > 50 ? textContent.substring(0,47)+'...' : textContent;
+        replyPreviewBar.style.display = 'flex';
         chatInput.focus();
       }
-    });
 
-    setComposerMode();
-    closeChatRoom();
+      function clearReply() {
+        replyingToMessage = null;
+        replyPreviewBar.style.display = 'none';
+      }
 
-    // ------------------------------------------------------------
-    // PAGE NAVIGATION
-    // ------------------------------------------------------------
-    const pages = {
-      home: document.getElementById('homePage'),
-      signals: document.getElementById('signalsPage'),
-      training: document.getElementById('trainingPage'),
-      chat: document.getElementById('chatPage'),
-      referrals: document.getElementById('referralsPage'),
-      progress: document.getElementById('progressPage')
-    };
+      function jumpToMessage(element) {
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          element.style.transition = 'background 0.3s';
+          element.style.backgroundColor = '#fff9c4';
+          setTimeout(() => element.style.backgroundColor = '', 1500);
+        }
+      }
 
-    const navBtns = document.querySelectorAll('.nav-btn');
-    function showPage(pageId){
-      Object.values(pages).forEach(p => p.classList.remove('active'));
-      pages[pageId].classList.add('active');
-      navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
+      // Add reply capability to new outgoing messages
+      function attachReplyListener(bubble) {
+        bubble.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          setReplyToMessage(bubble);
+        });
+      }
+
+      function showTypingIndicator() {
+        removeTypingIndicator();
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row incoming typing-row';
+        row.id = 'typingIndicator';
+        row.innerHTML = `
+          ${buildIncomingAvatar(currentChatRoom)}
+          <div class="chat-bubble incoming typing-bubble">
+            <span></span><span></span><span></span>
+          </div>
+        `;
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function removeTypingIndicator() {
+        const existing = document.getElementById('typingIndicator');
+        if (existing) existing.remove();
+      }
+
+      function simulateReply() {
+        showTypingIndicator();
+        setTimeout(() => {
+          removeTypingIndicator();
+          const row = document.createElement('div');
+          row.className = 'chat-msg-row incoming';
+          const bubble = document.createElement('div');
+          bubble.className = 'chat-bubble incoming';
+          const replyTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+          bubble.innerHTML = `Got it 👍<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${replyTime}</span>`;
+          row.innerHTML = buildIncomingAvatar(currentChatRoom);
+          row.appendChild(bubble);
+          attachReplyListener(bubble);
+          chatMessages.appendChild(row);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 2000);
+      }
+
+      function sendChatMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row outgoing';
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble outgoing';
+        
+        let replyHtml = '';
+        if (replyingToMessage) {
+          const repliedText = replyingToMessage.innerText.replace(/\n.*$/s, '').trim();
+          replyHtml = `<div style="font-size:12px; opacity:0.8; margin-bottom:6px; border-left:3px solid rgba(255,255,255,0.5); padding-left:8px;">↩ ${repliedText.substring(0,30)}</div>`;
+        }
+        
+        bubble.innerHTML = `
+          ${replyHtml}
+          ${text}
+          <span class="chat-bubble-meta">
+            <span class="chat-bubble-time">${now}</span>
+            <span class="chat-ticks sent">✓</span>
+          </span>
+        `;
+        row.appendChild(bubble);
+        attachReplyListener(bubble);
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatInput.value = '';
+        setComposerMode();
+        clearReply();
+
+        const ticks = bubble.querySelector('.chat-ticks');
+        setTimeout(() => {
+          ticks.textContent = '✓✓';
+          ticks.classList.remove('sent');
+          ticks.classList.add('delivered');
+        }, 800);
+        setTimeout(() => {
+          ticks.classList.remove('delivered');
+          ticks.classList.add('seen');
+        }, 1800);
+
+        simulateReply();
+      }
+
+      replyPreviewCloseBtn.addEventListener('click', clearReply);
+
+      chatSupportBtn.addEventListener('click', () => openChatRoom('support'));
+      chatGeneralBtn.addEventListener('click', () => openChatRoom('general'));
+      chatBackBtn.addEventListener('click', closeChatRoom);
+      chatInput.addEventListener('input', setComposerMode);
+      chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendChatMessage();
+        }
+      });
+      chatSendBtn.addEventListener('click', () => {
+        if (chatInput.value.trim()) {
+          sendChatMessage();
+        } else {
+          chatInput.focus();
+        }
+      });
+
+      setComposerMode();
+
+      // ---------- PAGE NAVIGATION ----------
+      const pages = {
+        home: document.getElementById('homePage'),
+        signals: document.getElementById('signalsPage'),
+        training: document.getElementById('trainingPage'),
+        chat: document.getElementById('chatPage'),
+        referrals: document.getElementById('referralsPage'),
+        progress: document.getElementById('progressPage')
+      };
+
+      const navBtns = document.querySelectorAll('.nav-btn');
+      function showPage(pageId){
+        Object.values(pages).forEach(p => p.classList.remove('active'));
+        pages[pageId].classList.add('active');
+        navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === pageId));
+        lucide.createIcons();
+        if (pageId === 'signals') renderSignal(currentPair);
+        if (pageId !== 'chat') closeChatRoom();
+      }
+
+      navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+      showPage('signals');
       lucide.createIcons();
-      if (pageId === 'signals') renderSignal(currentPair);
-    }
-
-    navBtns.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
-    showPage('signals');
+    })();
   </script>
 </body>
 </html>
