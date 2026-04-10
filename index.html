@@ -909,6 +909,314 @@
       flex:0 0 auto;
     }
 
+    .chat-room-shell{
+      margin-top:12px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+
+    .chat-room-shell[hidden]{
+      display:none !important;
+    }
+
+    .chat-room-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .chat-back-btn{
+      width:40px;
+      height:40px;
+      border:none;
+      border-radius:50%;
+      background:#f7f9fc;
+      color:#1f2633;
+      border:1px solid #edf2f8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      cursor:pointer;
+    }
+
+    .chat-room-header-center{
+      flex:1 1 auto;
+      min-width:0;
+      text-align:center;
+    }
+
+    .chat-room-title-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .chat-room-title{
+      font-size:17px;
+      font-weight:800;
+      color:#1f2633;
+    }
+
+    .chat-room-dots{
+      color:#6b7280;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .chat-room-subtitle{
+      margin-top:4px;
+      font-size:12px;
+      color:#7f8794;
+      font-weight:600;
+    }
+
+    .chat-room-spacer{
+      width:40px;
+      height:40px;
+      flex:0 0 auto;
+    }
+
+    .chat-feed{
+      min-height:320px;
+      background:#f9fbfe;
+      border:1px solid #edf2f8;
+      border-radius:18px;
+      padding:14px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .chat-date-sticker{
+      width:max-content;
+      margin:6px auto 2px;
+      padding:6px 12px;
+      border-radius:999px;
+      background:#f1f4f9;
+      color:#667085;
+      font-size:11px;
+      font-weight:700;
+      border:1px solid #e3e8f2;
+    }
+
+    .chat-msg-row{
+      display:flex;
+      align-items:flex-end;
+      gap:6px;
+      max-width:100%;
+    }
+
+    .chat-msg-row.incoming{
+      justify-content:flex-start;
+    }
+
+    .chat-msg-row.outgoing{
+      justify-content:flex-end;
+      margin-left:auto;
+    }
+
+    .chat-avatar-bubble{
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+      box-shadow:0 4px 10px rgba(15,23,42,.05);
+    }
+
+    .chat-bubble{
+      --bg:#fff;
+      position:relative;
+      max-width:78%;
+      padding:10px 12px;
+      font-size:14px;
+      line-height:1.45;
+      word-break:break-word;
+      border-radius:18px;
+    }
+
+    .chat-bubble::before{
+      display:none;
+    }
+
+    .chat-bubble.incoming{
+      --bg:#ffffff;
+      background:var(--bg);
+      color:#1f2633;
+      border:1px solid #e6ecf5;
+      -webkit-mask:
+        radial-gradient(12px at 0 100%, transparent 98%, #000 100%) 0 100%/12px 12px no-repeat,
+        linear-gradient(#000 0 0);
+      mask:
+        radial-gradient(12px at 0 100%, transparent 98%, #000 100%) 0 100%/12px 12px no-repeat,
+        linear-gradient(#000 0 0);
+    }
+
+    .chat-bubble.outgoing{
+      --bg:#2f98e5;
+      background:var(--bg);
+      color:#fff;
+      border:1px solid #2f98e5;
+      -webkit-mask:
+        radial-gradient(12px at 100% 100%, transparent 98%, #000 100%) 100% 100%/12px 12px no-repeat,
+        linear-gradient(#000 0 0);
+      mask:
+        radial-gradient(12px at 100% 100%, transparent 98%, #000 100%) 100% 100%/12px 12px no-repeat,
+        linear-gradient(#000 0 0);
+    }
+
+    .chat-bubble-meta{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:6px;
+      margin-top:6px;
+      font-size:11px;
+      opacity:.8;
+    }
+
+    .chat-ticks{
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:-2px;
+    }
+
+    .chat-ticks.sent{ color:#cbd5e1; }
+    .chat-ticks.delivered{ color:#94a3b8; }
+    .chat-ticks.seen{ color:#2f98e5; }
+
+    .typing-bubble{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      padding:10px 14px;
+    }
+
+    .typing-bubble span{
+      width:6px;
+      height:6px;
+      background:#9aa3b2;
+      border-radius:50%;
+      display:inline-block;
+      animation:typingBounce 1.3s infinite;
+    }
+
+    .typing-bubble span:nth-child(2){ animation-delay:.2s; }
+    .typing-bubble span:nth-child(3){ animation-delay:.4s; }
+
+    @keyframes typingBounce{
+      0%,80%,100%{ transform:scale(0.6); opacity:.5; }
+      40%{ transform:scale(1); opacity:1; }
+    }
+
+    .chat-bubble-preview{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:8px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#eef7ff;
+      color:#2f98e5;
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .chat-composer{
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .composer-btn{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:999px;
+      background:#eef7ff;
+      color:#2f98e5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:inset 0 0 0 1px rgba(47,152,229,.08);
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .composer-send{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:999px;
+      background:#2f98e5;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 16px rgba(47,152,229,.18);
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .composer-send.is-send{
+      background:#2f98e5;
+      box-shadow:0 10px 18px rgba(47,152,229,.22);
+    }
+
+    .composer-input-wrap{
+      flex:1 1 auto;
+      min-width:0;
+      height:42px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      padding:0 14px;
+    }
+
+    .composer-input-wrap input{
+      width:100%;
+      height:100%;
+      border:none;
+      outline:none;
+      background:transparent;
+      font-size:14px;
+      color:#1f2633;
+    }
+
+    .composer-input-wrap input::placeholder{
+      color:#98a2b3;
+    }
+
+    .chat-room-shell.is-open{
+      display:block;
+    }
+
+    .chat-room-dots,
+    .chat-back-btn{
+      color:#2f3440;
+    }
+
+    .chat-room-dots svg,
+    .chat-back-btn svg{
+      stroke:#2f3440;
+    }
+
     .bottom-nav{
       position:fixed;
       left:0;right:0;bottom:0;
@@ -1180,8 +1488,8 @@
     <div id="chatPage" class="page">
       <div class="chat-section-label">Choose a chat</div>
 
-      <div class="chat-list">
-        <button class="chat-item active-room" type="button" data-room="support" id="chatSupportBtn">
+      <div class="chat-list" id="chatList">
+        <button class="chat-item" type="button" data-room="support" id="chatSupportBtn">
           <div class="chat-avatar chat-avatar-support">
             <div class="chat-support-ring">
               <div class="brand-mark chat-brand-mark" aria-hidden="true"></div>
@@ -1203,7 +1511,7 @@
 
             <div class="chat-meta">
               <span><i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verified</span>
-              <span><i data-lucide="clock-3" class="w-3.5 h-5"></i> Fast reply</span>
+              <span><i data-lucide="clock-3" class="w-3.5 h-3.5"></i> Fast reply</span>
             </div>
           </div>
 
@@ -1240,6 +1548,48 @@
             <i data-lucide="chevron-right" class="w-5 h-5"></i>
           </div>
         </button>
+      </div>
+
+      <div class="chat-room-shell" id="chatRoomShell" hidden>
+        <div class="chat-room-header">
+          <button class="chat-back-btn" type="button" id="chatBackBtn" aria-label="Back">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          </button>
+
+          <div class="chat-room-header-center">
+            <div class="chat-room-title-row">
+              <div class="chat-room-title" id="chatRoomName">General Chat</div>
+              <div class="chat-room-dots">
+                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <div class="chat-room-subtitle" id="chatRoomStatus">Community</div>
+          </div>
+
+          <div class="chat-room-spacer"></div>
+        </div>
+
+        <div class="chat-feed" id="chatMessages"></div>
+
+        <div class="chat-composer">
+          <button class="composer-btn" type="button" aria-label="Emoji">
+            <i data-lucide="smile" class="w-5 h-5"></i>
+          </button>
+
+          <div class="composer-input-wrap">
+            <input id="chatInput" type="text" placeholder="Message..." />
+          </div>
+
+          <button class="composer-btn" type="button" aria-label="Gallery">
+            <i data-lucide="image" class="w-5 h-5"></i>
+          </button>
+
+          <button class="composer-send" type="button" id="chatSendBtn" aria-label="Voice or send">
+            <span id="chatSendIconWrap">
+              <i data-lucide="mic" class="w-5 h-5"></i>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1370,9 +1720,6 @@
     const homeProfitTotalEl = document.getElementById('homeProfitTotal');
     const homeProfitAmountEl = document.getElementById('homeProfitAmount');
 
-    const chatSupportBtn = document.getElementById('chatSupportBtn');
-    const chatGeneralBtn = document.getElementById('chatGeneralBtn');
-
     function formatDateYMD(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -1480,16 +1827,213 @@
       renderSignal(currentPair);
     });
 
-    function setActiveChatRoom(roomKey){
-      chatSupportBtn.classList.toggle('active-room', roomKey === 'support');
-      chatGeneralBtn.classList.toggle('active-room', roomKey === 'general');
+    // ------------------------------------------------------------
+    // CHAT LOGIC (with ticks, typing indicator, mask tails)
+    // ------------------------------------------------------------
+    const chatList = document.getElementById('chatList');
+    const chatRoomShell = document.getElementById('chatRoomShell');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSendBtn = document.getElementById('chatSendBtn');
+    const chatSendIconWrap = document.getElementById('chatSendIconWrap');
+    const chatBackBtn = document.getElementById('chatBackBtn');
+    const chatRoomName = document.getElementById('chatRoomName');
+    const chatRoomStatus = document.getElementById('chatRoomStatus');
+    const chatSupportBtn = document.getElementById('chatSupportBtn');
+    const chatGeneralBtn = document.getElementById('chatGeneralBtn');
+
+    const chatRooms = {
+      general: {
+        name: 'General Chat',
+        status: 'Community',
+        statusClass: 'muted',
+        incomingAvatar: 'chat',
+        starter: [
+          { side: 'incoming', text: 'Welcome to General Chat.', time: '3:08 PM' },
+          { side: 'outgoing', text: 'Glad to be here.', time: '3:09 PM' }
+        ]
+      },
+      support: {
+        name: 'Customer Support',
+        status: 'Online',
+        statusClass: 'live',
+        incomingAvatar: 'brand',
+        starter: [
+          { side: 'incoming', text: 'Hello, support is ready.', time: '3:08 PM' },
+          { side: 'outgoing', text: 'I need help with my account.', time: '3:09 PM' }
+        ]
+      }
+    };
+
+    let currentChatRoom = 'general';
+
+    function todayStickerText() {
+      return `Today • ${new Date().toLocaleDateString('en-GB')}`;
     }
 
-    chatSupportBtn?.addEventListener('click', () => setActiveChatRoom('support'));
-    chatGeneralBtn?.addEventListener('click', () => setActiveChatRoom('general'));
+    function renderSendIcon(mode) {
+      chatSendIconWrap.innerHTML = mode === 'send'
+        ? '<i data-lucide="send" class="w-5 h-5"></i>'
+        : '<i data-lucide="mic" class="w-5 h-5"></i>';
+      lucide.createIcons();
+    }
 
-    setActiveChatRoom('support');
+    function setComposerMode() {
+      const hasText = chatInput.value.trim().length > 0;
+      chatSendBtn.classList.toggle('is-send', hasText);
+      renderSendIcon(hasText ? 'send' : 'mic');
+    }
 
+    function buildIncomingAvatar(roomKey) {
+      if (roomKey === 'support') {
+        return `<div class="chat-avatar-bubble"><div class="brand-mark" aria-hidden="true" style="width:18px;height:12px;"></div></div>`;
+      }
+      return `<div class="chat-avatar-bubble"><i data-lucide="messages-square" class="w-4 h-4 text-slate-600"></i></div>`;
+    }
+
+    function renderChatRoom(roomKey) {
+      currentChatRoom = roomKey;
+      const room = chatRooms[roomKey];
+      chatList.hidden = true;
+      chatRoomShell.hidden = false;
+      chatRoomShell.classList.add('is-open');
+      chatRoomName.textContent = room.name;
+      chatRoomStatus.textContent = room.status;
+      chatRoomStatus.classList.remove('live', 'muted');
+      chatRoomStatus.classList.add(room.statusClass);
+      chatMessages.innerHTML = `
+        <div class="chat-date-sticker">${todayStickerText()}</div>
+        <div class="chat-bubble-preview"><i data-lucide="sparkles" class="w-3.5 h-3.5"></i><span>New messages</span></div>
+      `;
+      room.starter.forEach(msg => {
+        const row = document.createElement('div');
+        row.className = `chat-msg-row ${msg.side}`;
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${msg.side}`;
+        if (msg.side === 'outgoing') {
+          bubble.innerHTML = `${msg.text}<span class="chat-bubble-meta"><span class="chat-bubble-time">${msg.time}</span><span class="chat-ticks seen">✓✓</span></span>`;
+        } else {
+          bubble.innerHTML = `${msg.text}<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${msg.time}</span>`;
+        }
+        if (msg.side === 'incoming') {
+          row.innerHTML = buildIncomingAvatar(roomKey);
+          row.appendChild(bubble);
+        } else {
+          row.appendChild(bubble);
+        }
+        chatMessages.appendChild(row);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+      setComposerMode();
+      lucide.createIcons();
+    }
+
+    function closeChatRoom() {
+      chatRoomShell.hidden = true;
+      chatRoomShell.classList.remove('is-open');
+      chatList.hidden = false;
+      chatInput.value = '';
+      setComposerMode();
+    }
+
+    function showTypingIndicator() {
+      removeTypingIndicator();
+      const row = document.createElement('div');
+      row.className = 'chat-msg-row incoming typing-row';
+      row.id = 'typingIndicator';
+      row.innerHTML = `
+        ${buildIncomingAvatar(currentChatRoom)}
+        <div class="chat-bubble incoming typing-bubble">
+          <span></span><span></span><span></span>
+        </div>
+      `;
+      chatMessages.appendChild(row);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const existing = document.getElementById('typingIndicator');
+      if (existing) existing.remove();
+    }
+
+    function simulateReply() {
+      showTypingIndicator();
+      setTimeout(() => {
+        removeTypingIndicator();
+        const row = document.createElement('div');
+        row.className = 'chat-msg-row incoming';
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble incoming';
+        const replyTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        bubble.innerHTML = `Got it 👍<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${replyTime}</span>`;
+        row.innerHTML = buildIncomingAvatar(currentChatRoom);
+        row.appendChild(bubble);
+        chatMessages.appendChild(row);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 2000);
+    }
+
+    function sendChatMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      const row = document.createElement('div');
+      row.className = 'chat-msg-row outgoing';
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble outgoing';
+      bubble.innerHTML = `
+        ${text}
+        <span class="chat-bubble-meta">
+          <span class="chat-bubble-time">${now}</span>
+          <span class="chat-ticks sent">✓</span>
+        </span>
+      `;
+      row.appendChild(bubble);
+      chatMessages.appendChild(row);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+      setComposerMode();
+
+      const ticks = bubble.querySelector('.chat-ticks');
+      setTimeout(() => {
+        ticks.textContent = '✓✓';
+        ticks.classList.remove('sent');
+        ticks.classList.add('delivered');
+      }, 800);
+      setTimeout(() => {
+        ticks.classList.remove('delivered');
+        ticks.classList.add('seen');
+      }, 1800);
+
+      simulateReply();
+    }
+
+    chatGeneralBtn.addEventListener('click', () => renderChatRoom('general'));
+    chatSupportBtn.addEventListener('click', () => renderChatRoom('support'));
+    chatBackBtn.addEventListener('click', closeChatRoom);
+    chatInput.addEventListener('input', setComposerMode);
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    });
+    chatSendBtn.addEventListener('click', () => {
+      if (chatInput.value.trim()) {
+        sendChatMessage();
+      } else {
+        chatInput.focus();
+      }
+    });
+
+    setComposerMode();
+    closeChatRoom();
+
+    // ------------------------------------------------------------
+    // PAGE NAVIGATION
+    // ------------------------------------------------------------
     const pages = {
       home: document.getElementById('homePage'),
       signals: document.getElementById('signalsPage'),
