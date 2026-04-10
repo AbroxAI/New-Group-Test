@@ -9,7 +9,6 @@
   <style>
     :root{
       --bg:#ebf1fa;
-      --card:#ffffff;
       --ink:#1f2633;
       --muted:#7f8794;
       --blue:#2e9fe8;
@@ -19,6 +18,25 @@
       --line:#dfe6f1;
       --shadow:0 8px 26px rgba(15,23,42,.08);
       --soft:0 4px 14px rgba(15,23,42,.05);
+
+      --app-max:430px;
+
+      --space-1:4px;
+      --space-2:8px;
+      --space-3:12px;
+      --space-4:16px;
+      --space-5:20px;
+
+      --radius-sm:10px;
+      --radius-md:14px;
+      --radius-lg:18px;
+
+      --text-xs:11px;
+      --text-sm:13px;
+      --text-md:15px;
+      --text-lg:17px;
+      --text-xl:20px;
+      --text-2xl:24px;
     }
 
     html,body{height:100%;}
@@ -35,9 +53,9 @@
     ::-webkit-scrollbar-thumb{background:#b6c5dd;border-radius:999px;}
 
     .app{
-      max-width:430px;
+      max-width:var(--app-max);
       margin:0 auto;
-      padding:10px 10px 104px;
+      padding:clamp(8px, 2vw, 12px) clamp(8px, 2vw, 12px) 104px;
       box-sizing:border-box;
     }
 
@@ -45,7 +63,7 @@
     .page.active{display:block;}
 
     .topbar{
-      height:56px;
+      height:clamp(54px, 7vw, 60px);
       background:#26263e;
       display:flex;
       align-items:center;
@@ -63,28 +81,62 @@
       min-width:0;
     }
     .brand-mark{
-      width:36px;height:26px;border-radius:6px 16px 6px 16px;
+      width:36px;
+      height:26px;
+      border-radius:6px 16px 6px 16px;
       background:linear-gradient(135deg,#0e75ef 0%,#4cb3ff 100%);
-      position:relative;flex:0 0 auto;
+      position:relative;
+      flex:0 0 auto;
     }
     .brand-mark::after{
-      content:"";position:absolute;left:11px;top:0;width:16px;height:26px;border-radius:0 16px 16px 0;background:#1228c8;opacity:.96;
+      content:"";
+      position:absolute;
+      left:11px;
+      top:0;
+      width:16px;
+      height:26px;
+      border-radius:0 16px 16px 0;
+      background:#1228c8;
+      opacity:.96;
     }
     .brand-text{
-      font-size:16px;
+      font-size:clamp(15px, 3.6vw, 18px);
       font-weight:500;
       letter-spacing:-.2px;
       white-space:nowrap;
     }
     .user-chip{
-      display:flex;align-items:center;gap:7px;color:#e7ebf2;font-size:15px;white-space:nowrap;flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      gap:7px;
+      color:#e7ebf2;
+      font-size:15px;
+      white-space:nowrap;
+      flex:0 0 auto;
     }
     .lvl-badge{
-      height:25px;min-width:60px;padding:0 11px;border-radius:7px;background:#f6f7fb;color:#22263d;
-      display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+      height:clamp(24px, 5.5vw, 28px);
+      min-width:clamp(56px, 14vw, 64px);
+      padding:0 11px;
+      border-radius:7px;
+      background:#f6f7fb;
+      color:#22263d;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:clamp(12px, 3vw, 14px);
+      font-weight:500;
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
     }
     .flag-round{
-      width:25px;height:25px;border-radius:999px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(255,255,255,.15);
+      width:25px;
+      height:25px;
+      border-radius:999px;
+      overflow:hidden;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 0 0 1px rgba(255,255,255,.15);
       flex:0 0 auto;
     }
     .flag-round img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -92,14 +144,14 @@
     .currency-scroll{
       overflow-x:auto;
       -webkit-overflow-scrolling:touch;
-      margin:11px 0 7px;
+      margin:10px 0 8px;
       padding-bottom:2px;
     }
     .currency-list{display:flex;gap:9px;align-items:center;min-width:max-content;}
     .currency-pill{
-      height:29px;
+      height:clamp(30px, 6.5vw, 34px);
       padding:0 12px 0 8px;
-      border-radius:9px;
+      border-radius:var(--radius-sm);
       border:1px solid #d7dce7;
       background:#fff;
       display:inline-flex;
@@ -107,11 +159,12 @@
       gap:8px;
       box-shadow:0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(0,0,0,.03);
       color:#3a4150;
-      font-size:13px;
+      font-size:var(--text-sm);
       font-weight:500;
       cursor:pointer;
       user-select:none;
       flex:0 0 auto;
+      white-space:nowrap;
     }
     .currency-pill.active{
       background:#23263b;
@@ -121,7 +174,14 @@
     }
     .pair-icon-group{display:inline-flex;align-items:center;}
     .pair-icon{
-      width:18px;height:18px;border-radius:999px;overflow:hidden;display:inline-block;box-shadow:0 0 0 1px rgba(0,0,0,.08);margin-left:-4px;background:#fff;
+      width:18px;
+      height:18px;
+      border-radius:999px;
+      overflow:hidden;
+      display:inline-block;
+      box-shadow:0 0 0 1px rgba(0,0,0,.08);
+      margin-left:-4px;
+      background:#fff;
     }
     .pair-icon:first-child{margin-left:0;}
     .pair-icon img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -130,8 +190,8 @@
       display:flex;
       align-items:flex-start;
       justify-content:space-between;
-      gap:10px;
-      margin:8px 0 9px;
+      gap:12px;
+      margin:10px 0 10px;
     }
     .current-time{
       display:flex;
@@ -139,8 +199,19 @@
       gap:2px;
       min-width:0;
     }
-    .time-label{font-size:13px;color:#8a93a2;line-height:1.1;font-weight:400;}
-    .time-value{font-size:18px;color:#303747;font-weight:600;line-height:1.1;letter-spacing:-.2px;}
+    .time-label{
+      font-size:var(--text-xs);
+      color:#8a93a2;
+      line-height:1.1;
+      font-weight:400;
+    }
+    .time-value{
+      font-size:clamp(17px, 4.5vw, 19px);
+      color:#303747;
+      font-weight:600;
+      line-height:1.1;
+      letter-spacing:-.2px;
+    }
 
     .timer-wrap{
       display:inline-flex;
@@ -154,16 +225,17 @@
       flex:0 0 auto;
     }
     .timer-btn{
-      height:38px;
-      min-width:84px;
+      height:clamp(36px, 7vw, 40px);
+      min-width:clamp(74px, 18vw, 88px);
       border:none;
       background:#fff;
       color:#8d94a4;
-      font-size:14px;
+      font-size:clamp(12px, 3vw, 14px);
       font-weight:500;
       cursor:pointer;
       padding:0 12px;
       border-right:1px solid #f0f2f6;
+      white-space:nowrap;
     }
     .timer-btn:last-child{border-right:none;}
     .timer-btn.active{
@@ -175,7 +247,7 @@
 
     .frame{
       background:#fff;
-      border-radius:18px;
+      border-radius:var(--radius-lg);
       box-shadow:var(--shadow);
       border:1px solid #e8edf5;
       overflow:hidden;
@@ -184,10 +256,9 @@
     .result-row{
       display:flex;
       align-items:stretch;
-      min-height:640px;
       width:100%;
-      position:relative;
     }
+
     .rail{
       flex:0 0 52px;
       width:52px;
@@ -206,7 +277,6 @@
       border-radius:18px 0 0 18px;
       font-size:16px;
       font-weight:500;
-      flex-direction:row;
       box-shadow:inset -1px 0 0 rgba(255,255,255,.12);
     }
     .rail.yellow{
@@ -243,7 +313,7 @@
       justify-content:center;
       writing-mode:vertical-rl;
       transform:rotate(180deg);
-      font-size:14px;
+      font-size:clamp(13px, 3vw, 14px);
       font-weight:400;
       line-height:1;
       letter-spacing:.05px;
@@ -260,64 +330,56 @@
 
     .main-panel{
       flex:1 1 auto;
-      padding:12px 10px 11px;
-      background:#fff;
+      min-width:0;
       display:flex;
       flex-direction:column;
-      align-items:stretch;
-      justify-content:flex-start;
+      padding:12px;
+      gap:12px;
+      background:#fff;
       border-right:1px solid #eef2f8;
-      min-width:0;
     }
 
-    .panel-divider{
-      height:1px;
-      background:#e8edf5;
-      margin:14px 0 15px;
+    .signal-container{
       width:100%;
-      box-shadow:0 1px 0 rgba(255,255,255,.8);
-    }
-
-    .result-card,
-    .signal-box,
-    .simple-page,
-    .home-hero,
-    .page-header-card,
-    .home-card,
-    .practice-card,
-    .invite-card,
-    .progress-card,
-    .ref-stat-card,
-    .lesson-card,
-    .milestone-item,
-    .activity-item{
+      box-sizing:border-box;
       background:#fff;
       border:1px solid #e6ecf5;
-      border-radius:16px;
+      border-radius:18px;
       box-shadow:var(--shadow);
+      padding:clamp(12px, 3vw, 16px) clamp(12px, 3vw, 14px) clamp(14px, 3vw, 16px);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
     }
 
     .result-card{
       background:#24263b;
-      border-radius:7px;
+      border-radius:9px;
       padding:8px 9px 7px;
       color:#fff;
-      box-shadow:0 5px 12px rgba(15,18,35,.14);
-      min-height:72px;
-      margin:0 auto 12px;
+      min-height:68px;
       width:100%;
       box-sizing:border-box;
       border:none;
+      box-shadow:0 5px 12px rgba(15,18,35,.14);
     }
-    .result-top,
+
+    .result-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:5px;
+    }
     .result-bottom{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:8px;
-      flex-wrap:wrap;
+      flex-wrap:nowrap;
     }
-    .result-top{margin-bottom:6px; align-items:flex-start;}
+
     .pair-inline{
       display:flex;
       align-items:center;
@@ -326,31 +388,59 @@
       flex:1 1 auto;
       flex-wrap:wrap;
     }
-    .star{font-size:15px;color:#d9c08a;transform:translateY(-1px);flex:0 0 auto;}
+    .star{
+      font-size:15px;
+      color:#d9c08a;
+      transform:translateY(-1px);
+      flex:0 0 auto;
+    }
     .pair-name{
-      font-size:12px;
+      font-size:clamp(12px, 3.2vw, 14px);
       font-weight:400;
       white-space:normal;
       overflow:visible;
       text-overflow:clip;
-      line-height:1.15;
+      line-height:1.1;
       word-break:break-word;
     }
-    .profit{font-size:12px;font-weight:500;color:#64d17f;white-space:nowrap;}
-    .result-time{font-size:12px;font-weight:400;color:#fff;opacity:.96;white-space:nowrap;flex:0 0 auto;}
-    .stake-row{display:flex;align-items:center;gap:4px;font-size:12px;line-height:1;white-space:nowrap;}
-    .stake-row .up{color:#58c15f;font-size:15px;line-height:1;}
-    .amt{font-weight:600;color:#67d478;font-size:12px;white-space:nowrap;}
-    .amt-center{font-weight:500;color:#66d378;font-size:12px;white-space:nowrap;}
+    .profit{
+      font-size:clamp(12px, 3vw, 13px);
+      font-weight:500;
+      color:#64d17f;
+      white-space:nowrap;
+    }
+    .result-time{
+      font-size:clamp(12px, 3vw, 13px);
+      font-weight:400;
+      color:#fff;
+      opacity:.96;
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .stake-row{
+      display:flex;
+      align-items:center;
+      gap:4px;
+      font-size:clamp(12px, 3vw, 13px);
+      line-height:1;
+      white-space:nowrap;
+    }
+    .stake-row .up{
+      color:#58c15f;
+      font-size:15px;
+      line-height:1;
+    }
+    .amt{font-weight:600;color:#67d478;font-size:clamp(12px, 3vw, 13px);white-space:nowrap;}
+    .amt-center{font-weight:500;color:#66d378;font-size:clamp(12px, 3vw, 13px);white-space:nowrap;}
 
     .signal-btn{
       width:100%;
-      height:44px;
+      height:clamp(42px, 8vw, 46px);
       border:none;
-      border-radius:11px;
+      border-radius:12px;
       background:linear-gradient(180deg,#39a7ed 0%,#309de8 100%);
       color:#fff;
-      font-size:17px;
+      font-size:clamp(15px, 3.6vw, 17px);
       font-weight:600;
       box-shadow:0 8px 16px rgba(48,157,232,.22);
       display:flex;
@@ -358,35 +448,44 @@
       justify-content:center;
       gap:10px;
       cursor:pointer;
-      margin-bottom:12px;
+      margin:0;
+    }
+
+    .divider-line{
+      height:1px;
+      background:#e8edf5;
+      width:100%;
     }
 
     .signal-box{
       background:#fff;
-      border-radius:12px;
-      padding:15px 13px 13px;
+      border-radius:14px;
+      padding:clamp(14px, 3vw, 16px);
       display:flex;
       flex-direction:column;
-      justify-content:center;
-      min-height:172px;
+      gap:10px;
+      min-height:150px;
       box-sizing:border-box;
+      border:1px solid #e6ecf5;
+      box-shadow:var(--shadow);
     }
+
     .signal-title{
       display:flex;
       align-items:center;
       gap:9px;
       color:#121826;
-      font-size:17px;
+      font-size:clamp(16px, 4vw, 18px);
       font-weight:700;
-      margin-bottom:10px;
+      margin:0;
     }
     .signal-line{
       display:flex;
       align-items:center;
       gap:9px;
       color:#4d586a;
-      font-size:15px;
-      margin:8px 0;
+      font-size:clamp(14px, 3.4vw, 15px);
+      margin:0;
       font-weight:400;
     }
     .signal-line i{color:#2fa5ef;}
@@ -394,7 +493,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      margin-top:4px;
+      margin-top:2px;
     }
     .antenna-icon{color:#2fa5ef;flex:0 0 auto;}
     .signal-badge{
@@ -406,47 +505,49 @@
       color:#71b873;
       background:#fbfffb;
       border-radius:6px;
-      padding:3px 12px;
-      font-size:15px;
+      padding:4px 10px;
+      font-size:clamp(13px, 3.2vw, 15px);
       font-weight:500;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
+      white-space:nowrap;
     }
     .signal-badge i{color:#49b343;}
 
     .support-wrap{
-      margin-top:12px;
+      margin-top:2px;
       display:flex;
       flex-direction:column;
       align-items:center;
       text-align:center;
+      gap:10px;
     }
     .support-pill{
       width:100%;
       max-width:216px;
-      height:40px;
-      border-radius:8px;
+      height:clamp(38px, 8vw, 42px);
+      border-radius:10px;
       background:#2f9fe9;
       color:#fff;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:8px;
-      font-size:17px;
+      font-size:clamp(15px, 3.6vw, 17px);
       font-weight:600;
       box-shadow:0 8px 16px rgba(47,159,233,.22);
     }
     .accuracy{
-      margin-top:11px;
+      margin-top:0;
       color:#55ad63;
-      font-size:25px;
+      font-size:clamp(22px, 6vw, 26px);
       line-height:1;
       font-weight:700;
       letter-spacing:-.2px;
     }
     .accuracy-note{
-      margin-top:10px;
+      margin-top:0;
       color:#788191;
-      font-size:14px;
+      font-size:clamp(12px, 3vw, 14px);
       line-height:1.2;
       font-weight:400;
     }
@@ -457,6 +558,10 @@
       display:flex;
       flex-direction:column;
       gap:14px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
     .home-top{
       display:flex;
@@ -465,7 +570,7 @@
       gap:12px;
     }
     .home-kicker,.page-kicker,.invite-label,.ref-stat-label,.mini-stat-label,.page-section-title{
-      font-size:11px;
+      font-size:var(--text-xs);
       color:#7f8794;
       letter-spacing:.2px;
       text-transform:uppercase;
@@ -473,7 +578,7 @@
     }
     .home-title,.page-title{
       margin:3px 0 6px;
-      font-size:24px;
+      font-size:clamp(22px, 5.6vw, 26px);
       line-height:1.1;
       color:#1f2633;
       font-weight:800;
@@ -482,7 +587,7 @@
     .home-subtitle,.page-text{
       margin:0;
       color:#667085;
-      font-size:14px;
+      font-size:clamp(13px, 3.3vw, 14px);
       line-height:1.45;
     }
     .home-avatar{
@@ -497,14 +602,8 @@
       flex:0 0 auto;
       overflow:hidden;
     }
-    .home-logo{
-      background:transparent;
-      padding:0;
-    }
-    .home-logo .brand-mark{
-      width:42px;
-      height:30px;
-    }
+    .home-logo{background:transparent;padding:0;}
+    .home-logo .brand-mark{width:42px;height:30px;}
 
     .home-stat-grid,
     .ref-grid{
@@ -525,7 +624,7 @@
       min-height:72px;
     }
     .mini-stat-value,.ref-stat-value{
-      font-size:18px;
+      font-size:clamp(16px, 4.2vw, 18px);
       font-weight:700;
       color:#233044;
       line-height:1;
@@ -533,6 +632,10 @@
     .home-card{
       margin-top:0;
       padding:14px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
     .home-card-head{
       display:flex;
@@ -552,9 +655,10 @@
       background:#eef7ff;
       padding:5px 8px;
       border-radius:999px;
+      white-space:nowrap;
     }
     .home-signal-pair{
-      font-size:18px;
+      font-size:clamp(17px, 4.6vw, 20px);
       font-weight:800;
       color:#24263b;
       letter-spacing:-.2px;
@@ -572,7 +676,7 @@
       align-items:center;
       justify-content:space-between;
     }
-    .home-signal-row{margin-top:8px;color:#5a6475;font-size:14px;}
+    .home-signal-row{margin-top:8px;color:#5a6475;font-size:clamp(13px, 3.2vw, 14px);}
     .home-signal-direction{font-weight:600;color:#49b343;}
     .home-signal-time{white-space:nowrap;}
     .home-signal-meta{
@@ -580,7 +684,7 @@
       flex-wrap:wrap;
       gap:8px;
       margin-top:12px;
-      font-size:12px;
+      font-size:clamp(11px, 2.8vw, 12px);
       color:#667085;
     }
     .home-signal-meta span{
@@ -601,15 +705,19 @@
     .milestone-item,
     .activity-item{
       padding:14px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
     .home-action-card{
       display:flex;
       align-items:flex-start;
       gap:10px;
-      min-height:92px;
+      min-height:88px;
     }
     .home-action-title{font-weight:700;font-size:14px;color:#1f2633;}
-    .home-action-text{font-size:12px;color:#667085;margin-top:3px;line-height:1.35;}
+    .home-action-text{font-size:clamp(13px, 3.3vw, 14px);color:#667085;margin-top:3px;line-height:1.35;}
 
     .page-header-card{
       margin-top:10px;
@@ -618,6 +726,10 @@
       align-items:flex-start;
       justify-content:space-between;
       gap:12px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
     .page-section-title{
       margin:14px 2px 8px;
@@ -655,6 +767,10 @@
     .progress-card{
       margin-top:10px;
       padding:14px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
     .practice-row,
     .activity-item,
@@ -672,11 +788,11 @@
     .progress-card{
       display:flex;
       align-items:center;
-      gap:16px;
+      gap:14px;
     }
     .progress-ring{
-      width:106px;
-      height:106px;
+      width:clamp(94px, 24vw, 110px);
+      height:clamp(94px, 24vw, 110px);
       border-radius:50%;
       background:conic-gradient(#2f98e5 0 72%, #e8edf5 72% 100%);
       display:flex;
@@ -685,8 +801,8 @@
       flex:0 0 auto;
     }
     .progress-ring-inner{
-      width:76px;
-      height:76px;
+      width:clamp(68px, 18vw, 78px);
+      height:clamp(68px, 18vw, 78px);
       border-radius:50%;
       background:#fff;
       display:flex;
@@ -695,7 +811,7 @@
       flex-direction:column;
       box-shadow:inset 0 0 0 1px #eef2f8;
     }
-    .progress-ring-value{font-size:18px;font-weight:800;color:#1f2633;line-height:1;}
+    .progress-ring-value{font-size:clamp(16px, 4.2vw, 18px);font-weight:800;color:#1f2633;line-height:1;}
     .progress-ring-label{font-size:11px;color:#7f8794;margin-top:4px;}
     .progress-summary{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;}
     .progress-row strong{font-size:14px;color:#1f2633;}
@@ -742,7 +858,7 @@
       padding-bottom:env(safe-area-inset-bottom);
     }
     .bottom-nav-inner{
-      max-width:430px;
+      max-width:var(--app-max);
       margin:0 auto;
       display:flex;
       justify-content:space-around;
@@ -757,16 +873,20 @@
       align-items:center;
       gap:4px;
       color:#97a1b2;
-      font-size:11px;
+      font-size:10px;
       cursor:pointer;
-      min-width:52px;
+      min-width:48px;
     }
     .nav-btn.active{color:#2f98e5;}
-    .nav-btn i{width:22px;height:22px;}
+    .nav-btn i{width:20px;height:20px;}
 
     .simple-page{
       margin-top:10px;
       padding:24px 16px;
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:18px;
+      box-shadow:var(--shadow);
     }
 
     svg.lucide, i[data-lucide] svg{stroke-width:1.7;}
@@ -774,17 +894,12 @@
 
     @media (max-width:390px){
       .app{padding-left:8px;padding-right:8px;}
-      .brand-text{font-size:15px;}
       .user-chip{font-size:14px;gap:6px;}
       .lvl-badge{min-width:58px;height:24px;font-size:13px;}
-      .timer-btn{min-width:78px;font-size:13px;height:38px;}
-      .time-value{font-size:18px;}
-      .signal-title{font-size:17px;}
-      .accuracy{font-size:25px;}
+      .timer-btn{min-width:78px;}
       .rail{width:50px;flex-basis:50px;font-size:15px;}
       .rail.yellow{width:56px;flex-basis:56px;font-size:11px;}
       .edge-strip{width:56px;flex-basis:56px;}
-      .edge-half{font-size:14px;}
       .progress-card{flex-direction:column;align-items:flex-start;}
       .progress-ring{margin:0 auto;}
       .progress-summary{width:100%;}
@@ -907,42 +1022,53 @@
           </div>
 
           <div class="main-panel">
-            <div class="result-card">
-              <div class="result-top">
-                <div class="pair-inline">
-                  <span class="star">☆</span>
-                  <span class="pair-name" id="signalPair">EUR/USD OTC</span>
-                  <span class="profit" id="profitPercent">+92%</span>
+            <div class="signal-container">
+              <div class="result-card">
+                <div class="result-top">
+                  <div class="pair-inline">
+                    <span class="star">☆</span>
+                    <span class="pair-name" id="signalPair">EUR/USD OTC</span>
+                    <span class="profit" id="profitPercent">+92%</span>
+                  </div>
+                  <div class="result-time" id="resultTime">10:22</div>
                 </div>
-                <div class="result-time" id="resultTime">10:22</div>
+                <div class="result-bottom">
+                  <div class="stake-row"><span class="up">↗</span><span class="amt" id="stakeAmount">$100</span></div>
+                  <div class="amt-center" id="profitTotal">$192</div>
+                  <div class="amt" id="profitAmount">$92</div>
+                </div>
               </div>
-              <div class="result-bottom">
-                <div class="stake-row"><span class="up">↗</span><span class="amt" id="stakeAmount">$100</span></div>
-                <div class="amt-center" id="profitTotal">$192</div>
-                <div class="amt" id="profitAmount">$92</div>
+
+              <button id="getSignalBtn" class="signal-btn">
+                Get next signal
+                <span class="pulse-icon"><i data-lucide="radio" class="w-5 h-5"></i></span>
+              </button>
+
+              <div class="divider-line"></div>
+
+              <div class="signal-box">
+                <div class="signal-title">
+                  <i data-lucide="chart-column" class="w-6 h-6 text-sky-500"></i>
+                  <span id="proPair">EUR/USD OTC</span>
+                </div>
+                <div class="signal-line">
+                  <i data-lucide="clock-3" class="w-5 h-5 text-blue-icon"></i>
+                  <span>Trade time: 1 minute</span>
+                </div>
+                <div class="signal-action">
+                  <i data-lucide="radio" class="w-5 h-5 antenna-icon"></i>
+                  <div class="signal-badge">
+                    <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                    <span>Increase</span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            <button id="getSignalBtn" class="signal-btn">
-              Get next signal
-              <span class="pulse-icon"><i data-lucide="radio" class="w-5 h-5"></i></span>
-            </button>
-
-            <div class="panel-divider"></div>
-
-            <div class="signal-box">
-              <div class="signal-title"><i data-lucide="chart-column" class="w-6 h-6 text-sky-500"></i><span id="proPair">EUR/USD OTC</span></div>
-              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5 text-blue-icon"></i><span>Trade time: 1 minute</span></div>
-              <div class="signal-action">
-                <i data-lucide="radio" class="w-5 h-5 antenna-icon"></i>
-                <div class="signal-badge"><i data-lucide="arrow-up-right" class="w-4 h-4"></i><span>Increase</span></div>
+              <div class="support-wrap">
+                <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i>Support</div>
+                <div class="accuracy" id="accuracyPercent">69.1299%</div>
+                <div class="accuracy-note" id="accuracyDateLine">Signal accuracy for today | 2025.08.02</div>
               </div>
-            </div>
-
-            <div class="support-wrap">
-              <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i>Support</div>
-              <div class="accuracy" id="accuracyPercent">69.1299%</div>
-              <div class="accuracy-note" id="accuracyDateLine">Signal accuracy for today | 2026.04.10</div>
             </div>
           </div>
 
@@ -1199,7 +1325,11 @@
     });
 
     function updateClock(){
-      document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
     }
 
     updateClock();
