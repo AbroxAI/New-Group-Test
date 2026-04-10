@@ -12,7 +12,6 @@
       --card:#ffffff;
       --ink:#1f2633;
       --muted:#7f8794;
-      --nav:#ffffff;
       --blue:#2e9fe8;
       --blue-dark:#24263d;
       --green:#4ab54d;
@@ -217,20 +216,37 @@
       text-align:center;
     }
 
-    .result-strip{
-      width:60px;
-      flex:0 0 60px;
+    .edge-strip{
+      width:58px;
+      flex:0 0 58px;
       background:#dde3ef;
       color:#263044;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:stretch;
+      border-left:1px solid rgba(255,255,255,.35);
+      border-right:1px solid rgba(255,255,255,.6);
+      overflow:hidden;
+    }
+    .edge-half{
+      flex:1 1 50%;
+      width:100%;
       display:flex;
       align-items:center;
       justify-content:center;
       writing-mode:vertical-rl;
       transform:rotate(180deg);
-      font-size:16px;
+      font-size:15px;
       font-weight:400;
-      border-left:1px solid rgba(255,255,255,.35);
-      border-right:1px solid rgba(255,255,255,.6);
+      line-height:1;
+    }
+    .edge-divider{
+      width:100%;
+      height:1px;
+      background:rgba(255,255,255,.72);
+      box-shadow:0 1px 0 rgba(0,0,0,.03) inset;
+      flex:0 0 auto;
     }
 
     .main-panel{
@@ -242,6 +258,14 @@
       align-items:stretch;
       justify-content:flex-start;
       border-right:1px solid #eef2f8;
+    }
+
+    .panel-divider{
+      height:1px;
+      background:#e8edf5;
+      margin:14px 0 15px;
+      width:100%;
+      box-shadow:0 1px 0 rgba(255,255,255,.8);
     }
 
     .result-card{
@@ -321,19 +345,28 @@
       font-weight:400;
     }
     .signal-line i{color:#2fa5ef;}
+    .signal-action{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:4px;
+    }
+    .antenna-icon{color:#2fa5ef;flex:0 0 auto;}
     .signal-badge{
       display:inline-flex;
       align-items:center;
       gap:6px;
       width:max-content;
       border:1px solid #b9d7ba;
-      color:#6db26f;
-      background:#f9fff9;
+      color:#71b873;
+      background:#fbfffb;
       border-radius:6px;
-      padding:3px 11px;
+      padding:3px 12px;
       font-size:15px;
       font-weight:500;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
     }
+    .signal-badge i{color:#49b343;}
 
     .support-wrap{
       margin-top:12px;
@@ -415,6 +448,7 @@
     }
 
     svg.lucide, i[data-lucide] svg{stroke-width:1.7;}
+    .text-blue-icon, .text-blue-icon svg{color:#2fa5ef;stroke:#2fa5ef;}
 
     @media (max-width:390px){
       .app{padding-left:8px;padding-right:8px;}
@@ -427,7 +461,8 @@
       .accuracy{font-size:25px;}
       .rail{width:50px;flex-basis:50px;font-size:15px;}
       .rail.yellow{width:56px;flex-basis:56px;font-size:11px;}
-      .result-strip{width:58px;font-size:15px;}
+      .edge-strip{width:56px;flex-basis:56px;}
+      .edge-half{font-size:14px;}
     }
   </style>
 </head>
@@ -476,7 +511,11 @@
       <div class="frame">
         <div class="result-row">
           <div class="rail green"><span>Signal PRO</span></div>
-          <div class="result-strip"><span>Result</span></div>
+          <div class="edge-strip">
+            <div class="edge-half">Result</div>
+            <div class="edge-divider"></div>
+            <div class="edge-half">Signal</div>
+          </div>
 
           <div class="main-panel">
             <div class="result-card">
@@ -500,16 +539,21 @@
               <span class="pulse-icon"><i data-lucide="radio" class="w-5 h-5"></i></span>
             </button>
 
+            <div class="panel-divider"></div>
+
             <div class="signal-box">
               <div class="signal-title"><i data-lucide="chart-column" class="w-6 h-6 text-sky-500"></i><span id="proPair">EUR/USD OTC</span></div>
-              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5"></i><span>Trade time: 1 minute</span></div>
-              <div class="signal-badge"><i data-lucide="radio" class="w-4 h-4"></i><span>Increase</span></div>
+              <div class="signal-line"><i data-lucide="clock-3" class="w-5 h-5 text-blue-icon"></i><span>Trade time: 1 minute</span></div>
+              <div class="signal-action">
+                <i data-lucide="radio" class="w-5 h-5 antenna-icon"></i>
+                <div class="signal-badge"><i data-lucide="arrow-up-right" class="w-4 h-4"></i><span>Increase</span></div>
+              </div>
             </div>
 
             <div class="support-wrap">
               <div class="support-pill"><i data-lucide="send" class="w-4 h-4"></i>Support</div>
-              <div class="accuracy">69.1299%</div>
-              <div class="accuracy-note">Signal accuracy for today | 2025.08.02</div>
+              <div class="accuracy" id="accuracyPercent">69.1299%</div>
+              <div class="accuracy-note" id="accuracyDateLine">Signal accuracy for today | 2026.04.10</div>
             </div>
           </div>
 
@@ -593,6 +637,22 @@
     const profitTotalEl = document.getElementById('profitTotal');
     const profitAmountEl = document.getElementById('profitAmount');
     const resultTimeEl = document.getElementById('resultTime');
+    const accuracyPercentEl = document.getElementById('accuracyPercent');
+    const accuracyDateLineEl = document.getElementById('accuracyDateLine');
+
+    function formatDateYMD(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}.${m}.${d}`;
+    }
+
+    function updateAccuracy() {
+      const now = new Date();
+      const pct = (69 + Math.random() * 8).toFixed(4);
+      accuracyPercentEl.innerText = `${pct}%`;
+      accuracyDateLineEl.innerText = `Signal accuracy for today | ${formatDateYMD(now)}`;
+    }
 
     function renderSignal(pair = currentPair) {
       const base = signalData[pair] || signalData['EUR/USD'];
@@ -635,7 +695,9 @@
       document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
     updateClock();
+    updateAccuracy();
     setInterval(updateClock, 1000);
+    setInterval(updateAccuracy, 60000);
 
     renderSignal();
     lucide.createIcons();
