@@ -53,6 +53,7 @@
       padding:0 12px 0 10px;
       box-shadow:0 2px 8px rgba(0,0,0,.12);
       overflow:hidden;
+      border-radius:0;
     }
     .brand{
       display:flex;
@@ -180,54 +181,61 @@
       overflow:hidden;
     }
 
+    /* Main replica area */
     .result-row{
       display:flex;
       align-items:stretch;
-      min-height:424px;
+      min-height:640px;
+      width:100%;
+      position:relative;
     }
     .rail{
-      width:54px;
-      flex:0 0 54px;
+      flex:0 0 52px;
+      width:52px;
       display:flex;
       align-items:center;
       justify-content:center;
       writing-mode:vertical-rl;
       transform:rotate(180deg);
-      font-size:17px;
       line-height:1;
-      font-weight:500;
-      letter-spacing:.1px;
+      letter-spacing:.15px;
+      user-select:none;
     }
     .rail.green{
       background:linear-gradient(180deg,#58bd4d 0%,#49b343 100%);
       color:#fff;
       border-radius:18px 0 0 18px;
-      width:52px;
-      flex-basis:52px;
+      font-size:16px;
+      font-weight:500;
+      flex-direction:row;
+      box-shadow:inset -1px 0 0 rgba(255,255,255,.12);
     }
     .rail.yellow{
       background:linear-gradient(180deg,#f8cf3d 0%,#f2bc12 100%);
       color:#342900;
       border-radius:0 18px 18px 0;
-      width:54px;
-      flex-basis:54px;
+      flex:0 0 56px;
+      width:56px;
       font-size:11px;
       font-weight:700;
       text-align:center;
+      padding:10px 0;
     }
 
+    /* This is the middle separator column in the screenshot */
     .edge-strip{
-      width:58px;
-      flex:0 0 58px;
-      background:#dde3ef;
+      flex:0 0 56px;
+      width:56px;
+      background:#d9dfea;
       color:#263044;
       display:flex;
       flex-direction:column;
-      align-items:center;
+      align-items:stretch;
       justify-content:stretch;
-      border-left:1px solid rgba(255,255,255,.35);
-      border-right:1px solid rgba(255,255,255,.6);
       overflow:hidden;
+      border-left:1px solid rgba(255,255,255,.38);
+      border-right:1px solid rgba(255,255,255,.56);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
     }
     .edge-half{
       flex:1 1 50%;
@@ -237,27 +245,31 @@
       justify-content:center;
       writing-mode:vertical-rl;
       transform:rotate(180deg);
-      font-size:15px;
+      font-size:14px;
       font-weight:400;
       line-height:1;
+      letter-spacing:.05px;
+      padding:6px 0;
+      box-sizing:border-box;
     }
     .edge-divider{
       width:100%;
       height:1px;
-      background:rgba(255,255,255,.72);
-      box-shadow:0 1px 0 rgba(0,0,0,.03) inset;
+      background:rgba(255,255,255,.76);
+      box-shadow:0 -1px 0 rgba(0,0,0,.02) inset, 0 1px 0 rgba(255,255,255,.85) inset;
       flex:0 0 auto;
     }
 
     .main-panel{
       flex:1 1 auto;
-      padding:13px 11px 11px;
+      padding:12px 10px 11px;
       background:#fff;
       display:flex;
       flex-direction:column;
       align-items:stretch;
       justify-content:flex-start;
       border-right:1px solid #eef2f8;
+      min-width:0;
     }
 
     .panel-divider{
@@ -323,7 +335,7 @@
       display:flex;
       flex-direction:column;
       justify-content:center;
-      min-height:166px;
+      min-height:172px;
       box-sizing:border-box;
     }
     .signal-title{
@@ -447,6 +459,286 @@
       padding:24px 16px;
     }
 
+    .home-hero,
+    .page-header-card,
+    .home-card,
+    .practice-card,
+    .invite-card,
+    .progress-card,
+    .ref-stat-card,
+    .lesson-card,
+    .milestone-item,
+    .activity-item{
+      background:#fff;
+      border:1px solid #e8edf5;
+      border-radius:18px;
+      box-shadow:var(--soft);
+    }
+
+    .home-hero{
+      padding:16px;
+      margin-top:10px;
+    }
+    .home-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .home-kicker,.page-kicker,.invite-label,.ref-stat-label,.mini-stat-label{
+      font-size:12px;
+      color:#7f8794;
+      letter-spacing:.2px;
+      text-transform:uppercase;
+    }
+    .home-title,.page-title{
+      margin:3px 0 6px;
+      font-size:24px;
+      line-height:1.1;
+      color:#1f2633;
+      font-weight:700;
+    }
+    .home-subtitle,.page-text{
+      margin:0;
+      color:#667085;
+      font-size:14px;
+      line-height:1.4;
+    }
+    .home-avatar{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#eff6ff;
+      color:#2f98e5;
+      flex:0 0 auto;
+    }
+    .home-stat-grid,
+    .ref-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+      margin-top:14px;
+    }
+    .mini-stat,
+    .ref-stat-card{
+      padding:12px 12px 11px;
+      border-radius:14px;
+      background:#f9fbfe;
+      border:1px solid #edf2f8;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
+    .mini-stat-value,.ref-stat-value{
+      font-size:18px;
+      font-weight:700;
+      color:#233044;
+      line-height:1;
+    }
+    .home-card{
+      margin-top:12px;
+      padding:14px;
+    }
+    .home-card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .home-card-title,.lesson-title{
+      font-size:15px;
+      font-weight:700;
+      color:#1f2633;
+    }
+    .home-badge{
+      font-size:11px;
+      font-weight:700;
+      color:#2f98e5;
+      background:#eef7ff;
+      padding:5px 8px;
+      border-radius:999px;
+    }
+    .home-signal-pair{
+      font-size:20px;
+      font-weight:800;
+      color:#24263b;
+      letter-spacing:-.2px;
+    }
+    .home-signal-row,
+    .progress-row,
+    .practice-row,
+    .activity-item,
+    .milestone-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .home-signal-row{margin-top:8px;color:#5a6475;font-size:14px;}
+    .home-signal-direction{font-weight:600;color:#49b343;}
+    .home-signal-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+      font-size:12px;
+      color:#667085;
+    }
+    .home-signal-meta span{
+      background:#f4f7fb;
+      border:1px solid #edf2f8;
+      border-radius:999px;
+      padding:6px 9px;
+    }
+    .home-grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    .home-action-card,
+    .lesson-card,
+    .milestone-item,
+    .activity-item{
+      padding:14px;
+    }
+    .home-action-card{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+    }
+    .home-action-title{font-weight:700;font-size:14px;color:#1f2633;}
+    .home-action-text{font-size:12px;color:#667085;margin-top:3px;line-height:1.35;}
+
+    .page-header-card{
+      margin-top:10px;
+      padding:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .page-section-title{
+      margin:14px 2px 8px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.18px;
+      color:#7f8794;
+      font-weight:700;
+    }
+    .lesson-list,
+    .activity-list,
+    .milestone-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .lesson-card{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .lesson-icon{
+      width:36px;
+      height:36px;
+      border-radius:12px;
+      background:#eff6ff;
+      color:#2f98e5;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .lesson-text{font-size:12px;color:#667085;margin-top:3px;line-height:1.35;}
+    .practice-card,
+    .invite-card,
+    .progress-card{
+      margin-top:10px;
+      padding:14px;
+    }
+    .practice-row,
+    .activity-item,
+    .milestone-item,
+    .progress-row{
+      padding:11px 0;
+      border-bottom:1px solid #eef2f8;
+      font-size:14px;
+      color:#344054;
+    }
+    .practice-row:last-child,
+    .activity-item:last-child,
+    .milestone-item:last-child,
+    .progress-row:last-child{border-bottom:none;padding-bottom:0;}
+    .progress-card{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+    .progress-ring{
+      width:106px;
+      height:106px;
+      border-radius:50%;
+      background:conic-gradient(#2f98e5 0 72%, #e8edf5 72% 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .progress-ring-inner{
+      width:76px;
+      height:76px;
+      border-radius:50%;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      box-shadow:inset 0 0 0 1px #eef2f8;
+    }
+    .progress-ring-value{font-size:18px;font-weight:800;color:#1f2633;line-height:1;}
+    .progress-ring-label{font-size:11px;color:#7f8794;margin-top:4px;}
+    .progress-summary{flex:1 1 auto;}
+    .progress-row strong{font-size:14px;color:#1f2633;}
+    .invite-link{
+      margin-top:8px;
+      font-size:13px;
+      word-break:break-all;
+      color:#344054;
+      background:#f9fbfe;
+      border:1px solid #edf2f8;
+      border-radius:12px;
+      padding:10px 12px;
+    }
+    .invite-btn{
+      margin-top:10px;
+      width:100%;
+      height:40px;
+      border:none;
+      border-radius:12px;
+      background:#2f98e5;
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      box-shadow:0 8px 16px rgba(47,152,229,.18);
+      cursor:pointer;
+    }
+    .milestone-item{
+      gap:10px;
+      justify-content:flex-start;
+      color:#344054;
+    }
+    .milestone-item.done{color:#1f7a3b;}
+    .milestone-item svg{flex:0 0 auto;}
+    .referrals-header{align-items:center;}
+
+    @media (max-width:390px){
+      .progress-card{flex-direction:column;align-items:flex-start;}
+      .progress-ring{margin:0 auto;}
+      .progress-summary{width:100%;}
+    }
+
     svg.lucide, i[data-lucide] svg{stroke-width:1.7;}
     .text-blue-icon, .text-blue-icon svg{color:#2fa5ef;stroke:#2fa5ef;}
 
@@ -469,10 +761,70 @@
 <body>
   <div class="app">
     <div id="homePage" class="page">
-      <div class="simple-page text-center">
-        <i data-lucide="home" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h1 class="text-2xl font-semibold text-slate-800">PocketOptionInside</h1>
-        <p class="text-slate-500 mt-2">Trading dashboard preview.</p>
+      <div class="home-hero">
+        <div class="home-top">
+          <div>
+            <div class="home-kicker">Welcome back</div>
+            <h1 class="home-title">PocketOptionInside</h1>
+            <p class="home-subtitle">Live signals, training, referrals, and progress in one place.</p>
+          </div>
+          <div class="home-avatar">
+            <i data-lucide="badge-check" class="w-5 h-5"></i>
+          </div>
+        </div>
+
+        <div class="home-stat-grid">
+          <div class="mini-stat">
+            <span class="mini-stat-label">Accuracy</span>
+            <span class="mini-stat-value" id="homeAccuracy">69.1299%</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-stat-label">Today</span>
+            <span class="mini-stat-value">12 signals</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-stat-label">Active plan</span>
+            <span class="mini-stat-value">Pro</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-stat-label">Level</span>
+            <span class="mini-stat-value">6 LVL</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-card home-signal-card">
+        <div class="home-card-head">
+          <span class="home-card-title">Latest signal</span>
+          <span class="home-badge">Live</span>
+        </div>
+        <div class="home-signal-pair" id="homeSignalPair">EUR/USD OTC</div>
+        <div class="home-signal-row">
+          <span class="home-signal-direction">↗ Increase</span>
+          <span class="home-signal-time" id="homeSignalTime">10:22</span>
+        </div>
+        <div class="home-signal-meta">
+          <span>1 minute</span>
+          <span>+92%</span>
+          <span>$100 stake</span>
+        </div>
+      </div>
+
+      <div class="home-grid">
+        <div class="home-card home-action-card">
+          <i data-lucide="radio" class="w-6 h-6 text-sky-500"></i>
+          <div>
+            <div class="home-action-title">Signals</div>
+            <div class="home-action-text">Open the live signal board.</div>
+          </div>
+        </div>
+        <div class="home-card home-action-card">
+          <i data-lucide="book-open" class="w-6 h-6 text-sky-500"></i>
+          <div>
+            <div class="home-action-title">Training</div>
+            <div class="home-action-text">Learn the basics and strategy.</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -484,7 +836,7 @@
         </div>
         <div class="user-chip">
           <span>User</span>
-          <span class="lvl-badge">0 LVL</span>
+          <span class="lvl-badge">6 LVL</span>
           <span class="flag-round" title="language">
             <img src="https://flagcdn.com/w40/gb.png" alt="UK flag">
           </span>
@@ -511,6 +863,7 @@
       <div class="frame">
         <div class="result-row">
           <div class="rail green"><span>Signal PRO</span></div>
+
           <div class="edge-strip">
             <div class="edge-half">Result</div>
             <div class="edge-divider"></div>
@@ -563,10 +916,45 @@
     </div>
 
     <div id="trainingPage" class="page">
-      <div class="simple-page text-center">
-        <i data-lucide="book-open" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-semibold text-slate-800">Training & Education</h2>
-        <p class="text-slate-500 mt-2">Content placeholder.</p>
+      <div class="page-header-card">
+        <div>
+          <div class="page-kicker">Learn</div>
+          <h2 class="page-title">Training & Education</h2>
+          <p class="page-text">Short lessons for beginners, plus a clean path to practice without wrecking their confidence immediately.</p>
+        </div>
+        <i data-lucide="book-open" class="w-10 h-10 text-sky-500"></i>
+      </div>
+
+      <div class="page-section-title">Lessons</div>
+      <div class="lesson-list">
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="play-circle" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Getting started</div>
+            <div class="lesson-text">Read the interface, pair list, and signal cards.</div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Reading signals</div>
+            <div class="lesson-text">Understand direction, time, and payout fields.</div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Risk rules</div>
+            <div class="lesson-text">Use a fixed stake and keep losses bounded.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-section-title">Practice</div>
+      <div class="practice-card">
+        <div class="practice-row"><span>Demo mode</span><span>Enabled</span></div>
+        <div class="practice-row"><span>Training balance</span><span>$1,000</span></div>
+        <div class="practice-row"><span>Focus</span><span>1 minute</span></div>
       </div>
     </div>
 
@@ -579,18 +967,78 @@
     </div>
 
     <div id="referralsPage" class="page">
-      <div class="simple-page text-center">
-        <i data-lucide="users" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-semibold text-slate-800">Referrals</h2>
-        <p class="text-slate-500 mt-2">No referrals yet.</p>
+      <div class="page-header-card referrals-header">
+        <div>
+          <div class="page-kicker">Invite</div>
+          <h2 class="page-title">Referrals</h2>
+          <p class="page-text">Track invites, bonuses, and the beautiful human tendency to trust a link if it looks shiny enough.</p>
+        </div>
+        <i data-lucide="users" class="w-10 h-10 text-sky-500"></i>
+      </div>
+
+      <div class="ref-grid">
+        <div class="ref-stat-card">
+          <span class="ref-stat-label">Invites</span>
+          <span class="ref-stat-value">24</span>
+        </div>
+        <div class="ref-stat-card">
+          <span class="ref-stat-label">Active</span>
+          <span class="ref-stat-value">8</span>
+        </div>
+        <div class="ref-stat-card">
+          <span class="ref-stat-label">Earned</span>
+          <span class="ref-stat-value">$126</span>
+        </div>
+        <div class="ref-stat-card">
+          <span class="ref-stat-label">Rank</span>
+          <span class="ref-stat-value">#12</span>
+        </div>
+      </div>
+
+      <div class="invite-card">
+        <div class="invite-label">Referral link</div>
+        <div class="invite-link">pocketoptioninside.com/invite/6LVL</div>
+        <button class="invite-btn">Copy link</button>
+      </div>
+
+      <div class="page-section-title">Recent activity</div>
+      <div class="activity-list">
+        <div class="activity-item"><span>Mike joined</span><span>2h ago</span></div>
+        <div class="activity-item"><span>Bonus credited</span><span>$18</span></div>
+        <div class="activity-item"><span>Ada signed up</span><span>Yesterday</span></div>
       </div>
     </div>
 
     <div id="progressPage" class="page">
-      <div class="simple-page text-center">
-        <i data-lucide="trending-up" class="w-12 h-12 text-sky-500 mx-auto mb-4"></i>
-        <h2 class="text-xl font-semibold text-slate-800">Your Progress</h2>
-        <p class="text-slate-500 mt-2">Statistics placeholder.</p>
+      <div class="page-header-card">
+        <div>
+          <div class="page-kicker">Stats</div>
+          <h2 class="page-title">Your Progress</h2>
+          <p class="page-text">A simple progress view so the app feels less like a button museum and more like something useful.</p>
+        </div>
+        <i data-lucide="trending-up" class="w-10 h-10 text-sky-500"></i>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-ring">
+          <div class="progress-ring-inner">
+            <div class="progress-ring-value">72%</div>
+            <div class="progress-ring-label">Completion</div>
+          </div>
+        </div>
+        <div class="progress-summary">
+          <div class="progress-row"><span>Weekly win rate</span><strong>69%</strong></div>
+          <div class="progress-row"><span>Best streak</span><strong>11</strong></div>
+          <div class="progress-row"><span>Completed lessons</span><strong>18</strong></div>
+          <div class="progress-row"><span>Current tier</span><strong>Pro</strong></div>
+        </div>
+      </div>
+
+      <div class="page-section-title">Milestones</div>
+      <div class="milestone-list">
+        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>First signal opened</span></div>
+        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>Training completed</span></div>
+        <div class="milestone-item"><i data-lucide="circle" class="w-5 h-5"></i><span>Referral target reached</span></div>
       </div>
     </div>
   </div>
@@ -639,6 +1087,9 @@
     const resultTimeEl = document.getElementById('resultTime');
     const accuracyPercentEl = document.getElementById('accuracyPercent');
     const accuracyDateLineEl = document.getElementById('accuracyDateLine');
+    const homeAccuracyEl = document.getElementById('homeAccuracy');
+    const homeSignalPairEl = document.getElementById('homeSignalPair');
+    const homeSignalTimeEl = document.getElementById('homeSignalTime');
 
     function formatDateYMD(date) {
       const y = date.getFullYear();
@@ -652,6 +1103,7 @@
       const pct = (69 + Math.random() * 8).toFixed(4);
       accuracyPercentEl.innerText = `${pct}%`;
       accuracyDateLineEl.innerText = `Signal accuracy for today | ${formatDateYMD(now)}`;
+      if (homeAccuracyEl) homeAccuracyEl.innerText = `${pct}%`;
     }
 
     function renderSignal(pair = currentPair) {
@@ -668,6 +1120,8 @@
       profitTotalEl.innerText = `$${total}`;
       profitAmountEl.innerText = `$${profit}`;
       resultTimeEl.innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      if (homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`;
+      if (homeSignalTimeEl) homeSignalTimeEl.innerText = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
     const currencyContainer = document.getElementById('currencyList');
