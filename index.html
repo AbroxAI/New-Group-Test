@@ -181,7 +181,6 @@
       overflow:hidden;
     }
 
-    /* Main replica area */
     .result-row{
       display:flex;
       align-items:stretch;
@@ -222,7 +221,6 @@
       padding:10px 0;
     }
 
-    /* This is the middle separator column in the screenshot */
     .edge-strip{
       flex:0 0 56px;
       width:56px;
@@ -280,6 +278,25 @@
       box-shadow:0 1px 0 rgba(255,255,255,.8);
     }
 
+    .result-card,
+    .signal-box,
+    .simple-page,
+    .home-hero,
+    .page-header-card,
+    .home-card,
+    .practice-card,
+    .invite-card,
+    .progress-card,
+    .ref-stat-card,
+    .lesson-card,
+    .milestone-item,
+    .activity-item{
+      background:#fff;
+      border:1px solid #e6ecf5;
+      border-radius:16px;
+      box-shadow:var(--shadow);
+    }
+
     .result-card{
       background:#24263b;
       border-radius:7px;
@@ -290,6 +307,7 @@
       margin:0 auto 12px;
       width:100%;
       box-sizing:border-box;
+      border:none;
     }
     .result-top,
     .result-bottom{
@@ -330,7 +348,6 @@
     .signal-box{
       background:#fff;
       border-radius:12px;
-      border:1px solid #e8edf5;
       padding:15px 13px 13px;
       display:flex;
       flex-direction:column;
@@ -418,66 +435,12 @@
       font-weight:400;
     }
 
-    .bottom-nav{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      background:#fff;
-      border-top:1px solid #e5eaf2;
-      box-shadow:0 -2px 10px rgba(15,23,42,.04);
-      z-index:40;
-      padding-bottom:env(safe-area-inset-bottom);
-    }
-    .bottom-nav-inner{
-      max-width:430px;
-      margin:0 auto;
-      display:flex;
-      justify-content:space-around;
-      align-items:flex-end;
-      padding:10px 6px 8px;
-    }
-    .nav-btn{
-      border:none;
-      background:none;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:4px;
-      color:#97a1b2;
-      font-size:11px;
-      cursor:pointer;
-      min-width:52px;
-    }
-    .nav-btn.active{color:#2f98e5;}
-    .nav-btn i{width:22px;height:22px;}
-
-    .simple-page{
-      margin-top:10px;
-      background:#fff;
-      border:1px solid #e8edf5;
-      border-radius:18px;
-      box-shadow:var(--shadow);
-      padding:24px 16px;
-    }
-
-    .home-hero,
-    .page-header-card,
-    .home-card,
-    .practice-card,
-    .invite-card,
-    .progress-card,
-    .ref-stat-card,
-    .lesson-card,
-    .milestone-item,
-    .activity-item{
-      background:#fff;
-      border:1px solid #e8edf5;
-      border-radius:18px;
-      box-shadow:var(--soft);
-    }
-
     .home-hero{
       padding:16px;
       margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
     }
     .home-top{
       display:flex;
@@ -485,24 +448,26 @@
       justify-content:space-between;
       gap:12px;
     }
-    .home-kicker,.page-kicker,.invite-label,.ref-stat-label,.mini-stat-label{
-      font-size:12px;
+    .home-kicker,.page-kicker,.invite-label,.ref-stat-label,.mini-stat-label,.page-section-title{
+      font-size:11px;
       color:#7f8794;
       letter-spacing:.2px;
       text-transform:uppercase;
+      font-weight:700;
     }
     .home-title,.page-title{
       margin:3px 0 6px;
       font-size:24px;
       line-height:1.1;
       color:#1f2633;
-      font-weight:700;
+      font-weight:800;
+      letter-spacing:-.3px;
     }
     .home-subtitle,.page-text{
       margin:0;
       color:#667085;
       font-size:14px;
-      line-height:1.4;
+      line-height:1.45;
     }
     .home-avatar{
       width:42px;
@@ -520,7 +485,7 @@
       display:grid;
       grid-template-columns:repeat(2, minmax(0,1fr));
       gap:10px;
-      margin-top:14px;
+      margin-top:0;
     }
     .mini-stat,
     .ref-stat-card{
@@ -531,6 +496,7 @@
       display:flex;
       flex-direction:column;
       gap:5px;
+      min-height:72px;
     }
     .mini-stat-value,.ref-stat-value{
       font-size:18px;
@@ -539,7 +505,7 @@
       line-height:1;
     }
     .home-card{
-      margin-top:12px;
+      margin-top:0;
       padding:14px;
     }
     .home-card-head{
@@ -566,6 +532,7 @@
       font-weight:800;
       color:#24263b;
       letter-spacing:-.2px;
+      margin-top:2px;
     }
     .home-signal-row,
     .progress-row,
@@ -593,7 +560,7 @@
       padding:6px 9px;
     }
     .home-grid{
-      margin-top:12px;
+      margin-top:0;
       display:grid;
       grid-template-columns:repeat(2, minmax(0,1fr));
       gap:10px;
@@ -608,6 +575,7 @@
       display:flex;
       align-items:flex-start;
       gap:10px;
+      min-height:92px;
     }
     .home-action-title{font-weight:700;font-size:14px;color:#1f2633;}
     .home-action-text{font-size:12px;color:#667085;margin-top:3px;line-height:1.35;}
@@ -622,11 +590,9 @@
     }
     .page-section-title{
       margin:14px 2px 8px;
-      font-size:13px;
-      text-transform:uppercase;
-      letter-spacing:.18px;
+      font-size:12px;
       color:#7f8794;
-      font-weight:700;
+      letter-spacing:.2px;
     }
     .lesson-list,
     .activity-list,
@@ -639,6 +605,7 @@
       display:flex;
       align-items:flex-start;
       gap:12px;
+      min-height:92px;
     }
     .lesson-icon{
       width:36px;
@@ -699,7 +666,7 @@
     }
     .progress-ring-value{font-size:18px;font-weight:800;color:#1f2633;line-height:1;}
     .progress-ring-label{font-size:11px;color:#7f8794;margin-top:4px;}
-    .progress-summary{flex:1 1 auto;}
+    .progress-summary{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;}
     .progress-row strong{font-size:14px;color:#1f2633;}
     .invite-link{
       margin-top:8px;
@@ -728,15 +695,47 @@
       gap:10px;
       justify-content:flex-start;
       color:#344054;
+      align-items:center;
     }
     .milestone-item.done{color:#1f7a3b;}
     .milestone-item svg{flex:0 0 auto;}
     .referrals-header{align-items:center;}
 
-    @media (max-width:390px){
-      .progress-card{flex-direction:column;align-items:flex-start;}
-      .progress-ring{margin:0 auto;}
-      .progress-summary{width:100%;}
+    .bottom-nav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      background:#fff;
+      border-top:1px solid #e5eaf2;
+      box-shadow:0 -2px 10px rgba(15,23,42,.04);
+      z-index:40;
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+    .bottom-nav-inner{
+      max-width:430px;
+      margin:0 auto;
+      display:flex;
+      justify-content:space-around;
+      align-items:flex-end;
+      padding:10px 6px 8px;
+    }
+    .nav-btn{
+      border:none;
+      background:none;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+      color:#97a1b2;
+      font-size:11px;
+      cursor:pointer;
+      min-width:52px;
+    }
+    .nav-btn.active{color:#2f98e5;}
+    .nav-btn i{width:22px;height:22px;}
+
+    .simple-page{
+      margin-top:10px;
+      padding:24px 16px;
     }
 
     svg.lucide, i[data-lucide] svg{stroke-width:1.7;}
@@ -755,6 +754,9 @@
       .rail.yellow{width:56px;flex-basis:56px;font-size:11px;}
       .edge-strip{width:56px;flex-basis:56px;}
       .edge-half{font-size:14px;}
+      .progress-card{flex-direction:column;align-items:flex-start;}
+      .progress-ring{margin:0 auto;}
+      .progress-summary{width:100%;}
     }
   </style>
 </head>
@@ -764,9 +766,9 @@
       <div class="home-hero">
         <div class="home-top">
           <div>
-            <div class="home-kicker">Welcome back</div>
+            <div class="home-kicker">New member</div>
             <h1 class="home-title">PocketOptionInside</h1>
-            <p class="home-subtitle">Live signals, training, referrals, and progress in one place.</p>
+            <p class="home-subtitle">Everything here is set up for beginners before activation, so they can learn the system before touching anything risky.</p>
           </div>
           <div class="home-avatar">
             <i data-lucide="badge-check" class="w-5 h-5"></i>
@@ -783,12 +785,12 @@
             <span class="mini-stat-value">12 signals</span>
           </div>
           <div class="mini-stat">
-            <span class="mini-stat-label">Active plan</span>
-            <span class="mini-stat-value">Pro</span>
+            <span class="mini-stat-label">Account</span>
+            <span class="mini-stat-value">Not activated</span>
           </div>
           <div class="mini-stat">
             <span class="mini-stat-label">Level</span>
-            <span class="mini-stat-value">6 LVL</span>
+            <span class="mini-stat-value">0 LVL</span>
           </div>
         </div>
       </div>
@@ -796,7 +798,7 @@
       <div class="home-card home-signal-card">
         <div class="home-card-head">
           <span class="home-card-title">Latest signal</span>
-          <span class="home-badge">Live</span>
+          <span class="home-badge">Preview</span>
         </div>
         <div class="home-signal-pair" id="homeSignalPair">EUR/USD OTC</div>
         <div class="home-signal-row">
@@ -804,9 +806,9 @@
           <span class="home-signal-time" id="homeSignalTime">10:22</span>
         </div>
         <div class="home-signal-meta">
-          <span>1 minute</span>
-          <span>+92%</span>
-          <span>$100 stake</span>
+          <span>Beginner view</span>
+          <span>Practice only</span>
+          <span>No activation</span>
         </div>
       </div>
 
@@ -815,14 +817,14 @@
           <i data-lucide="radio" class="w-6 h-6 text-sky-500"></i>
           <div>
             <div class="home-action-title">Signals</div>
-            <div class="home-action-text">Open the live signal board.</div>
+            <div class="home-action-text">Preview the signal board before activation.</div>
           </div>
         </div>
         <div class="home-card home-action-card">
           <i data-lucide="book-open" class="w-6 h-6 text-sky-500"></i>
           <div>
             <div class="home-action-title">Training</div>
-            <div class="home-action-text">Learn the basics and strategy.</div>
+            <div class="home-action-text">Start with the beginner lessons and setup guide.</div>
           </div>
         </div>
       </div>
@@ -836,7 +838,7 @@
         </div>
         <div class="user-chip">
           <span>User</span>
-          <span class="lvl-badge">6 LVL</span>
+          <span class="lvl-badge">0 LVL</span>
           <span class="flag-round" title="language">
             <img src="https://flagcdn.com/w40/gb.png" alt="UK flag">
           </span>
@@ -918,43 +920,43 @@
     <div id="trainingPage" class="page">
       <div class="page-header-card">
         <div>
-          <div class="page-kicker">Learn</div>
-          <h2 class="page-title">Training & Education</h2>
-          <p class="page-text">Short lessons for beginners, plus a clean path to practice without wrecking their confidence immediately.</p>
+          <div class="page-kicker">Beginner guide</div>
+          <h2 class="page-title">Training for New Users</h2>
+          <p class="page-text">Built for new users who have not activated yet, with simple lessons that explain the app before they use anything live.</p>
         </div>
         <i data-lucide="book-open" class="w-10 h-10 text-sky-500"></i>
       </div>
 
-      <div class="page-section-title">Lessons</div>
-      <div class="lesson-list">
-        <div class="lesson-card">
-          <div class="lesson-icon"><i data-lucide="play-circle" class="w-5 h-5"></i></div>
-          <div>
-            <div class="lesson-title">Getting started</div>
-            <div class="lesson-text">Read the interface, pair list, and signal cards.</div>
-          </div>
-        </div>
-        <div class="lesson-card">
-          <div class="lesson-icon"><i data-lucide="bar-chart-3" class="w-5 h-5"></i></div>
-          <div>
-            <div class="lesson-title">Reading signals</div>
-            <div class="lesson-text">Understand direction, time, and payout fields.</div>
-          </div>
-        </div>
-        <div class="lesson-card">
-          <div class="lesson-icon"><i data-lucide="shield-check" class="w-5 h-5"></i></div>
-          <div>
-            <div class="lesson-title">Risk rules</div>
-            <div class="lesson-text">Use a fixed stake and keep losses bounded.</div>
-          </div>
-        </div>
+      <div class="page-section-title">What members get</div>
+      <div class="practice-card">
+        <div class="practice-row"><span>Strategy</span><span>Clear entry rules</span></div>
+        <div class="practice-row"><span>Signals</span><span>Trade direction and timing</span></div>
+        <div class="practice-row"><span>Risk guide</span><span>Basic money management</span></div>
       </div>
 
-      <div class="page-section-title">Practice</div>
-      <div class="practice-card">
-        <div class="practice-row"><span>Demo mode</span><span>Enabled</span></div>
-        <div class="practice-row"><span>Training balance</span><span>$1,000</span></div>
-        <div class="practice-row"><span>Focus</span><span>1 minute</span></div>
+      <div class="page-section-title">How it works</div>
+      <div class="lesson-list">
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="target" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Entry method</div>
+            <div class="lesson-text">Learn when to enter and when to stay out of the market.</div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="clock-3" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Timing</div>
+            <div class="lesson-text">See how trade duration, expiry, and signal time fit together.</div>
+          </div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon"><i data-lucide="wallet" class="w-5 h-5"></i></div>
+          <div>
+            <div class="lesson-title">Money management</div>
+            <div class="lesson-text">Use the same stake rules so results stay consistent.</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -969,9 +971,9 @@
     <div id="referralsPage" class="page">
       <div class="page-header-card referrals-header">
         <div>
-          <div class="page-kicker">Invite</div>
-          <h2 class="page-title">Referrals</h2>
-          <p class="page-text">Track invites, bonuses, and the beautiful human tendency to trust a link if it looks shiny enough.</p>
+          <div class="page-kicker">Referral rewards</div>
+          <h2 class="page-title">Refer and Earn</h2>
+          <p class="page-text">Invite new users and earn up to 20% commission on referrals, even before activation.</p>
         </div>
         <i data-lucide="users" class="w-10 h-10 text-sky-500"></i>
       </div>
@@ -986,8 +988,8 @@
           <span class="ref-stat-value">8</span>
         </div>
         <div class="ref-stat-card">
-          <span class="ref-stat-label">Earned</span>
-          <span class="ref-stat-value">$126</span>
+          <span class="ref-stat-label">Commission</span>
+          <span class="ref-stat-value">Up to 20%</span>
         </div>
         <div class="ref-stat-card">
           <span class="ref-stat-label">Rank</span>
@@ -996,25 +998,25 @@
       </div>
 
       <div class="invite-card">
-        <div class="invite-label">Referral link</div>
-        <div class="invite-link">pocketoptioninside.com/invite/6LVL</div>
-        <button class="invite-btn">Copy link</button>
+        <div class="invite-label">Your invite link</div>
+        <div class="invite-link">pocketoptioninside.com/invite/0LVL</div>
+        <button class="invite-btn">Copy referral link</button>
       </div>
 
-      <div class="page-section-title">Recent activity</div>
+      <div class="page-section-title">Referral activity</div>
       <div class="activity-list">
-        <div class="activity-item"><span>Mike joined</span><span>2h ago</span></div>
-        <div class="activity-item"><span>Bonus credited</span><span>$18</span></div>
-        <div class="activity-item"><span>Ada signed up</span><span>Yesterday</span></div>
+        <div class="activity-item"><span>New user joined</span><span>2h ago</span></div>
+        <div class="activity-item"><span>Commission credited</span><span>20%</span></div>
+        <div class="activity-item"><span>Invite opened</span><span>Yesterday</span></div>
       </div>
     </div>
 
     <div id="progressPage" class="page">
       <div class="page-header-card">
         <div>
-          <div class="page-kicker">Stats</div>
-          <h2 class="page-title">Your Progress</h2>
-          <p class="page-text">A simple progress view so the app feels less like a button museum and more like something useful.</p>
+          <div class="page-kicker">Beginner progress</div>
+          <h2 class="page-title">Progress for New Users</h2>
+          <p class="page-text">Track learning progress before activation so new users can move step by step without rushing into live settings.</p>
         </div>
         <i data-lucide="trending-up" class="w-10 h-10 text-sky-500"></i>
       </div>
@@ -1022,23 +1024,23 @@
       <div class="progress-card">
         <div class="progress-ring">
           <div class="progress-ring-inner">
-            <div class="progress-ring-value">72%</div>
-            <div class="progress-ring-label">Completion</div>
+            <div class="progress-ring-value">24%</div>
+            <div class="progress-ring-label">Learning</div>
           </div>
         </div>
         <div class="progress-summary">
-          <div class="progress-row"><span>Weekly win rate</span><strong>69%</strong></div>
-          <div class="progress-row"><span>Best streak</span><strong>11</strong></div>
-          <div class="progress-row"><span>Completed lessons</span><strong>18</strong></div>
-          <div class="progress-row"><span>Current tier</span><strong>Pro</strong></div>
+          <div class="progress-row"><span>Completed lessons</span><strong>3</strong></div>
+          <div class="progress-row"><span>Checklist progress</span><strong>24%</strong></div>
+          <div class="progress-row"><span>Practice mode</span><strong>On</strong></div>
+          <div class="progress-row"><span>Current tier</span><strong>Beginner</strong></div>
         </div>
       </div>
 
       <div class="page-section-title">Milestones</div>
       <div class="milestone-list">
-        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>First signal opened</span></div>
-        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>Training completed</span></div>
-        <div class="milestone-item"><i data-lucide="circle" class="w-5 h-5"></i><span>Referral target reached</span></div>
+        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>App opened</span></div>
+        <div class="milestone-item done"><i data-lucide="check-circle-2" class="w-5 h-5"></i><span>Beginner guide completed</span></div>
+        <div class="milestone-item"><i data-lucide="circle" class="w-5 h-5"></i><span>Activation ready</span></div>
       </div>
     </div>
   </div>
