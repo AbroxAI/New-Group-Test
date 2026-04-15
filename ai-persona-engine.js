@@ -1,11 +1,11 @@
-// ====================== AI PERSONA ENGINE v10.0 (Full – Media‑Smart, 150 Personas) ======================
-// Compatible with PocketOptionInside HTML · Global media pool · Session tracking · No duplicates
+// ====================== AI PERSONA ENGINE v10.0 (Final – Media‑Smart, 150 Personas) ======================
+// Compatible with PocketOptionInside HTML · Global media pool · Session tracking · Audio typing · No duplicates
 // =====================================================================================================
 
 (function(){
   "use strict";
 
-  // ---------- CONFIGURATION (fine‑tuned) ----------
+  // ---------- CONFIGURATION ----------
   const CONFIG = {
     BASE_INTERVAL: 8000,
     BURST_CHANCE: 0.20,
@@ -697,9 +697,8 @@
   }
 
   function getTypingDelay(p, len){ return Math.min(randomBetween(p.typingSpeed[0], p.typingSpeed[1]) * len, 6000); }
-  function showTyping(p){ if(chatAPI.showTypingForPersona) chatAPI.showTypingForPersona(p); }
+  function showTyping(p, typingType = 'text'){ if(chatAPI.showTypingForPersona) chatAPI.showTypingForPersona(p, typingType); }
   function hideTyping(){ if(chatAPI.hideTyping) chatAPI.hideTyping(); }
-  function getRandomTestimonialImage(){ return `assets/testimonials/testimonial_${Math.floor(Math.random()*20)+1}.jpg`; }
   function isGeneralChatActive() { return window.__activeChatRoom === 'general' && chatAPI.isChatRoomActive?.(); }
 
   function getLastReplyTarget(excludePersonaId = null) {
@@ -741,6 +740,13 @@
       mediaItem = pickUnusedMedia(persona.id, preferredTypes);
     }
 
+    // Determine typing indicator type
+    let typingType = 'text';
+    if (mediaItem && mediaItem.mediaType === 'audio') {
+      typingType = 'audio';
+    }
+    showTyping(persona, typingType);
+
     const msgData = {
       senderName: persona.name,
       senderAvatar: persona.avatar,
@@ -768,15 +774,18 @@
     const replyTarget = replyTo || getLastReplyTarget(persona.id);
     if(replyTarget) msgData.replyTo = replyTarget;
 
-    if(chatAPI.addIncomingMessage){
-      const el = chatAPI.addIncomingMessage(msgData);
-      if(el) {
-        recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, element: el });
-        if(recentMessages.length>30) recentMessages.shift();
+    setTimeout(() => {
+      hideTyping();
+      if(chatAPI.addIncomingMessage){
+        const el = chatAPI.addIncomingMessage(msgData);
+        if(el) {
+          recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, element: el });
+          if(recentMessages.length>30) recentMessages.shift();
+        }
       }
-    }
-    lastPersonaId = persona.id;
-    log(`${persona.name} (${persona.archetype}): ${msgData.text} ${mediaItem ? '[media]' : ''}`);
+      lastPersonaId = persona.id;
+      log(`${persona.name} (${persona.archetype}): ${msgData.text} ${mediaItem ? '[media]' : ''}`);
+    }, getTypingDelay(persona, text.length));
   }
 
   function forceReplyToLastAIMessage() {
