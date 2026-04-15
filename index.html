@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* ========== ORIGINAL STYLES (FULL, WITH ADDITIONS) ========== */
+    /* ========== FULL STYLES ========== */
     :root{
       --bg:#ebf1fa; --card:#ffffff; --ink:#1f2633; --muted:#7f8794;
       --blue:#2e9fe8; --blue-dark:#24263d; --green:#4ab54d; --yellow:#f3bf23;
@@ -513,8 +513,100 @@
       border-radius: 40px; padding: 12px; font-weight: 600; width: 100%; cursor: pointer;
     }
 
-    /* ---------- PLAN / PAYMENT / PROFILE MODALS (original) ---------- */
-    /* (All other modal styles unchanged) */
+    /* ---------- PLAN MODAL ---------- */
+    .plan-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
+      z-index: 200; display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: visibility 0.2s, opacity 0.2s;
+    }
+    .plan-modal-overlay.active { visibility: visible; opacity: 1; }
+    .plan-modal-container {
+      background: white; max-width: 360px; width: 90%; border-radius: 28px;
+      padding: 20px; text-align: center; box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+      max-height: 85vh; overflow-y: auto;
+    }
+    .plan-header { margin-bottom: 16px; }
+    .plan-title { font-size: 24px; font-weight: 800; color: #1f2937; }
+    .plan-fomo {
+      font-size: 14px; color: #ef4444; font-weight: 700; margin: 8px 0;
+      background: #fee2e2; padding: 6px 12px; border-radius: 40px; display: inline-block;
+    }
+    .countdown { font-size: 28px; font-weight: 800; color: #2f98e5; margin: 8px 0; }
+    .plan-card {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 14px;
+      margin-bottom: 12px; cursor: pointer; transition: all 0.2s;
+    }
+    .plan-card:hover { border-color: #2f98e5; background: #eff6ff; transform: scale(1.01); }
+    .plan-name { font-weight: 800; font-size: 18px; }
+    .plan-price { font-weight: 700; color: #2f98e5; font-size: 22px; }
+    .plan-desc { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    /* ---------- PAYMENT MODAL ---------- */
+    .payment-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
+      z-index: 210; display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: visibility 0.2s, opacity 0.2s;
+    }
+    .payment-modal-overlay.active { visibility: visible; opacity: 1; }
+    .payment-modal-container {
+      background: white; max-width: 340px; width: 90%; border-radius: 28px;
+      padding: 24px 20px; text-align: center;
+    }
+    .wallet-address {
+      background: #f1f5f9; padding: 12px; border-radius: 12px;
+      font-family: monospace; font-size: 14px; word-break: break-all; margin: 16px 0;
+    }
+    .copy-btn {
+      background: #2f98e5; color: white; border: none; padding: 8px 16px;
+      border-radius: 40px; font-weight: 600; cursor: pointer; margin-bottom: 16px;
+    }
+    .paid-btn {
+      background: #22c55e; color: white; border: none; padding: 12px;
+      border-radius: 40px; font-weight: 700; width: 100%; cursor: pointer;
+    }
+    .payment-status { margin-top: 12px; font-size: 13px; color: #64748b; }
+    .payment-failed {
+      background: #fee2e2; padding: 12px; border-radius: 16px; margin-top: 16px;
+    }
+
+    /* ---------- PROFILE MODAL ---------- */
+    .profile-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7);
+      z-index: 300; display: flex; align-items: center; justify-content: center;
+      visibility: hidden; opacity: 0; transition: visibility 0.2s, opacity 0.2s;
+    }
+    .profile-modal-overlay.active { visibility: visible; opacity: 1; }
+    .profile-modal-container {
+      background: white; max-width: 340px; width: 85%; border-radius: 28px;
+      padding: 24px 20px; text-align: center; box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+    }
+    .profile-avatar {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 12px;
+      overflow: hidden; background: #e2e8f0; display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .profile-level-status {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 16px; font-size: 13px;
+    }
+    .profile-level { color: #2f98e5; font-weight: 600; }
+    .profile-status {
+      display: inline-flex; align-items: center; gap: 4px; background: #ecfdf3;
+      color: #1e7a3b; padding: 2px 8px; border-radius: 40px; font-weight: 600;
+    }
+    .profile-stats { background: #f8fafc; border-radius: 20px; padding: 12px; margin-top: 8px; }
+    .stat-row {
+      display: flex; justify-content: space-between; padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0; font-size: 13px;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: #64748b; }
+    .stat-value { font-weight: 700; color: #1e293b; }
+    .profit-positive { color: #22c55e; }
+    .profit-negative { color: #ef4444; }
+    .profile-id { font-size: 11px; color: #94a3b8; margin-top: 12px; font-family: monospace; }
 
     /* ---------- BOTTOM NAV ---------- */
     .bottom-nav{
@@ -815,9 +907,6 @@
   </div>
 </div>
 
-<!-- UNVERIFIED CHAT MODAL (kept) -->
-<div class="unverified-modal" id="unverifiedModal">...</div>
-
 <!-- PROFILE MODAL -->
 <div class="profile-modal-overlay" id="profileModal">
   <div class="profile-modal-container" id="profileModalContent"></div>
@@ -840,8 +929,132 @@
 
 <script>
   (function(){
-    // ========== GLOBAL SIGNALS (unchanged) ==========
-    // ... (all original signal, plan, payment, page navigation code) ...
+    // ========== GLOBAL SIGNALS ==========
+    const currencyList = [
+      { pair: 'EUR/USD', flags: ['https://flagcdn.com/w20/eu.png','https://flagcdn.com/w20/us.png'] },
+      { pair: 'GBP/USD', flags: ['https://flagcdn.com/w20/gb.png','https://flagcdn.com/w20/us.png'] },
+      { pair: 'USD/JPY', flags: ['https://flagcdn.com/w20/us.png','https://flagcdn.com/w20/jp.png'] },
+      { pair: 'EUR/GBP', flags: ['https://flagcdn.com/w20/eu.png','https://flagcdn.com/w20/gb.png'] },
+      { pair: 'AUD/USD', flags: ['https://flagcdn.com/w20/au.png','https://flagcdn.com/w20/us.png'] },
+      { pair: 'USD/CHF', flags: ['https://flagcdn.com/w20/us.png','https://flagcdn.com/w20/ch.png'] }
+    ];
+    const signalData = {
+      'EUR/USD':{percent:92,stake:100},'GBP/USD':{percent:86,stake:100},'USD/JPY':{percent:88,stake:100},
+      'EUR/GBP':{percent:84,stake:100},'AUD/USD':{percent:79,stake:100},'USD/CHF':{percent:81,stake:100}
+    };
+    let currentPair = 'EUR/USD', isSubscribed = false, activeTimer = null, liveSignalIndex = 0;
+
+    const signalPairEl = document.getElementById('signalPair'), proPairEl = document.getElementById('proPair'),
+          profitPercentEl = document.getElementById('profitPercent'), stakeAmountEl = document.getElementById('stakeAmount'),
+          profitTotalEl = document.getElementById('profitTotal'), profitAmountEl = document.getElementById('profitAmount'),
+          resultTimeEl = document.getElementById('resultTime'), accuracyPercentEl = document.getElementById('accuracyPercent'),
+          accuracyDateLineEl = document.getElementById('accuracyDateLine'), homeAccuracyEl = document.getElementById('homeAccuracy'),
+          homeSignalPairEl = document.getElementById('homeSignalPair'), homeSignalDirectionEl = document.getElementById('homeSignalDirection'),
+          homeSignalTimeEl = document.getElementById('homeSignalTime'), homeStakeAmountEl = document.getElementById('homeStakeAmount'),
+          homeProfitTotalEl = document.getElementById('homeProfitTotal'), homeProfitAmountEl = document.getElementById('homeProfitAmount');
+
+    function formatDateYMD(d){ return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; }
+    function oneMinuteBackTime(d=new Date()){ d.setMinutes(d.getMinutes()-1); return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+    function updateAccuracy(){ const now = new Date(); const pct = (69 + Math.random()*8).toFixed(4); accuracyPercentEl.innerText = `${pct}%`; accuracyDateLineEl.innerText = `Signal accuracy for today | ${formatDateYMD(now)}`; if(homeAccuracyEl) homeAccuracyEl.innerText = `${pct}%`; }
+    function renderSignal(pair=currentPair){
+      const base = signalData[pair]||signalData['EUR/USD']; const drift = ((liveSignalIndex%3)-1)*2; const percent = Math.max(65,Math.min(97,base.percent+drift));
+      const total = base.stake + Math.round(base.stake*percent/100); const profit = total - base.stake; const signalTime = oneMinuteBackTime();
+      signalPairEl.innerText = `${pair} OTC`; proPairEl.innerText = `${pair} OTC`; profitPercentEl.innerText = `+${percent}%`; stakeAmountEl.innerText = `$${base.stake}`;
+      profitTotalEl.innerText = `$${total}`; profitAmountEl.innerText = `$${profit}`; resultTimeEl.innerText = signalTime;
+      if(homeSignalPairEl) homeSignalPairEl.innerText = `${pair} OTC`; if(homeSignalDirectionEl) homeSignalDirectionEl.innerText = `↗ Increase`;
+      if(homeSignalTimeEl) homeSignalTimeEl.innerText = signalTime; if(homeStakeAmountEl) homeStakeAmountEl.innerText = `$${base.stake}`;
+      if(homeProfitTotalEl) homeProfitTotalEl.innerText = `$${total}`; if(homeProfitAmountEl) homeProfitAmountEl.innerText = `$${profit}`;
+    }
+    const container = document.getElementById('currencyList');
+    currencyList.forEach(({pair,flags}) => {
+      const pill = document.createElement('div'); pill.className = `currency-pill ${pair===currentPair?'active':''}`;
+      pill.innerHTML = `<span class="pair-icon-group"><span class="pair-icon"><img src="${flags[0]}"></span><span class="pair-icon"><img src="${flags[1]}"></span></span><span>${pair}</span>`;
+      pill.onclick = ()=>{ document.querySelectorAll('.currency-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); currentPair=pair; liveSignalIndex=0; renderSignal(); };
+      container.appendChild(pill);
+    });
+    function updateClock(){ document.getElementById('currentTime').innerText = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+    setInterval(updateClock,1000); setInterval(updateAccuracy,60000); updateClock(); updateAccuracy(); renderSignal();
+
+    // ========== SUPPORT FUNCTION ==========
+    function contactSupport() { window.open('https://t.me/po_inside_support', '_blank'); }
+
+    // ========== PLAN & PAYMENT MODAL ==========
+    const planModal = document.getElementById('planModal');
+    const paymentModal = document.getElementById('paymentModal');
+    const getSignalBtn = document.getElementById('getSignalBtn');
+    const closePlanModalBtn = document.getElementById('closePlanModalBtn');
+    const closePaymentModalBtn = document.getElementById('closePaymentModalBtn');
+    const copyPaymentWalletBtn = document.getElementById('copyPaymentWalletBtn');
+    const paidBtn = document.getElementById('paidBtn');
+    const paymentStatusDiv = document.getElementById('paymentStatus');
+    const paymentFailedMsg = document.getElementById('paymentFailedMsg');
+    const paymentSupportBtn = document.getElementById('paymentSupportBtn');
+    const retryPaymentBtn = document.getElementById('retryPaymentBtn');
+    const paymentWalletAddressSpan = document.getElementById('paymentWalletAddress');
+
+    let selectedPlan = null, selectedPrice = null, paymentTimeout = null;
+
+    function updateCountdown() {
+      const target = new Date(new Date().getFullYear(), 4, 1);
+      const now = new Date();
+      const diff = target - now;
+      if (diff <= 0) { document.getElementById('countdownTimer').innerText = "0d 0h 0m"; return; }
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      document.getElementById('countdownTimer').innerText = `${days}d ${hours}h ${minutes}m`;
+    }
+    updateCountdown(); setInterval(updateCountdown, 60000);
+
+    function openPlanModal() { planModal.classList.add('active'); }
+    function closePlanModal() { planModal.classList.remove('active'); }
+    function openPaymentModal(plan, price) {
+      selectedPlan = plan; selectedPrice = price;
+      paymentStatusDiv.innerHTML = '';
+      paymentFailedMsg.style.display = 'none';
+      paymentModal.classList.add('active');
+    }
+    function closePaymentModal() { paymentModal.classList.remove('active'); selectedPlan = null; selectedPrice = null; }
+
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.addEventListener('click', () => {
+        openPaymentModal(card.dataset.plan, card.dataset.price);
+        closePlanModal();
+      });
+    });
+
+    copyPaymentWalletBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(paymentWalletAddressSpan.innerText);
+      copyPaymentWalletBtn.innerText = '✅ Copied!';
+      setTimeout(() => { copyPaymentWalletBtn.innerText = '📋 Copy Address'; }, 2000);
+    });
+
+    paidBtn.addEventListener('click', () => {
+      if (paymentTimeout) return;
+      paidBtn.disabled = true;
+      paidBtn.innerText = '⏳ Verifying payment...';
+      paymentStatusDiv.innerHTML = 'Please wait, verifying transaction...';
+      paymentTimeout = setTimeout(() => {
+        paidBtn.disabled = false;
+        paidBtn.innerText = '✅ I have paid';
+        paymentStatusDiv.innerHTML = '';
+        paymentFailedMsg.style.display = 'block';
+      }, 6000);
+    });
+
+    retryPaymentBtn.addEventListener('click', () => {
+      paymentFailedMsg.style.display = 'none';
+      if (paymentTimeout) { clearTimeout(paymentTimeout); paymentTimeout = null; }
+      paidBtn.disabled = false;
+      paidBtn.innerText = '✅ I have paid';
+      paymentStatusDiv.innerHTML = '';
+    });
+    paymentSupportBtn.addEventListener('click', contactSupport);
+    getSignalBtn.onclick = (e) => { e.preventDefault(); openPlanModal(); };
+    closePlanModalBtn.onclick = closePlanModal;
+    closePaymentModalBtn.onclick = closePaymentModal;
+    planModal.addEventListener('click', (e) => { if (e.target === planModal) closePlanModal(); });
+    paymentModal.addEventListener('click', (e) => { if (e.target === paymentModal) closePaymentModal(); });
 
     // ========== ENHANCED CHAT LOGIC ==========
     const ROOM_STORAGE_PREFIX = 'pocketOption_chat_messages_';
@@ -879,7 +1092,6 @@
     let pendingMedia = null;
     let mediaRecorder = null, audioChunks = [], isRecording = false;
 
-    // Helper functions
     function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
     function getColorFromString(str){ let hash=0; for(let i=0;i<str.length;i++) hash = str.charCodeAt(i)+((hash<<5)-hash); return `hsl(${Math.abs(hash)%360},70%,45%)`; }
     function todayStickerText(){ return `Today • ${new Date().toLocaleDateString('en-GB')}`; }
@@ -896,27 +1108,82 @@
     function updateChatPreviewTime() { if(chatPreviewTime) chatPreviewTime.innerText = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
     updateChatPreviewTime(); setInterval(updateChatPreviewTime, 60000);
 
-    // Lightbox
-    function showLightbox(src, type = 'image') {
-      lightboxMediaContainer.innerHTML = '';
-      if (type === 'image') {
-        const img = document.createElement('img'); img.src = src;
-        lightboxMediaContainer.appendChild(img);
-      } else if (type === 'video') {
-        const video = document.createElement('video'); video.src = src; video.controls = true;
-        lightboxMediaContainer.appendChild(video);
-      }
-      lightboxOverlay.classList.add('active');
+    function saveMessagesToStorage() {
+      if (isHydratingRoom) return;
+      if (!currentChatRoom) return;
+      try {
+        const messages = [];
+        document.querySelectorAll('#chatMessages .chat-msg-row').forEach(row => {
+          const isOutgoing = row.classList.contains('outgoing');
+          const bubble = row.querySelector('.chat-bubble');
+          if (!bubble) return;
+          const senderName = bubble.querySelector('.chat-sender-name')?.innerText || (isOutgoing ? 'You' : 'Unknown');
+          const tempDiv = document.createElement('div');
+          const bubbleClone = bubble.cloneNode(true);
+          bubbleClone.querySelectorAll('.chat-bubble-meta, .chat-bubble-time, .reply-preview-bar, .reply-preview-inline').forEach(el => el.remove());
+          tempDiv.appendChild(bubbleClone);
+          let text = tempDiv.innerText.trim();
+          const time = bubble.querySelector('.chat-bubble-time')?.innerText || '';
+          const image = bubble.querySelector('.chat-image')?.src || null;
+          const video = bubble.querySelector('.chat-video')?.src || null;
+          const audio = bubble.querySelector('.chat-audio audio')?.src || null;
+          let tickStatus = null;
+          if (isOutgoing) {
+            const ticks = bubble.querySelector('.chat-ticks');
+            if (ticks) {
+              if (ticks.classList.contains('seen')) tickStatus = 'seen';
+              else if (ticks.classList.contains('delivered')) tickStatus = 'delivered';
+              else tickStatus = 'sent';
+            }
+          }
+          messages.push({ side: isOutgoing ? 'outgoing' : 'incoming', senderName, text, time, imageUrl: image, videoUrl: video, audioUrl: audio, tickStatus });
+        });
+        localStorage.setItem(roomStorageKey(currentChatRoom), JSON.stringify(messages));
+      } catch(e) { console.error(e); }
     }
-    lightboxCloseBtn.onclick = () => lightboxOverlay.classList.remove('active');
-    lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
-    // Storage
-    function saveMessagesToStorage() { /* unchanged */ }
-    function loadMessagesFromStorage(roomKey = currentChatRoom) { /* unchanged */ }
+    function loadMessagesFromStorage(roomKey = currentChatRoom) {
+      const key = roomStorageKey(roomKey);
+      let stored = localStorage.getItem(key);
+      if (!stored && roomKey === 'general') stored = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (!stored) return;
+      try {
+        const messages = JSON.parse(stored);
+        messages.forEach(msg => {
+          if (msg.side === 'outgoing') {
+            addMessageToFeed('outgoing', msg.text, msg.time, msg.tickStatus, msg.imageUrl, msg.videoUrl, msg.audioUrl, false);
+          } else {
+            buildIncomingMessage({ senderName: msg.senderName, text: msg.text, time: msg.time, imageUrl: msg.imageUrl, videoUrl: msg.videoUrl, audioUrl: msg.audioUrl }, false);
+          }
+        });
+        if (!localStorage.getItem(key)) localStorage.setItem(key, stored);
+      } catch(e) { console.warn(e); }
+    }
+
     function roomStorageKey(roomKey) { return `${ROOM_STORAGE_PREFIX}${roomKey}`; }
 
-    // Message rendering
+    function addMessageToFeed(side, text, time, tickStatus=null, imageUrl=null, videoUrl=null, audioUrl=null, shouldSave = true){
+      const messageId = 'msg_' + Date.now() + '_' + Math.random().toString(36).substr(2,8);
+      const row = document.createElement('div'); row.className = `chat-msg-row ${side}`; row.id = messageId; row.dataset.messageId = messageId;
+      window.messageMap[messageId] = row;
+      row.__messageData = { id: messageId, senderName: side === 'outgoing' ? 'You' : 'Unknown', text: text, personaId: side === 'outgoing' ? 'user' : null };
+      const bubble = document.createElement('div'); bubble.className = `chat-bubble ${side}`;
+      let content = text;
+      if(imageUrl) content = `<img src="${imageUrl}" class="chat-image">` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      else if(videoUrl) content = `<video src="${videoUrl}" class="chat-video" controls></video>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      else if(audioUrl) content = `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${audioUrl}" controls style="width:100%;height:30px;"></audio></div>` + (text?`<div style="margin-top:6px;">${text}</div>`:'');
+      if(side==='outgoing'){
+        bubble.innerHTML = `${content}<span class="chat-bubble-meta"><span class="chat-bubble-time">${time}</span><span class="chat-ticks ${tickStatus||'sent'}">${tickStatus==='seen'?'✓✓':(tickStatus==='delivered'?'✓✓':'✓')}</span></span>`;
+      } else {
+        bubble.innerHTML = `${content}<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${time}</span>`;
+      }
+      if(side==='incoming'){ const avatar = document.createElement('div'); avatar.className = 'chat-avatar-bubble'; avatar.innerHTML = '<i data-lucide="messages-square"></i>'; row.appendChild(avatar); }
+      row.appendChild(bubble);
+      chatMessages.appendChild(row);
+      if (shouldSave) saveMessagesToStorage();
+      return row;
+    }
+
     function buildIncomingMessage(msgData, shouldSave = true){
       const messageId = msgData.id || ('msg_' + Date.now() + '_' + Math.random().toString(36).substr(2,8));
       const row = document.createElement('div'); row.className = 'chat-msg-row incoming'; row.id = messageId; row.dataset.messageId = messageId;
@@ -927,12 +1194,14 @@
       };
 
       const avatarDiv = document.createElement('div'); avatarDiv.className = 'chat-avatar-bubble';
-      if (msgData.senderAvatar) {
+      const isValidAvatarUrl = msgData.senderAvatar && (msgData.senderAvatar.startsWith('http') || msgData.senderAvatar.startsWith('assets/'));
+      if(isValidAvatarUrl){
         const img = document.createElement('img'); img.src = msgData.senderAvatar; img.alt = msgData.senderName;
-        img.onerror = () => { avatarDiv.textContent = msgData.senderName.charAt(0).toUpperCase(); };
+        img.onerror = () => { avatarDiv.innerHTML = ''; avatarDiv.textContent = msgData.senderName.charAt(0).toUpperCase(); avatarDiv.style.background = '#cbd5e1'; };
         avatarDiv.appendChild(img);
-      } else { avatarDiv.textContent = msgData.senderName.charAt(0).toUpperCase(); }
-
+      } else {
+        avatarDiv.textContent = msgData.senderName.charAt(0).toUpperCase(); avatarDiv.style.background = '#cbd5e1';
+      }
       const bubble = document.createElement('div'); bubble.className = 'chat-bubble incoming';
       const nameColor = msgData.senderName==='Trade Result' ? '#2f98e5' : getColorFromString(msgData.senderName);
       let content = `<div class="chat-sender-name" style="color:${nameColor};">${escapeHtml(msgData.senderName)}</div>`;
@@ -943,17 +1212,19 @@
           <div class="text">${escapeHtml(msgData.replyTo.text.substring(0,60))}</div>
         </div>`;
       }
+
       content += escapeHtml(msgData.text);
+
       if (msgData.mediaType === 'image' && msgData.mediaUrl) content += `<img src="${msgData.mediaUrl}" class="chat-image">`;
       else if (msgData.mediaType === 'video' && msgData.mediaUrl) content += `<video src="${msgData.mediaUrl}" class="chat-video" controls></video>`;
       else if (msgData.mediaType === 'audio' && msgData.mediaUrl) content += `<div class="chat-audio"><i data-lucide="volume-2"></i><audio src="${msgData.mediaUrl}" controls style="width:100%;height:30px;"></audio></div>`;
       else if (msgData.imageUrl) content += `<img src="${msgData.imageUrl}" class="chat-image">`;
+
       content += `<span class="chat-bubble-time" style="display:block;margin-top:6px;font-size:11px;opacity:.75;">${msgData.time}</span>`;
       bubble.innerHTML = content;
 
       row.appendChild(avatarDiv); row.appendChild(bubble);
       
-      // Media tap to expand
       bubble.querySelectorAll('.chat-image').forEach(img => {
         img.style.cursor = 'pointer';
         img.addEventListener('click', (e) => { e.stopPropagation(); showLightbox(img.src, 'image'); });
@@ -986,11 +1257,25 @@
       chatMessages.scrollTop = chatMessages.scrollHeight;
       if(!isUserAtBottom){ unreadMessages++; updateUnreadPill(); }
       if (shouldSave) saveMessagesToStorage();
-      lucide.createIcons();
       return row;
     }
 
-    // Profile modal with Send Message button and full photo tap
+    // Lightbox
+    function showLightbox(src, type = 'image') {
+      lightboxMediaContainer.innerHTML = '';
+      if (type === 'image') {
+        const img = document.createElement('img'); img.src = src;
+        lightboxMediaContainer.appendChild(img);
+      } else if (type === 'video') {
+        const video = document.createElement('video'); video.src = src; video.controls = true;
+        lightboxMediaContainer.appendChild(video);
+      }
+      lightboxOverlay.classList.add('active');
+    }
+    lightboxCloseBtn.onclick = () => lightboxOverlay.classList.remove('active');
+    lightboxOverlay.addEventListener('click', (e) => { if (e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
+
+    // Profile modal with Send Message and full photo tap
     const profileModal = document.getElementById('profileModal');
     const profileModalContent = document.getElementById('profileModalContent');
     
@@ -1016,7 +1301,7 @@
       const profitSymbol = profit >= 0 ? '+' : '';
       
       profileModalContent.innerHTML = `
-        <div class="profile-avatar" id="profileAvatarTap" style="cursor:pointer;">
+        <div class="profile-avatar" id="profileAvatarTap">
           ${personaData.senderAvatar ? `<img src="${personaData.senderAvatar}" id="profileAvatarImg">` : personaData.senderName.charAt(0)}
         </div>
         <div class="profile-name">${escapeHtml(personaData.senderName)}</div>
@@ -1056,14 +1341,75 @@
     
     function closeProfileModal() { profileModal.classList.remove('active'); }
     profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
+    
+    function updateUnreadPill(){ if(unreadMessages>0 && !isUserAtBottom){ unreadCountSpan.textContent = unreadMessages===1?'1 new message':`${unreadMessages} new messages`; unreadPill.style.display='flex'; } else { unreadPill.style.display='none'; } }
+    function scrollToBottom(){ chatMessages.scrollTop = chatMessages.scrollHeight; unreadMessages=0; updateUnreadPill(); isUserAtBottom=true; }
+    chatMessages.addEventListener('scroll', ()=>{ const near = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 50; if(near){ unreadMessages=0; updateUnreadPill(); } isUserAtBottom=near; });
+    unreadPill.addEventListener('click', scrollToBottom);
 
-    // Send user message (triggers activation)
-    function sendUserMessage() {
-      showActivationModal();
-      pendingMedia = null;
-      chatInput.value = '';
-      updateComposerMode();
+    function openChatRoom(roomKey){
+      currentChatRoom = roomKey;
+      window.__activeChatRoom = roomKey;
+      window.dispatchEvent(new CustomEvent('chat-room-changed', { detail: { roomKey } }));
+      const room = chatRooms[roomKey];
+      chatRoomShell.classList.add('is-open'); appContainer.classList.add('chat-open'); document.body.style.overflow = 'hidden';
+      replyingToMessage = null; replyPreviewBar.style.display = 'none'; unreadMessages = 0; updateUnreadPill();
+      chatRoomName.textContent = room.name; chatRoomStatus.textContent = room.status; chatRoomStatus.classList.add(room.statusClass);
+      chatMessages.innerHTML = `<div class="chat-date-sticker">${todayStickerText()}</div>`;
+      isHydratingRoom = true;
+      try {
+        room.starter.forEach(msg => addMessageToFeed(msg.side, msg.text, msg.time, msg.side==='outgoing'?'seen':null, null, null, null, false));
+        loadMessagesFromStorage(roomKey);
+      } finally { isHydratingRoom = false; }
+      chatMessages.scrollTop = chatMessages.scrollHeight; chatInput.value=''; updateComposerMode(); lucide.createIcons();
     }
+    function closeChatRoom(){ chatRoomShell.classList.remove('is-open'); appContainer.classList.remove('chat-open'); document.body.style.overflow = ''; chatInput.value=''; updateComposerMode(); }
+
+    // Voice recording
+    async function startVoiceRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const audioUrl = URL.createObjectURL(audioBlob);
+          pendingMedia = { type: 'audio', url: audioUrl };
+          chatInput.placeholder = 'Add a caption (optional)';
+          recordingIndicator.style.display = 'none';
+          isRecording = false;
+          stream.getTracks().forEach(t => t.stop());
+          updateComposerMode();
+        };
+        mediaRecorder.start();
+        isRecording = true;
+        recordingIndicator.style.display = 'flex';
+        waveform.innerHTML = Array.from({length:7}, () => '<div class="wave-bar"></div>').join('');
+      } catch(e) { alert('Microphone access denied'); }
+    }
+    voiceRecordBtn.onclick = startVoiceRecording;
+    stopRecordingBtn.onclick = () => { if (mediaRecorder && isRecording) mediaRecorder.stop(); };
+    galleryBtn.onclick = () => imageUploadInput.click();
+    imageUploadInput.onchange = e => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+          pendingMedia = { type: file.type.startsWith('image/') ? 'image' : 'video', url: ev.target.result };
+          chatInput.placeholder = 'Add a caption (optional)';
+          updateComposerMode();
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Online count simulation
+    function updateOnlineCount() {
+      const count = Math.floor(Math.random() * (137 - 65 + 1)) + 65;
+      onlineCountDisplay.innerHTML = `● ${count} online`;
+    }
+    updateOnlineCount(); setInterval(updateOnlineCount, 30000);
 
     // Activation modal
     function showActivationModal() { activationModal.classList.add('active'); }
@@ -1073,7 +1419,21 @@
     closeActivationModalBtn.onclick = hideActivationModal;
     activationModal.addEventListener('click', (e) => { if (e.target === activationModal) hideActivationModal(); });
 
-    // Chat API bridge
+    function sendUserMessage() {
+      showActivationModal();
+      pendingMedia = null;
+      chatInput.value = '';
+      updateComposerMode();
+    }
+
+    chatGeneralBtn.onclick = ()=> openChatRoom('general');
+    chatBackBtn.onclick = closeChatRoom;
+    chatInput.oninput = updateComposerMode;
+    chatInput.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); sendUserMessage(); } };
+    chatSendBtn.onclick = sendUserMessage;
+    replyPreviewCloseBtn.onclick = ()=>{ replyingToMessage = null; replyPreviewBar.style.display = 'none'; };
+    emojiBtn.onclick = ()=>{ chatInput.value += '😊'; updateComposerMode(); };
+
     window.chatAPI = {
       showTypingForPersona: (persona, typingType = 'text') => {
         document.getElementById('aiTypingIndicator')?.remove();
@@ -1099,29 +1459,53 @@
       },
       hideTyping: () => document.getElementById('aiTypingIndicator')?.remove(),
       addIncomingMessage: (msgData) => buildIncomingMessage(msgData),
-      addSystemMessage: (msgData) => { /* unchanged */ },
+      addSystemMessage: (msgData) => {
+        const sysMsg = { ...msgData, senderName: 'System', personaId: 'system', senderAvatar: null };
+        const messageEl = buildIncomingMessage(sysMsg);
+        const avatarDiv = messageEl.querySelector('.chat-avatar-bubble');
+        if (avatarDiv) {
+          avatarDiv.innerHTML = '📢';
+          avatarDiv.style.fontSize = '24px';
+          avatarDiv.style.background = '#cbd5e1';
+          avatarDiv.style.display = 'flex';
+          avatarDiv.style.alignItems = 'center';
+          avatarDiv.style.justifyContent = 'center';
+        }
+        return messageEl;
+      },
       isChatRoomActive: () => chatRoomShell.classList.contains('is-open'),
       getCurrentRoom: () => currentChatRoom
     };
     window.__activeChatRoom = 'general';
 
-    // Online count
-    function updateOnlineCount() {
-      const count = Math.floor(Math.random() * (137 - 65 + 1)) + 65;
-      onlineCountDisplay.innerHTML = `● ${count} online`;
+    // ========== FLOATING SUPPORT ==========
+    document.getElementById('contactSupportBtn').onclick = contactSupport;
+
+    // ========== REFERRAL COPY ==========
+    const inviteBtn = document.querySelector('.invite-btn');
+    if (inviteBtn) {
+      inviteBtn.onclick = () => {
+        navigator.clipboard.writeText('@pocketoptioninside_robot');
+        inviteBtn.innerText = 'Copied!';
+        setTimeout(() => { inviteBtn.innerText = 'Copy referral link'; }, 2000);
+      };
     }
-    updateOnlineCount(); setInterval(updateOnlineCount, 30000);
 
-    // Voice recording (unchanged)
-    // ... (same as before) ...
+    // ========== TIMER BUTTONS ==========
+    const timerBtns = document.querySelectorAll('.timer-btn');
+    timerBtns.forEach(btn => btn.onclick = ()=>{ if(!isSubscribed) return; const s = parseInt(btn.dataset.seconds); if(activeTimer) clearTimeout(activeTimer); activeTimer = setTimeout(()=>{ activeTimer=null; }, s*1000); timerBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); });
 
-    // Open chat room
-    function openChatRoom(roomKey){ /* ... */ updateComposerMode(); }
-
-    // Initialize
-    chatGeneralBtn.onclick = ()=> openChatRoom('general');
-    chatSendBtn.onclick = sendUserMessage;
-    chatInput.onkeydown = e=>{ if(e.key==='Enter'){ e.preventDefault(); sendUserMessage(); } };
+    // ========== PAGE NAVIGATION ==========
+    const pages = { home:document.getElementById('homePage'), signals:document.getElementById('signalsPage'), training:document.getElementById('trainingPage'), chat:document.getElementById('chatPage'), referrals:document.getElementById('referralsPage'), progress:document.getElementById('progressPage') };
+    const navBtns = document.querySelectorAll('.nav-btn');
+    function showPage(pageId){
+      Object.values(pages).forEach(p=>p.classList.remove('active')); pages[pageId].classList.add('active');
+      navBtns.forEach(btn=>btn.classList.toggle('active', btn.dataset.page===pageId));
+      lucide.createIcons(); if(pageId==='signals') renderSignal(currentPair);
+      if(pageId!=='chat') closeChatRoom();
+    }
+    navBtns.forEach(btn=>btn.addEventListener('click', ()=>showPage(btn.dataset.page)));
+    showPage('signals');
     updateComposerMode();
     lucide.createIcons();
   })();
