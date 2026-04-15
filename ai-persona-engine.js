@@ -17,9 +17,10 @@
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
     REPLY_CHANCE: 0.95,
-    MEDIA_ATTACH_CHANCE: 0.45,
+    MEDIA_ATTACH_CHANCE: 0.75,
+    MIN_MEDIA_PER_SESSION: 1,
     MAX_MEDIA_PER_SESSION: 3,
-    SESSION_RESET_TIMEOUT: 3600000 // 1 hour
+    SESSION_RESET_TIMEOUT: 3600000
   };
 
   // ---------- MESSAGE TYPES ----------
@@ -563,22 +564,22 @@
     p.messageBank = bank;
   });
 
-  // ---------- MEDIA MANIFEST (POPULATE THIS WITH YOUR FILES) ----------
+  // ---------- MEDIA MANIFEST (POPULATE WITH YOUR FILES) ----------
   const MEDIA_MANIFEST = {
-    // Example entries:
-    // "Chidi": { images: ["chidi_1.jpg", "chidi_2.jpg"], voices: ["chidi_voice.webm"], videos: [] },
-    // "Amara": { images: ["amara_win.jpg"], voices: [], videos: ["amara_testimonial.mp4"] },
+    // Example: "Chidi": { images: ["chidi_1.jpg"], voices: ["chidi_voice.webm"], videos: [] },
   };
 
   // ---------- SESSION MEDIA TRACKING ----------
   let sentMedia = {};
   let sessionMediaCount = 0;
   let sessionStartTime = Date.now();
+  let sessionHasMedia = false;
 
   function resetSessionMediaIfExpired() {
     if (Date.now() - sessionStartTime > CONFIG.SESSION_RESET_TIMEOUT) {
       sentMedia = {};
       sessionMediaCount = 0;
+      sessionHasMedia = false;
       sessionStartTime = Date.now();
       log('🔄 Session media tracking reset (timeout)');
     }
@@ -645,6 +646,7 @@
     const chosen = pick(filtered);
     markMediaSent(chosen.personaId, chosen.type, chosen.filename);
     sessionMediaCount++;
+    if (!sessionHasMedia) sessionHasMedia = true;
     log(`📎 Attaching media: ${chosen.url} (from ${chosen.personaName}) [${sessionMediaCount}/${CONFIG.MAX_MEDIA_PER_SESSION}]`);
     return chosen;
   }
@@ -731,7 +733,8 @@
 
     let mediaItem = null;
     const shouldConsiderMedia = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT || type === MessageType.FLEX || type === MessageType.HYPE);
-    if (shouldConsiderMedia && Math.random() < CONFIG.MEDIA_ATTACH_CHANCE) {
+    const forceAttach = (!sessionHasMedia && sessionMediaCount < CONFIG.MIN_MEDIA_PER_SESSION);
+    if (shouldConsiderMedia && (forceAttach || Math.random() < CONFIG.MEDIA_ATTACH_CHANCE)) {
       const preferredTypes = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT) 
         ? ['images','videos','voices'] 
         : ['images','videos'];
@@ -893,7 +896,7 @@
   }
 
   window.addEventListener('chat-room-changed', () => {
-    sentMedia = {}; sessionMediaCount = 0; sessionStartTime = Date.now();
+    sentMedia = {}; sessionMediaCount = 0; sessionHasMedia = false; sessionStartTime = Date.now();
     syncSimulationState();
   });
   setInterval(syncSimulationState, 1000);
