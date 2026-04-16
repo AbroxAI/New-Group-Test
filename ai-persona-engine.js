@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v10.0 (Final – Media‑Smart, 150 Personas) ======================
-// Compatible with PocketOptionInside HTML · Global media pool · Session tracking · Audio typing · No duplicates
-// =====================================================================================================
+// ====================== AI PERSONA ENGINE v11.0 (Auto‑Discovery Media) ======================
+// 150 custom personas · No manifest needed · Files named: "Paul jande_1.jpg", etc.
+// ==========================================================================================
 
 (function(){
   "use strict";
@@ -20,7 +20,8 @@
     MEDIA_ATTACH_CHANCE: 0.75,
     MIN_MEDIA_PER_SESSION: 1,
     MAX_MEDIA_PER_SESSION: 3,
-    SESSION_RESET_TIMEOUT: 3600000
+    SESSION_RESET_TIMEOUT: 3600000,
+    MAX_FILES_PER_PERSONA: 20
   };
 
   // ---------- MESSAGE TYPES ----------
@@ -81,7 +82,7 @@
     }
   }
 
-  // ---------- HELPER: STRIP EMOJIS FOR MEDIA MATCHING ----------
+  // ---------- HELPER: STRIP EMOJIS FOR FILENAME MATCHING ----------
   function normalizeNameForMedia(name) {
     return name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[^\w\s]/g, '').trim();
   }
@@ -564,10 +565,88 @@
     p.messageBank = bank;
   });
 
-  // ---------- MEDIA MANIFEST (POPULATE WITH YOUR FILES) ----------
-  const MEDIA_MANIFEST = {
-    // Example: "Chidi": { images: ["chidi_1.jpg"], voices: ["chidi_voice.webm"], videos: [] },
-  };
+  // ---------- AUTO-DISCOVERY MEDIA SYSTEM ----------
+  const MEDIA_CACHE = {};
+
+  function getNormalizedMediaName(personaName) {
+    return personaName.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[^\w\s]/g, '').trim();
+  }
+
+  function probeMediaExists(personaId, personaName, type, index, extension) {
+    const cacheKey = `${personaId}|${type}|${index}`;
+    if (MEDIA_CACHE.hasOwnProperty(cacheKey)) {
+      return Promise.resolve(MEDIA_CACHE[cacheKey]);
+    }
+    
+    const normalized = getNormalizedMediaName(personaName);
+    const url = `assets/${type}/${normalized}_${index}.${extension}`;
+    
+    return new Promise(resolve => {
+      if (type === 'images') {
+        const img = new Image();
+        img.onload = () => { MEDIA_CACHE[cacheKey] = true; resolve(true); };
+        img.onerror = () => { MEDIA_CACHE[cacheKey] = false; resolve(false); };
+        img.src = url;
+      } else {
+        fetch(url, { method: 'HEAD' })
+          .then(res => { MEDIA_CACHE[cacheKey] = res.ok; resolve(res.ok); })
+          .catch(() => { MEDIA_CACHE[cacheKey] = false; resolve(false); });
+      }
+    });
+  }
+
+  async function buildGlobalMediaPool() {
+    const pool = [];
+    const maxFiles = CONFIG.MAX_FILES_PER_PERSONA;
+    
+    for (const p of personas) {
+      const normalized = getNormalizedMediaName(p.name);
+      
+      for (let i = 1; i <= maxFiles; i++) {
+        const exists = await probeMediaExists(p.id, p.name, 'images', i, 'jpg');
+        if (exists) {
+          pool.push({
+            personaId: p.id,
+            personaName: p.name,
+            type: 'images',
+            filename: `${normalized}_${i}.jpg`,
+            url: `assets/images/${normalized}_${i}.jpg`,
+            mediaType: 'image'
+          });
+        }
+      }
+      
+      for (let i = 1; i <= maxFiles; i++) {
+        const exists = await probeMediaExists(p.id, p.name, 'voices', i, 'webm');
+        if (exists) {
+          pool.push({
+            personaId: p.id,
+            personaName: p.name,
+            type: 'voices',
+            filename: `${normalized}_${i}.webm`,
+            url: `assets/voices/${normalized}_${i}.webm`,
+            mediaType: 'audio'
+          });
+        }
+      }
+      
+      for (let i = 1; i <= maxFiles; i++) {
+        const exists = await probeMediaExists(p.id, p.name, 'videos', i, 'mp4');
+        if (exists) {
+          pool.push({
+            personaId: p.id,
+            personaName: p.name,
+            type: 'videos',
+            filename: `${normalized}_${i}.mp4`,
+            url: `assets/videos/${normalized}_${i}.mp4`,
+            mediaType: 'video'
+          });
+        }
+      }
+    }
+    
+    return pool;
+  }
 
   // ---------- SESSION MEDIA TRACKING ----------
   let sentMedia = {};
@@ -598,45 +677,23 @@
     return getSentSet(personaId, type).has(filename);
   }
 
-  function buildGlobalMediaPool() {
-    const pool = [];
-    personas.forEach(p => {
-      const normName = normalizeNameForMedia(p.name);
-      const entry = MEDIA_MANIFEST[normName];
-      if (!entry) return;
-      ['images','voices','videos'].forEach(type => {
-        const files = entry[type] || [];
-        files.forEach(file => {
-          pool.push({
-            personaId: p.id,
-            personaName: p.name,
-            type: type,
-            filename: file,
-            url: `assets/${type}/${file}`,
-            mediaType: type === 'images' ? 'image' : (type === 'voices' ? 'audio' : 'video')
-          });
-        });
-      });
-    });
-    return pool;
-  }
-
-  function pickUnusedMedia(preferredPersonaId = null, preferredTypes = ['images','videos','voices']) {
+  async function pickUnusedMedia(preferredPersonaId = null, preferredTypes = ['images','videos','voices']) {
     resetSessionMediaIfExpired();
     if (sessionMediaCount >= CONFIG.MAX_MEDIA_PER_SESSION) {
       log('📦 Media limit reached for this session');
       return null;
     }
 
-    let pool = buildGlobalMediaPool();
-    pool = pool.filter(item => !isMediaSent(item.personaId, item.type, item.filename));
-    if (pool.length === 0) {
+    const pool = await buildGlobalMediaPool();
+    const unusedPool = pool.filter(item => !isMediaSent(item.personaId, item.type, item.filename));
+    
+    if (unusedPool.length === 0) {
       log('📭 No unused media available in global pool');
       return null;
     }
 
-    let filtered = pool.filter(item => preferredTypes.includes(item.type));
-    if (filtered.length === 0) filtered = pool;
+    let filtered = unusedPool.filter(item => preferredTypes.includes(item.type));
+    if (filtered.length === 0) filtered = unusedPool;
 
     if (preferredPersonaId && Math.random() < 0.7) {
       const personaItems = filtered.filter(item => item.personaId === preferredPersonaId);
@@ -723,7 +780,7 @@
     return pick(["exactly!", "well said", "facts 💯", "this 👆", "couldn't agree more", "🔥🔥", "for real", "no cap"]);
   }
 
-  function sendPersonaMessageOriginal(persona, replyTo=null){
+  async function sendPersonaMessageOriginal(persona, replyTo=null){
     if (!isGeneralChatActive()) return;
     if(persona.archetype === 'watcher' && Math.random() > 0.15) return;
     const isTestimonial = Math.random() < CONFIG.TESTIMONIAL_CHANCE && persona.messageBank[MessageType.TESTIMONIAL];
@@ -737,10 +794,9 @@
       const preferredTypes = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT) 
         ? ['images','videos','voices'] 
         : ['images','videos'];
-      mediaItem = pickUnusedMedia(persona.id, preferredTypes);
+      mediaItem = await pickUnusedMedia(persona.id, preferredTypes);
     }
 
-    // Determine typing indicator type
     let typingType = 'text';
     if (mediaItem && mediaItem.mediaType === 'audio') {
       typingType = 'audio';
@@ -918,5 +974,5 @@
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v10.0 loaded with ${personas.length} custom personas.`);
+  log(`🤖 AI Persona Engine v11.0 loaded with ${personas.length} custom personas. Auto-discovery media active.`);
 })();
