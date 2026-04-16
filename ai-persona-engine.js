@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v11.0 (Auto‑Discovery Media) ======================
-// 150 custom personas · No manifest needed · Files named: "Paul jande_1.jpg", etc.
-// ==========================================================================================
+// ====================== AI PERSONA ENGINE v11.0 (Auto‑Discovery Media, Fixed Naming) ======================
+// 150 custom personas · Files named: "paul_jande_1.jpg", "das_haruna_fearless_1.jpg", etc.
+// =======================================================================================================
 
 (function(){
   "use strict";
@@ -82,9 +82,14 @@
     }
   }
 
-  // ---------- HELPER: STRIP EMOJIS FOR FILENAME MATCHING ----------
+  // ---------- HELPER: STRIP EMOJIS AND NORMALIZE FOR FILENAME (FIXED) ----------
   function normalizeNameForMedia(name) {
-    return name.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[^\w\s]/g, '').trim();
+    return name
+      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')   // remove emojis
+      .replace(/[^\w\s]/g, '')                  // remove punctuation
+      .trim()
+      .replace(/\s+/g, '_')                     // spaces → underscores
+      .toLowerCase();                           // all lowercase
   }
 
   // ---------- PERSONALITY PRESETS ----------
@@ -568,17 +573,13 @@
   // ---------- AUTO-DISCOVERY MEDIA SYSTEM ----------
   const MEDIA_CACHE = {};
 
-  function getNormalizedMediaName(personaName) {
-    return personaName.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[^\w\s]/g, '').trim();
-  }
-
   function probeMediaExists(personaId, personaName, type, index, extension) {
     const cacheKey = `${personaId}|${type}|${index}`;
     if (MEDIA_CACHE.hasOwnProperty(cacheKey)) {
       return Promise.resolve(MEDIA_CACHE[cacheKey]);
     }
     
-    const normalized = getNormalizedMediaName(personaName);
+    const normalized = normalizeNameForMedia(personaName);
     const url = `assets/${type}/${normalized}_${index}.${extension}`;
     
     return new Promise(resolve => {
@@ -600,7 +601,7 @@
     const maxFiles = CONFIG.MAX_FILES_PER_PERSONA;
     
     for (const p of personas) {
-      const normalized = getNormalizedMediaName(p.name);
+      const normalized = normalizeNameForMedia(p.name);
       
       for (let i = 1; i <= maxFiles; i++) {
         const exists = await probeMediaExists(p.id, p.name, 'images', i, 'jpg');
