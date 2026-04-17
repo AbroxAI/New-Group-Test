@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v13 (No Limits, Embedded Manifest) ======================
-// 150 custom personas · Media guaranteed on every qualifying message · Infinite rotation
-// =============================================================================================
+// ====================== AI PERSONA ENGINE v14 (Final – No Limits, Pure Rotation) ======================
+// 150 custom personas · Media guaranteed on every qualifying message · Embedded manifest · Relative paths only
+// =====================================================================================================
 
 (function(){
   "use strict";
@@ -17,13 +17,8 @@
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
     REPLY_CHANCE: 0.95,
-    MEDIA_COOLDOWN_MINUTES: 5           // only prevents immediate back-to-back repeat of same file
+    MEDIA_COOLDOWN_MINUTES: 5           // only prevents immediate back-to-back repeat of the same file
   };
-
-  // ---------- BASE PATH (GitHub Pages) ----------
-  const BASE_PATH = window.location.hostname.includes('github.io') 
-    ? '/New-Group-Test-3/' 
-    : '/';
 
   // ---------- MESSAGE TYPES ----------
   const MessageType = {
@@ -65,7 +60,7 @@
     return map[country] || "UTC";
   }
 
-  // ---------- AVATAR SYSTEM ----------
+  // ---------- AVATAR SYSTEM (relative paths only) ----------
   function getAvatarUrl(displayName, gender, country, isFallback) {
     if (!isFallback) {
       let safeName = displayName
@@ -74,7 +69,7 @@
         .trim()
         .replace(/\s+/g, '_')
         .toLowerCase();
-      return BASE_PATH + 'assets/avatars/' + safeName + '.jpg';
+      return 'assets/avatars/' + safeName + '.jpg';
     } else {
       const names = displayName.split(' ');
       const firstLetter = names[0]?.[0] || '';
@@ -107,7 +102,7 @@
 
   // ---------- 150 CUSTOM PERSONAS (100 real + 50 fallback) ----------
   const customPersonas = [
-    // 100 real names
+    // 100 real names (exactly as you provided)
     { name: "oladapo ogunsakin", gender: "men", country: "Nigeria", isFallback: false },
     { name: "narciso panganiban", gender: "men", country: "Mexico", isFallback: false },
     { name: "Elmer nunez 📉", gender: "men", country: "Mexico", isFallback: false },
@@ -264,57 +259,24 @@
     { name: "Thomas Schulz", gender: "men", country: "Germany", isFallback: true }
   ];
 
-  // Map real names to personality presets
+  // Map real names to personality presets (exactly as you provided)
   const nameToPersonality = {
-    "oladapo ogunsakin": 'boss',
-    "Anthony Onyinkwa": 'expert',
-    "victor e keyz 🎹🎺📉": 'analyst',
-    "Stanley Ezeorjika 💰": 'boss',
-    "Das Haruna Fearless": 'expert',
-    "Boaster Friday": 'joker',
-    "Boss  Mega ⚡⚡⚡": 'boss',
-    "Lazy Dark 🌑💰💲": 'wit',
-    "Elmer nunez 📉": 'analyst',
-    "Sergio Vega munoz 🔥": 'boss',
-    "David Magana 💹📉": 'analyst',
-    "Andy Zensation 📊": 'analyst',
-    "Valentina Orozco 😎": 'joker',
-    "Trovis banks 🏦💰": 'boss',
-    "Flash BE": 'expert',
-    "Red Barron": 'wit',
-    "Kullest Kidd 🪐": 'joker',
-    "marvel Da' sauce": 'joker',
-    "Ron  Thomson 🏍️": 'expert',
-    "Jamie Terrell": 'newbie',
-    "ashley muse": 'newbie',
-    "jen lee": 'newbie',
-    "Mona Dent": 'lurker',
-    "Sym Ple": 'lurker',
-    "Cherry Reichhart": 'thoughtful',
-    "Trovao Duchness 🦊": 'joker',
-    "Salman Rasheed": 'analyst',
-    "Syed Ali Zohaib": 'expert',
-    "Nieves yazita 🌹❣️": 'thoughtful',
-    "Dominic Harley": 'wit',
-    "Latex mt tozer": 'lurker',
-    "Kluta wangempella ll": 'lurker',
-    "Paul jande": 'newbie',
-    "Bwalya Coxy": 'expert',
-    "Regard Nyakane": 'analyst',
-    "Tdk Mj": 'newbie',
-    "Mbg Mook 🍒": 'joker',
-    "Larry Verb Washington": 'expert',
-    "jens kleinschmidt": 'analyst',
-    "Oliver Meszaros": 'thoughtful',
-    "Ben Leary": 'wit',
-    "Nicholas Marchese": 'newbie',
-    "Joe Cottrell": 'expert',
-    "Jovan Mircetic": 'analyst',
-    "Dvedat Demirci": 'boss',
-    "Serhat Nuri Kaya": 'thoughtful',
-    "Julibel Golilao": 'newbie',
-    "Chidi Eze": 'newbie',
-    "Carlos Mendez": 'expert'
+    "oladapo ogunsakin": 'boss', "Anthony Onyinkwa": 'expert', "victor e keyz 🎹🎺📉": 'analyst',
+    "Stanley Ezeorjika 💰": 'boss', "Das Haruna Fearless": 'expert', "Boaster Friday": 'joker',
+    "Boss  Mega ⚡⚡⚡": 'boss', "Lazy Dark 🌑💰💲": 'wit', "Elmer nunez 📉": 'analyst',
+    "Sergio Vega munoz 🔥": 'boss', "David Magana 💹📉": 'analyst', "Andy Zensation 📊": 'analyst',
+    "Valentina Orozco 😎": 'joker', "Trovis banks 🏦💰": 'boss', "Flash BE": 'expert',
+    "Red Barron": 'wit', "Kullest Kidd 🪐": 'joker', "marvel Da' sauce": 'joker',
+    "Ron  Thomson 🏍️": 'expert', "Jamie Terrell": 'newbie', "ashley muse": 'newbie',
+    "jen lee": 'newbie', "Mona Dent": 'lurker', "Sym Ple": 'lurker', "Cherry Reichhart": 'thoughtful',
+    "Trovao Duchness 🦊": 'joker', "Salman Rasheed": 'analyst', "Syed Ali Zohaib": 'expert',
+    "Nieves yazita 🌹❣️": 'thoughtful', "Dominic Harley": 'wit', "Latex mt tozer": 'lurker',
+    "Kluta wangempella ll": 'lurker', "Paul jande": 'newbie', "Bwalya Coxy": 'expert',
+    "Regard Nyakane": 'analyst', "Tdk Mj": 'newbie', "Mbg Mook 🍒": 'joker',
+    "Larry Verb Washington": 'expert', "jens kleinschmidt": 'analyst', "Oliver Meszaros": 'thoughtful',
+    "Ben Leary": 'wit', "Nicholas Marchese": 'newbie', "Joe Cottrell": 'expert',
+    "Jovan Mircetic": 'analyst', "Dvedat Demirci": 'boss', "Serhat Nuri Kaya": 'thoughtful',
+    "Julibel Golilao": 'newbie', "Chidi Eze": 'newbie', "Carlos Mendez": 'expert'
   };
 
   // ---------- ARCHETYPE DEFINITIONS ----------
@@ -624,9 +586,9 @@
       const entry = EMBEDDED_MANIFEST[p.name];
       if (!entry) continue;
       const items = [];
-      (entry.images || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'images', url: BASE_PATH + 'assets/images/' + fn, mediaType: 'image' }));
-      (entry.voices || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'voices', url: BASE_PATH + 'assets/voices/' + fn, mediaType: 'audio' }));
-      (entry.videos || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'videos', url: BASE_PATH + 'assets/videos/' + fn, mediaType: 'video' }));
+      (entry.images || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'images', url: 'assets/images/' + fn, mediaType: 'image' }));
+      (entry.voices || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'voices', url: 'assets/voices/' + fn, mediaType: 'audio' }));
+      (entry.videos || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'videos', url: 'assets/videos/' + fn, mediaType: 'video' }));
       if (items.length) personaMediaQueue.set(p.id, shuffleArray(items));
     }
     log(`✅ Media queues built. Personas with media: ${personaMediaQueue.size}`);
@@ -652,7 +614,6 @@
       log(`🎯 Media: ${item.url}`);
       return item;
     }
-    // If all are in cooldown, pick the first and use it anyway (prevents stall)
     const oldest = queue[0];
     recentlyUsed.set(oldest.url, Date.now());
     log(`⏳ Cooldown bypassed: ${oldest.url}`);
@@ -898,5 +859,5 @@
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v13 loaded with ${personas.length} personas. Unlimited media rotation.`);
+  log(`🤖 AI Persona Engine v14 loaded with ${personas.length} personas. Unlimited media rotation.`);
 })();
