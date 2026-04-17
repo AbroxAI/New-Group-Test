@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v11.0 (Auto‑Discovery Media, Fixed Naming) ======================
-// 150 custom personas · Files named: "paul_jande_1.jpg", "das_haruna_fearless_1.jpg", etc.
-// =======================================================================================================
+// ====================== AI PERSONA ENGINE v11.1 (Manifest + Queue, No BASE_PATH) ======================
+// 150 custom personas · Media read from window.MEDIA_MANIFEST · Infinite cycle
+// ===================================================================================================
 
 (function(){
   "use strict";
@@ -17,11 +17,7 @@
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
     REPLY_CHANCE: 0.95,
-    MEDIA_ATTACH_CHANCE: 0.75,
-    MIN_MEDIA_PER_SESSION: 1,
-    MAX_MEDIA_PER_SESSION: 3,
-    SESSION_RESET_TIMEOUT: 3600000,
-    MAX_FILES_PER_PERSONA: 20
+    MEDIA_COOLDOWN_MINUTES: 10          // same file won't repeat within this time
   };
 
   // ---------- MESSAGE TYPES ----------
@@ -82,14 +78,14 @@
     }
   }
 
-  // ---------- HELPER: STRIP EMOJIS AND NORMALIZE FOR FILENAME (FIXED) ----------
+  // ---------- HELPER: STRIP EMOJIS AND NORMALIZE FOR FILENAME ----------
   function normalizeNameForMedia(name) {
     return name
-      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')   // remove emojis
-      .replace(/[^\w\s]/g, '')                  // remove punctuation
+      .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
+      .replace(/[^\w\s]/g, '')
       .trim()
-      .replace(/\s+/g, '_')                     // spaces → underscores
-      .toLowerCase();                           // all lowercase
+      .replace(/\s+/g, '_')
+      .toLowerCase();
   }
 
   // ---------- PERSONALITY PRESETS ----------
@@ -570,146 +566,114 @@
     p.messageBank = bank;
   });
 
-  // ---------- AUTO-DISCOVERY MEDIA SYSTEM ----------
-  const MEDIA_CACHE = {};
+  // ################################################################
+  // ##########          NEW MEDIA SYSTEM (MANIFEST + QUEUE) ##########
+  // ################################################################
 
-  function probeMediaExists(personaId, personaName, type, index, extension) {
-    const cacheKey = `${personaId}|${type}|${index}`;
-    if (MEDIA_CACHE.hasOwnProperty(cacheKey)) {
-      return Promise.resolve(MEDIA_CACHE[cacheKey]);
-    }
-    
-    const normalized = normalizeNameForMedia(personaName);
-    const url = `assets/${type}/${normalized}_${index}.${extension}`;
-    
-    return new Promise(resolve => {
-      if (type === 'images') {
-        const img = new Image();
-        img.onload = () => { MEDIA_CACHE[cacheKey] = true; resolve(true); };
-        img.onerror = () => { MEDIA_CACHE[cacheKey] = false; resolve(false); };
-        img.src = url;
-      } else {
-        fetch(url, { method: 'HEAD' })
-          .then(res => { MEDIA_CACHE[cacheKey] = res.ok; resolve(res.ok); })
-          .catch(() => { MEDIA_CACHE[cacheKey] = false; resolve(false); });
-      }
-    });
-  }
+  // Media queue – each persona gets their own array of media items
+  const personaMediaQueue = new Map();   // personaId -> array of media objects
+  const recentlyUsed = new Map();        // url -> timestamp (for cooldown)
 
-  async function buildGlobalMediaPool() {
-    const pool = [];
-    const maxFiles = CONFIG.MAX_FILES_PER_PERSONA;
-    
+  // Build queues from the manifest (once at startup)
+  function buildMediaQueuesFromManifest() {
+    const manifest = window.MEDIA_MANIFEST || {};
+    personaMediaQueue.clear();
+
     for (const p of personas) {
+      const entry = manifest[p.name];
+      if (!entry) continue;
+
+      const items = [];
       const normalized = normalizeNameForMedia(p.name);
-      
-      for (let i = 1; i <= maxFiles; i++) {
-        const exists = await probeMediaExists(p.id, p.name, 'images', i, 'jpg');
-        if (exists) {
-          pool.push({
-            personaId: p.id,
-            personaName: p.name,
-            type: 'images',
-            filename: `${normalized}_${i}.jpg`,
-            url: `assets/images/${normalized}_${i}.jpg`,
-            mediaType: 'image'
-          });
-        }
-      }
-      
-      for (let i = 1; i <= maxFiles; i++) {
-        const exists = await probeMediaExists(p.id, p.name, 'voices', i, 'webm');
-        if (exists) {
-          pool.push({
-            personaId: p.id,
-            personaName: p.name,
-            type: 'voices',
-            filename: `${normalized}_${i}.webm`,
-            url: `assets/voices/${normalized}_${i}.webm`,
-            mediaType: 'audio'
-          });
-        }
-      }
-      
-      for (let i = 1; i <= maxFiles; i++) {
-        const exists = await probeMediaExists(p.id, p.name, 'videos', i, 'mp4');
-        if (exists) {
-          pool.push({
-            personaId: p.id,
-            personaName: p.name,
-            type: 'videos',
-            filename: `${normalized}_${i}.mp4`,
-            url: `assets/videos/${normalized}_${i}.mp4`,
-            mediaType: 'video'
-          });
-        }
+
+      // Images
+      (entry.images || []).forEach(filename => {
+        items.push({
+          personaId: p.id,
+          personaName: p.name,
+          type: 'images',
+          url: `assets/images/${filename}`,
+          mediaType: 'image'
+        });
+      });
+
+      // Voices
+      (entry.voices || []).forEach(filename => {
+        items.push({
+          personaId: p.id,
+          personaName: p.name,
+          type: 'voices',
+          url: `assets/voices/${filename}`,
+          mediaType: 'audio'
+        });
+      });
+
+      // Videos
+      (entry.videos || []).forEach(filename => {
+        items.push({
+          personaId: p.id,
+          personaName: p.name,
+          type: 'videos',
+          url: `assets/videos/${filename}`,
+          mediaType: 'video'
+        });
+      });
+
+      if (items.length > 0) {
+        // Shuffle initially
+        personaMediaQueue.set(p.id, shuffleArray(items));
       }
     }
-    
-    return pool;
+
+    log(`✅ Media queues built from manifest. Personas with media: ${personaMediaQueue.size}`);
   }
 
-  // ---------- SESSION MEDIA TRACKING ----------
-  let sentMedia = {};
-  let sessionMediaCount = 0;
-  let sessionStartTime = Date.now();
-  let sessionHasMedia = false;
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
-  function resetSessionMediaIfExpired() {
-    if (Date.now() - sessionStartTime > CONFIG.SESSION_RESET_TIMEOUT) {
-      sentMedia = {};
-      sessionMediaCount = 0;
-      sessionHasMedia = false;
-      sessionStartTime = Date.now();
-      log('🔄 Session media tracking reset (timeout)');
+  // Clean up expired cooldowns
+  function cleanRecentlyUsed() {
+    const now = Date.now();
+    const cooldownMs = CONFIG.MEDIA_COOLDOWN_MINUTES * 60 * 1000;
+    for (const [url, timestamp] of recentlyUsed.entries()) {
+      if (now - timestamp > cooldownMs) recentlyUsed.delete(url);
     }
   }
 
-  function getSentSet(personaId, type) {
-    if (!sentMedia[personaId]) sentMedia[personaId] = { images: new Set(), voices: new Set(), videos: new Set() };
-    return sentMedia[personaId][type];
-  }
+  // Pick a media item for the given persona – cycles through their queue
+  function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
+    cleanRecentlyUsed();
 
-  function markMediaSent(personaId, type, filename) {
-    getSentSet(personaId, type).add(filename);
-  }
+    let queue = personaMediaQueue.get(personaId);
+    if (!queue || queue.length === 0) return null;
 
-  function isMediaSent(personaId, type, filename) {
-    return getSentSet(personaId, type).has(filename);
-  }
+    // Try to find an item not in cooldown and matching preferred types
+    for (let i = 0; i < queue.length; i++) {
+      const item = queue[i];
+      if (!preferredTypes.includes(item.type)) continue;
+      if (recentlyUsed.has(item.url)) continue;
 
-  async function pickUnusedMedia(preferredPersonaId = null, preferredTypes = ['images','videos','voices']) {
-    resetSessionMediaIfExpired();
-    if (sessionMediaCount >= CONFIG.MAX_MEDIA_PER_SESSION) {
-      log('📦 Media limit reached for this session');
-      return null;
+      // Found! Remove it and push to end (cycle)
+      queue.splice(i, 1);
+      queue.push(item);
+      recentlyUsed.set(item.url, Date.now());
+      log(`🎯 Selected media: ${item.url} (from ${item.personaName})`);
+      return item;
     }
 
-    const pool = await buildGlobalMediaPool();
-    const unusedPool = pool.filter(item => !isMediaSent(item.personaId, item.type, item.filename));
-    
-    if (unusedPool.length === 0) {
-      log('📭 No unused media available in global pool');
-      return null;
-    }
-
-    let filtered = unusedPool.filter(item => preferredTypes.includes(item.type));
-    if (filtered.length === 0) filtered = unusedPool;
-
-    if (preferredPersonaId && Math.random() < 0.7) {
-      const personaItems = filtered.filter(item => item.personaId === preferredPersonaId);
-      if (personaItems.length > 0) filtered = personaItems;
-    }
-
-    const chosen = pick(filtered);
-    markMediaSent(chosen.personaId, chosen.type, chosen.filename);
-    sessionMediaCount++;
-    if (!sessionHasMedia) sessionHasMedia = true;
-    log(`📎 Attaching media: ${chosen.url} (from ${chosen.personaName}) [${sessionMediaCount}/${CONFIG.MAX_MEDIA_PER_SESSION}]`);
-    return chosen;
+    log(`⏳ All media for persona in cooldown or none match preferred types`);
+    return null;
   }
 
-  // ---------- SIMULATION STATE ----------
+  // ################################################################
+  // ##########          SIMULATION STATE (UNCHANGED)        ##########
+  // ################################################################
+
   let activeTimeouts = [], lastMessageType = null, lastPersonaId = null, simulationActive = false, tradeResultInterval = null;
   const recentMessages = [];
   const chatAPI = window.chatAPI || {};
@@ -789,19 +753,16 @@
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 
     let mediaItem = null;
-    const shouldConsiderMedia = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT || type === MessageType.FLEX || type === MessageType.HYPE);
-    const forceAttach = (!sessionHasMedia && sessionMediaCount < CONFIG.MIN_MEDIA_PER_SESSION);
-    if (shouldConsiderMedia && (forceAttach || Math.random() < CONFIG.MEDIA_ATTACH_CHANCE)) {
+    const qualifiesForMedia = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT || type === MessageType.FLEX || type === MessageType.HYPE);
+    if (qualifiesForMedia) {
       const preferredTypes = (type === MessageType.TESTIMONIAL || type === MessageType.RESULT) 
         ? ['images','videos','voices'] 
         : ['images','videos'];
-      mediaItem = await pickUnusedMedia(persona.id, preferredTypes);
+      mediaItem = pickMediaForPersona(persona.id, preferredTypes);
     }
 
     let typingType = 'text';
-    if (mediaItem && mediaItem.mediaType === 'audio') {
-      typingType = 'audio';
-    }
+    if (mediaItem && mediaItem.mediaType === 'audio') typingType = 'audio';
     showTyping(persona, typingType);
 
     const msgData = {
@@ -814,18 +775,9 @@
       experience: persona.type,
       archetype: persona.archetype
     };
-
     if (mediaItem) {
       msgData.mediaType = mediaItem.mediaType;
       msgData.mediaUrl = mediaItem.url;
-      if (mediaItem.personaId !== persona.id) {
-        const attribution = pick([
-          `📸 Shared by ${mediaItem.personaName}:`,
-          `🎤 From ${mediaItem.personaName}:`,
-          `📹 ${mediaItem.personaName} sent this:`
-        ]);
-        msgData.text = `${attribution} ${text}`;
-      }
     }
 
     const replyTarget = replyTo || getLastReplyTarget(persona.id);
@@ -962,18 +914,23 @@
   }
 
   window.addEventListener('chat-room-changed', () => {
-    sentMedia = {}; sessionMediaCount = 0; sessionHasMedia = false; sessionStartTime = Date.now();
     syncSimulationState();
   });
   setInterval(syncSimulationState, 1000);
+
+  // ---------- INITIALIZATION ----------
+  function initMedia() {
+    buildMediaQueuesFromManifest();
+  }
+
+  initMedia();
   syncSimulationState();
 
   window.AIPersonaSimulator = { isActive: ()=>simulationActive, getPersonas: ()=>personas, injectTradeResult: ()=>injectTradeResult() };
-
   window.onUserMessage = function(msg) {
     recentMessages.push({ id: 'user_'+Date.now(), personaId:'user', senderName:msg.senderName, text:msg.text, element:null });
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v11.0 loaded with ${personas.length} custom personas. Auto-discovery media active.`);
+  log(`🤖 AI Persona Engine v11.1 (Manifest) loaded with ${personas.length} personas.`);
 })();
