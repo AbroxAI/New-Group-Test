@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v11.1 (Manifest + Queue, No BASE_PATH) ======================
+// ====================== AI PERSONA ENGINE v11.1 (Manifest + Queue, Higher Chances) ======================
 // 150 custom personas · Media read from window.MEDIA_MANIFEST · Infinite cycle
-// ===================================================================================================
+// =====================================================================================================
 
 (function(){
   "use strict";
@@ -10,8 +10,8 @@
     BASE_INTERVAL: 8000,
     BURST_CHANCE: 0.20,
     TRADE_RESULT_INTERVAL: 20000,
-    TRADE_RESULT_CHANCE: 0.40,
-    TESTIMONIAL_CHANCE: 0.12,
+    TRADE_RESULT_CHANCE: 0.60,          // increased for more media
+    TESTIMONIAL_CHANCE: 0.30,           // increased for more media
     JOIN_CHANCE: 0.06,
     MAX_BURST_MESSAGES: 4,
     ENABLE_LOGGING: true,
@@ -567,14 +567,12 @@
   });
 
   // ################################################################
-  // ##########          NEW MEDIA SYSTEM (MANIFEST + QUEUE) ##########
+  // ##########          MANIFEST + QUEUE MEDIA SYSTEM        ##########
   // ################################################################
 
-  // Media queue – each persona gets their own array of media items
-  const personaMediaQueue = new Map();   // personaId -> array of media objects
-  const recentlyUsed = new Map();        // url -> timestamp (for cooldown)
+  const personaMediaQueue = new Map();
+  const recentlyUsed = new Map();
 
-  // Build queues from the manifest (once at startup)
   function buildMediaQueuesFromManifest() {
     const manifest = window.MEDIA_MANIFEST || {};
     personaMediaQueue.clear();
@@ -584,47 +582,20 @@
       if (!entry) continue;
 
       const items = [];
-      const normalized = normalizeNameForMedia(p.name);
-
-      // Images
       (entry.images || []).forEach(filename => {
-        items.push({
-          personaId: p.id,
-          personaName: p.name,
-          type: 'images',
-          url: `assets/images/${filename}`,
-          mediaType: 'image'
-        });
+        items.push({ personaId: p.id, personaName: p.name, type: 'images', url: `assets/images/${filename}`, mediaType: 'image' });
       });
-
-      // Voices
       (entry.voices || []).forEach(filename => {
-        items.push({
-          personaId: p.id,
-          personaName: p.name,
-          type: 'voices',
-          url: `assets/voices/${filename}`,
-          mediaType: 'audio'
-        });
+        items.push({ personaId: p.id, personaName: p.name, type: 'voices', url: `assets/voices/${filename}`, mediaType: 'audio' });
       });
-
-      // Videos
       (entry.videos || []).forEach(filename => {
-        items.push({
-          personaId: p.id,
-          personaName: p.name,
-          type: 'videos',
-          url: `assets/videos/${filename}`,
-          mediaType: 'video'
-        });
+        items.push({ personaId: p.id, personaName: p.name, type: 'videos', url: `assets/videos/${filename}`, mediaType: 'video' });
       });
 
       if (items.length > 0) {
-        // Shuffle initially
         personaMediaQueue.set(p.id, shuffleArray(items));
       }
     }
-
     log(`✅ Media queues built from manifest. Personas with media: ${personaMediaQueue.size}`);
   }
 
@@ -636,7 +607,6 @@
     return arr;
   }
 
-  // Clean up expired cooldowns
   function cleanRecentlyUsed() {
     const now = Date.now();
     const cooldownMs = CONFIG.MEDIA_COOLDOWN_MINUTES * 60 * 1000;
@@ -645,33 +615,28 @@
     }
   }
 
-  // Pick a media item for the given persona – cycles through their queue
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
-
     let queue = personaMediaQueue.get(personaId);
     if (!queue || queue.length === 0) return null;
 
-    // Try to find an item not in cooldown and matching preferred types
     for (let i = 0; i < queue.length; i++) {
       const item = queue[i];
       if (!preferredTypes.includes(item.type)) continue;
       if (recentlyUsed.has(item.url)) continue;
 
-      // Found! Remove it and push to end (cycle)
       queue.splice(i, 1);
       queue.push(item);
       recentlyUsed.set(item.url, Date.now());
       log(`🎯 Selected media: ${item.url} (from ${item.personaName})`);
       return item;
     }
-
     log(`⏳ All media for persona in cooldown or none match preferred types`);
     return null;
   }
 
   // ################################################################
-  // ##########          SIMULATION STATE (UNCHANGED)        ##########
+  // ##########          SIMULATION STATE                     ##########
   // ################################################################
 
   let activeTimeouts = [], lastMessageType = null, lastPersonaId = null, simulationActive = false, tradeResultInterval = null;
@@ -918,7 +883,6 @@
   });
   setInterval(syncSimulationState, 1000);
 
-  // ---------- INITIALIZATION ----------
   function initMedia() {
     buildMediaQueuesFromManifest();
   }
