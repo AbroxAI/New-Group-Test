@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v11.1 (Manifest + Queue, Higher Chances) ======================
-// 150 custom personas · Media read from window.MEDIA_MANIFEST · Infinite cycle
-// =====================================================================================================
+// ====================== AI PERSONA ENGINE v13 (No Limits, Embedded Manifest) ======================
+// 150 custom personas · Media guaranteed on every qualifying message · Infinite rotation
+// =============================================================================================
 
 (function(){
   "use strict";
@@ -10,15 +10,20 @@
     BASE_INTERVAL: 8000,
     BURST_CHANCE: 0.20,
     TRADE_RESULT_INTERVAL: 20000,
-    TRADE_RESULT_CHANCE: 0.60,          // increased for more media
-    TESTIMONIAL_CHANCE: 0.30,           // increased for more media
+    TRADE_RESULT_CHANCE: 0.60,
+    TESTIMONIAL_CHANCE: 0.30,
     JOIN_CHANCE: 0.06,
     MAX_BURST_MESSAGES: 4,
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
     REPLY_CHANCE: 0.95,
-    MEDIA_COOLDOWN_MINUTES: 10          // same file won't repeat within this time
+    MEDIA_COOLDOWN_MINUTES: 5           // only prevents immediate back-to-back repeat of same file
   };
+
+  // ---------- BASE PATH (GitHub Pages) ----------
+  const BASE_PATH = window.location.hostname.includes('github.io') 
+    ? '/New-Group-Test-3/' 
+    : '/';
 
   // ---------- MESSAGE TYPES ----------
   const MessageType = {
@@ -69,7 +74,7 @@
         .trim()
         .replace(/\s+/g, '_')
         .toLowerCase();
-      return `assets/avatars/${safeName}.jpg`;
+      return BASE_PATH + 'assets/avatars/' + safeName + '.jpg';
     } else {
       const names = displayName.split(' ');
       const firstLetter = names[0]?.[0] || '';
@@ -78,7 +83,7 @@
     }
   }
 
-  // ---------- HELPER: STRIP EMOJIS AND NORMALIZE FOR FILENAME ----------
+  // ---------- HELPER: STRIP EMOJIS ----------
   function normalizeNameForMedia(name) {
     return name
       .replace(/[\u{1F300}-\u{1F9FF}]/gu, '')
@@ -307,7 +312,9 @@
     "Jovan Mircetic": 'analyst',
     "Dvedat Demirci": 'boss',
     "Serhat Nuri Kaya": 'thoughtful',
-    "Julibel Golilao": 'newbie'
+    "Julibel Golilao": 'newbie',
+    "Chidi Eze": 'newbie',
+    "Carlos Mendez": 'expert'
   };
 
   // ---------- ARCHETYPE DEFINITIONS ----------
@@ -567,78 +574,92 @@
   });
 
   // ################################################################
-  // ##########          MANIFEST + QUEUE MEDIA SYSTEM        ##########
+  // ##########          EMBEDDED MEDIA MANIFEST (YOUR DATA) ##########
   // ################################################################
+  const EMBEDDED_MANIFEST = {
+    "Paul jande": { images: ["paul_jande_1.jpg"], voices: [], videos: [] },
+    "Das Haruna Fearless": { images: ["das_haruna_fearless_1.jpg"], voices: [], videos: [] },
+    "Boaster Friday": { images: ["boaster_friday_1.jpg"], voices: [], videos: [] },
+    "Cherry Reichhart": { images: ["cherry_reichhart_1.jpg"], voices: [], videos: [] },
+    "Trovis banks 🏦💰": { images: ["trovis_banks_1.jpg"], voices: [], videos: [] },
+    "Boss  Mega ⚡⚡⚡": { images: ["boss_mega_1.jpg"], voices: [], videos: [] },
+    "Buchi Joseph": { images: ["buchi_joseph_1.jpg"], voices: [], videos: [] },
+    "Chris harney": { images: ["chris_harney_1.jpg"], voices: [], videos: [] },
+    "Mbg Mook 🍒": { images: ["mbg_mook_1.jpg"], voices: [], videos: [] },
+    "Arlene paz rodriguez": { images: ["arlene_paz_rodriguez_1.jpg"], voices: [], videos: [] },
+    "oladapo ogunsakin": { images: ["oladapo_ogunsakin_1.jpg"], voices: [], videos: [] },
+    "marvel Da' sauce": { images: ["marvel_da_sauce_1.jpg"], voices: [], videos: [] },
+    "Stanley Ezeorjika 💰": { images: ["stanley_ezeorjika_1.jpg"], voices: [], videos: [] },
+    "Dereje haile": { images: ["dereje_haile_1.jpg"], voices: [], videos: [] },
+    "Chiquita Tate": { images: ["chiquita_tate_1.jpg"], voices: [], videos: [] },
+    "Frank Lowry": { images: ["frank_lowry_1.jpg"], voices: [], videos: [] },
+    "Lazy Dark 🌑💰💲": { images: ["lazy_dark_1.jpg"], voices: [], videos: [] },
+    "Dominic Harley": { images: ["dominic_harley_1.jpg"], voices: [], videos: [] },
+    "Manuel ascota": { images: ["manuel_ascota_1.jpg"], voices: [], videos: [] },
+    "Jordan A Ashcer": { images: ["jordan_a_ashcer_1.jpg"], voices: [], videos: [] },
+    "Regard Nyakane": { images: ["regard_nyakane_1.jpg"], voices: [], videos: [] },
+    "Penwell leslie": { images: ["penwell_leslie_1.jpg"], voices: [], videos: [] },
+    "Edd Trulli": { images: ["edd_trulli_1.jpg"], voices: [], videos: [] },
+    "ashley muse": { images: ["ashley_muse_1.jpg"], voices: [], videos: [] },
+    "Chidi Eze": { images: ["chidi_eze_1.jpg"], voices: [], videos: [] },
+    "Ron  Thomson 🏍️": { images: ["ron_thomson_1.jpg"], voices: [], videos: [] },
+    "David Magana 💹📉": { images: ["david_magana_1.jpg"], voices: [], videos: [] },
+    "Juan torres nunez": { images: ["juan_torres_nunez_1.jpg"], voices: [], videos: [] },
+    "Philp Otive": { images: ["philp_otive_1.jpg"], voices: [], videos: [] },
+    "Dottie Ragland": { images: ["dottie_ragland_1.jpg"], voices: [], videos: [] },
+    "Carlos Mendez": { images: ["carlos_mendez_1.jpg"], voices: [], videos: [] },
+    "Kullest Kidd 🪐": { images: ["kullest_kidd_1.jpg"], voices: [], videos: [] },
+    "Amy Jasmine": { images: ["amy_jasmine_1.jpg"], voices: [], videos: [] },
+    "Carmeal Smith": { images: [], voices: ["carmeal_smith_voice.webm"], videos: [] },
+    "Mates nsikak": { images: ["mates_nsikak_1.jpg"], voices: [], videos: [] }
+  };
 
+  // ---------- MEDIA QUEUE (UNLIMITED, GUARANTEED ROTATION) ----------
   const personaMediaQueue = new Map();
   const recentlyUsed = new Map();
 
-  function buildMediaQueuesFromManifest() {
-    const manifest = window.MEDIA_MANIFEST || {};
+  function buildMediaQueues() {
     personaMediaQueue.clear();
-
     for (const p of personas) {
-      const entry = manifest[p.name];
+      const entry = EMBEDDED_MANIFEST[p.name];
       if (!entry) continue;
-
       const items = [];
-      (entry.images || []).forEach(filename => {
-        items.push({ personaId: p.id, personaName: p.name, type: 'images', url: `assets/images/${filename}`, mediaType: 'image' });
-      });
-      (entry.voices || []).forEach(filename => {
-        items.push({ personaId: p.id, personaName: p.name, type: 'voices', url: `assets/voices/${filename}`, mediaType: 'audio' });
-      });
-      (entry.videos || []).forEach(filename => {
-        items.push({ personaId: p.id, personaName: p.name, type: 'videos', url: `assets/videos/${filename}`, mediaType: 'video' });
-      });
-
-      if (items.length > 0) {
-        personaMediaQueue.set(p.id, shuffleArray(items));
-      }
+      (entry.images || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'images', url: BASE_PATH + 'assets/images/' + fn, mediaType: 'image' }));
+      (entry.voices || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'voices', url: BASE_PATH + 'assets/voices/' + fn, mediaType: 'audio' }));
+      (entry.videos || []).forEach(fn => items.push({ personaId: p.id, personaName: p.name, type: 'videos', url: BASE_PATH + 'assets/videos/' + fn, mediaType: 'video' }));
+      if (items.length) personaMediaQueue.set(p.id, shuffleArray(items));
     }
-    log(`✅ Media queues built from manifest. Personas with media: ${personaMediaQueue.size}`);
+    log(`✅ Media queues built. Personas with media: ${personaMediaQueue.size}`);
   }
 
-  function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-  }
+  function shuffleArray(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
   function cleanRecentlyUsed() {
-    const now = Date.now();
-    const cooldownMs = CONFIG.MEDIA_COOLDOWN_MINUTES * 60 * 1000;
-    for (const [url, timestamp] of recentlyUsed.entries()) {
-      if (now - timestamp > cooldownMs) recentlyUsed.delete(url);
-    }
+    const now = Date.now(), cooldownMs = CONFIG.MEDIA_COOLDOWN_MINUTES * 60 * 1000;
+    for (const [url, ts] of recentlyUsed.entries()) if (now - ts > cooldownMs) recentlyUsed.delete(url);
   }
 
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
     let queue = personaMediaQueue.get(personaId);
-    if (!queue || queue.length === 0) return null;
-
+    if (!queue || !queue.length) return null;
     for (let i = 0; i < queue.length; i++) {
       const item = queue[i];
       if (!preferredTypes.includes(item.type)) continue;
       if (recentlyUsed.has(item.url)) continue;
-
-      queue.splice(i, 1);
-      queue.push(item);
+      queue.splice(i, 1); queue.push(item);
       recentlyUsed.set(item.url, Date.now());
-      log(`🎯 Selected media: ${item.url} (from ${item.personaName})`);
+      log(`🎯 Media: ${item.url}`);
       return item;
     }
-    log(`⏳ All media for persona in cooldown or none match preferred types`);
-    return null;
+    // If all are in cooldown, pick the first and use it anyway (prevents stall)
+    const oldest = queue[0];
+    recentlyUsed.set(oldest.url, Date.now());
+    log(`⏳ Cooldown bypassed: ${oldest.url}`);
+    return oldest;
   }
 
-  // ################################################################
-  // ##########          SIMULATION STATE                     ##########
-  // ################################################################
-
+  // ---------- SIMULATION STATE ----------
   let activeTimeouts = [], lastMessageType = null, lastPersonaId = null, simulationActive = false, tradeResultInterval = null;
   const recentMessages = [];
   const chatAPI = window.chatAPI || {};
@@ -726,24 +747,14 @@
       mediaItem = pickMediaForPersona(persona.id, preferredTypes);
     }
 
-    let typingType = 'text';
-    if (mediaItem && mediaItem.mediaType === 'audio') typingType = 'audio';
+    let typingType = mediaItem?.mediaType === 'audio' ? 'audio' : 'text';
     showTyping(persona, typingType);
 
     const msgData = {
-      senderName: persona.name,
-      senderAvatar: persona.avatar,
-      text: text,
-      time: timeStr,
-      personaId: persona.id,
-      messageType: type,
-      experience: persona.type,
-      archetype: persona.archetype
+      senderName: persona.name, senderAvatar: persona.avatar, text, time: timeStr,
+      personaId: persona.id, messageType: type, experience: persona.type, archetype: persona.archetype
     };
-    if (mediaItem) {
-      msgData.mediaType = mediaItem.mediaType;
-      msgData.mediaUrl = mediaItem.url;
-    }
+    if (mediaItem) { msgData.mediaType = mediaItem.mediaType; msgData.mediaUrl = mediaItem.url; }
 
     const replyTarget = replyTo || getLastReplyTarget(persona.id);
     if(replyTarget) msgData.replyTo = replyTarget;
@@ -758,7 +769,7 @@
         }
       }
       lastPersonaId = persona.id;
-      log(`${persona.name} (${persona.archetype}): ${msgData.text} ${mediaItem ? '[media]' : ''}`);
+      log(`${persona.name}: ${msgData.text} ${mediaItem ? '[media]' : ''}`);
     }, getTypingDelay(persona, text.length));
   }
 
@@ -771,11 +782,7 @@
     const replyText = buildReplyText(lastAIMessage.text);
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     const msgData = {
-      senderName: persona.name,
-      senderAvatar: persona.avatar,
-      text: replyText,
-      time: timeStr,
-      personaId: persona.id,
+      senderName: persona.name, senderAvatar: persona.avatar, text: replyText, time: timeStr, personaId: persona.id,
       replyTo: { senderName: lastAIMessage.senderName, text: lastAIMessage.text.substring(0, 50) }
     };
     log(`🤖 ${persona.name} forced reply to AI ${lastAIMessage.senderName}`);
@@ -878,15 +885,10 @@
     else if (!active && simulationActive) { stopSimulation(); }
   }
 
-  window.addEventListener('chat-room-changed', () => {
-    syncSimulationState();
-  });
+  window.addEventListener('chat-room-changed', () => { syncSimulationState(); });
   setInterval(syncSimulationState, 1000);
 
-  function initMedia() {
-    buildMediaQueuesFromManifest();
-  }
-
+  function initMedia() { buildMediaQueues(); }
   initMedia();
   syncSimulationState();
 
@@ -896,5 +898,5 @@
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v11.1 (Manifest) loaded with ${personas.length} personas.`);
+  log(`🤖 AI Persona Engine v13 loaded with ${personas.length} personas. Unlimited media rotation.`);
 })();
