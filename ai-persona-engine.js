@@ -1,23 +1,23 @@
-// ====================== AI PERSONA ENGINE v14 (Final – No Limits, Pure Rotation) ======================
-// 150 custom personas · Media guaranteed on every qualifying message · Embedded manifest · Relative paths only
-// =====================================================================================================
+// ====================== AI PERSONA ENGINE v15 (Final – Humanlike, Unlimited Media) ======================
+// 150 custom personas · Embedded manifest · Higher testimonial/result chances · Natural cooldown
+// ====================================================================================================
 
 (function(){
   "use strict";
 
-  // ---------- CONFIGURATION ----------
+  // ---------- CONFIGURATION (TUNED FOR HUMANLIKE BEHAVIOR) ----------
   const CONFIG = {
-    BASE_INTERVAL: 8000,
-    BURST_CHANCE: 0.20,
+    BASE_INTERVAL: 8000,                 // average time between messages
+    BURST_CHANCE: 0.15,                  // slightly lower burst chance for more natural flow
     TRADE_RESULT_INTERVAL: 20000,
-    TRADE_RESULT_CHANCE: 0.60,
-    TESTIMONIAL_CHANCE: 0.30,
-    JOIN_CHANCE: 0.06,
-    MAX_BURST_MESSAGES: 4,
+    TRADE_RESULT_CHANCE: 0.65,           // results appear often (realistic trading chat)
+    TESTIMONIAL_CHANCE: 0.35,            // testimonials also frequent
+    JOIN_CHANCE: 0.05,
+    MAX_BURST_MESSAGES: 3,
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
-    REPLY_CHANCE: 0.95,
-    MEDIA_COOLDOWN_MINUTES: 5           // only prevents immediate back-to-back repeat of the same file
+    REPLY_CHANCE: 0.90,                  // high reply rate keeps conversation alive
+    MEDIA_COOLDOWN_MINUTES: 3            // shorter cooldown lets media cycle faster
   };
 
   // ---------- MESSAGE TYPES ----------
@@ -259,7 +259,7 @@
     { name: "Thomas Schulz", gender: "men", country: "Germany", isFallback: true }
   ];
 
-  // Map real names to personality presets (exactly as you provided)
+  // Map real names to personality presets
   const nameToPersonality = {
     "oladapo ogunsakin": 'boss', "Anthony Onyinkwa": 'expert', "victor e keyz 🎹🎺📉": 'analyst',
     "Stanley Ezeorjika 💰": 'boss', "Das Haruna Fearless": 'expert', "Boaster Friday": 'joker',
@@ -859,5 +859,5 @@
     if(recentMessages.length > 30) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v14 loaded with ${personas.length} personas. Unlimited media rotation.`);
+  log(`🤖 AI Persona Engine v15 loaded with ${personas.length} personas. Humanlike behavior, unlimited media.`);
 })();
