@@ -124,8 +124,8 @@ window.MEDIA_MANIFEST = {
     videos: []
   },
   "Chidi Eze": {
-    images: ["chidi_eze_1.jpg"],
-    voices: [],
+    images: [],
+    voices: ["chidi_eze_video.mp4"],
     videos: []
   },
   "Ron  Thomson 🏍️": {
