@@ -578,7 +578,7 @@
       display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
 
-    /* ---------- PROFILE MODAL (NEW) ---------- */
+    /* ---------- PROFILE MODAL ---------- */
     .profile-modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85);
       z-index: 300; display: flex; align-items: center; justify-content: center;
@@ -630,7 +630,7 @@
       cursor: pointer; text-align: center;
     }
 
-    /* ---------- ACTIVATION MODAL (NEW - CONTACT SUPPORT FOCUS) ---------- */
+    /* ---------- ACTIVATION MODAL (VERIFICATION REQUIRED) ---------- */
     .activation-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85); z-index: 400;
@@ -775,16 +775,16 @@
             <span class="online-badge-small"></span>
           </div>
         </div>
-        <div class="chat-item" onclick="openChatRoom('signals')">
+        <div class="chat-item" onclick="openCommunityChannel()">
           <div class="chat-avatar">
             <i data-lucide="radio" style="width:24px;height:24px;"></i>
           </div>
           <div class="chat-info">
-            <div class="chat-name">Signal Alerts</div>
-            <div class="chat-preview">Real-time trade signals</div>
+            <div class="chat-name">Abrox Community Channel</div>
+            <div class="chat-preview">Official announcements and updates</div>
           </div>
           <div class="chat-meta">
-            <span class="chat-time">12:30</span>
+            <span class="chat-time">📢</span>
             <span class="online-badge-small"></span>
           </div>
         </div>
@@ -871,12 +871,12 @@
     </div>
   </div>
 
-  <!-- PROFILE MODAL (NEW) -->
+  <!-- PROFILE MODAL -->
   <div class="profile-modal-overlay" id="profileModal">
     <div class="profile-modal-container" id="profileModalContent"></div>
   </div>
 
-  <!-- ACTIVATION MODAL (NEW - CONTACT SUPPORT) -->
+  <!-- ACTIVATION MODAL (VERIFICATION REQUIRED) -->
   <div class="activation-modal" id="activationModal">
     <div class="activation-card">
       <div class="activation-icon"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
@@ -916,6 +916,23 @@
 </div>
 
 <script>
+  // ========== 20 TELEGRAM-STYLE NAME COLORS ==========
+  const NAME_COLORS = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+    '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+    '#F8C471', '#73C6B6', '#E59866', '#7FB3D5', '#F1948A',
+    '#82E0AA', '#F9E79F', '#AED6F1', '#D7BDE2', '#A3E4D7'
+  ];
+  
+  function getNameColor(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = ((hash << 5) - hash) + name.charCodeAt(i);
+      hash = hash & hash;
+    }
+    return NAME_COLORS[Math.abs(hash) % NAME_COLORS.length];
+  }
+
   // ========== CORE UI & SIGNALS LOGIC ==========
   (function(){
     lucide.createIcons();
@@ -1103,6 +1120,11 @@
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
+    // ========== COMMUNITY CHANNEL (TELEGRAM LINK) ==========
+    window.openCommunityChannel = function() {
+      window.open('https://t.me/+C5haF9_WbbVlNTdk', '_blank');
+    };
+
     // ========== ONLINE COUNT SIMULATION (63-137) ==========
     function updateOnlineCount() {
       const count = Math.floor(Math.random() * (137 - 63 + 1)) + 63;
@@ -1163,7 +1185,10 @@
         closeProfileModal();
         showActivationModal();
       };
-      document.getElementById('profileViewFullLink').onclick = () => alert('Full profile coming soon.');
+      document.getElementById('profileViewFullLink').onclick = () => {
+        closeProfileModal();
+        showActivationModal();
+      };
       
       profileModal.classList.add('active');
       lucide.createIcons();
@@ -1172,12 +1197,11 @@
     function closeProfileModal() { profileModal.classList.remove('active'); }
     profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
 
-    // ========== ACTIVATION MODAL (CONTACT SUPPORT) ==========
+    // ========== ACTIVATION MODAL (VERIFICATION REQUIRED) ==========
     function showActivationModal() { activationModal.classList.add('active'); }
     function hideActivationModal() { activationModal.classList.remove('active'); }
     
     activationContactBtn.onclick = () => {
-      // Replace with actual support link
       window.open('https://t.me/abrox_support', '_blank');
       hideActivationModal();
     };
@@ -1314,6 +1338,7 @@
         : `<div class="chat-avatar-bubble">${msgData.senderName.charAt(0)}</div>`;
       let contentHtml = '';
       const senderName = msgData.senderName || 'AI';
+      const nameColor = getNameColor(senderName);
       if (msgData.replyTo) {
         contentHtml += `<div class="reply-preview" style="background: rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #3b82f6;">
           <div style="font-size: 11px; color: #8b9bb5;">Replying to ${msgData.replyTo.senderName}</div>
@@ -1327,7 +1352,7 @@
       }
       if (msgData.text) contentHtml += `<div style="margin-top: ${msgData.mediaUrl ? '8px' : '0'};">${msgData.text}</div>`;
       const timeHtml = `<div class="chat-bubble-time">${msgData.time || getTime()}</div>`;
-      row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;cursor:pointer;color:#e2e8f0;">${senderName}</span>${contentHtml}${timeHtml}</div>`;
+      row.innerHTML = `${avatarHtml}<div class="chat-bubble incoming"><span class="chat-sender-name" style="font-weight:700;margin-bottom:4px;display:block;cursor:pointer;color:${nameColor};">${senderName}</span>${contentHtml}${timeHtml}</div>`;
       
       const bubble = row.querySelector('.chat-bubble');
       bubble.addEventListener('click', (e) => {
@@ -1384,7 +1409,6 @@
       shell.classList.add('is-open');
       const roomTitle = shell.querySelector('.room-info h2');
       if (room === 'general') roomTitle.innerText = 'Abrox General Chat';
-      else if (room === 'signals') roomTitle.innerText = 'Signal Alerts';
       notifyChatRoomChange(room);
       loadMessagesFromStorage(room);
       setTimeout(() => scrollToBottom(), 50);
@@ -1398,7 +1422,6 @@
 
     // ========== USER MESSAGE SENDING (TRIGGERS ACTIVATION) ==========
     window.sendMessage = function() {
-      // Always show activation modal instead of sending
       showActivationModal();
       pendingMedia = null;
       chatInput.value = '';
