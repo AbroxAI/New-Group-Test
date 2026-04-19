@@ -125,32 +125,33 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- SIGNALS CARD LAYOUT ----- */
+    /* ----- SIGNALS AREA (NEW FULL-WIDTH) ----- */
     .signals-wrap {
-      display: flex;
-      justify-content: center;
-      padding: 24px 16px 24px;
-    }
-    .signals-card {
-      position: relative;
       width: 100%;
-      max-width: 420px;
-      min-height: 620px;
-      background: linear-gradient(180deg, #0b4e87 0%, #083968 35%, #04111f 100%);
-      border: 4px solid rgba(255,255,255,0.9);
-      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
-      padding: 22px 20px 24px;
-      overflow: hidden;
+      min-height: calc(100dvh - 80px);
+      padding: 0;
+      margin: 0;
+      display: block;
     }
-    .signals-card-top {
+    .signals-screen {
+      width: 100%;
+      min-height: calc(100dvh - 80px);
+      padding: 18px 16px 120px;
+      margin: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: visible;
+    }
+    .signals-top {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 34px;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 28px;
     }
     .signals-logo img {
-      width: 132px;
-      max-width: 44vw;
+      width: clamp(116px, 34vw, 150px);
       height: auto;
       display: block;
       animation: logoGlowPulse 2s infinite ease-in-out;
@@ -178,7 +179,6 @@
       font-size: 1.15rem;
       line-height: 1.1;
       font-weight: 700;
-      letter-spacing: 0.02em;
     }
     .signals-desc {
       margin-top: 14px;
@@ -192,20 +192,71 @@
       display: flex;
       gap: 12px;
       margin-top: 28px;
+      width: 100%;
+      align-items: stretch;
     }
-    .signal-row .dropdown-wrap {
-      flex: 1;
+    .dropdown-wrap {
+      flex: 1 1 0;
+      min-width: 0;
       position: relative;
     }
-    .signal-row .dropdown-btn {
+    .dropdown-btn {
       width: 100%;
-      font-size: 0.98rem;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       padding: 14px 16px;
-      border-radius: 10px;
+      border-radius: 12px;
+      background: linear-gradient(180deg,#1bb6c9,#0ea5b7);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .dropdown-text {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dropdown-arrow {
+      flex-shrink: 0;
+      font-size: 0.9rem;
+    }
+    .dropdown-list {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      overflow-y: auto;
+      max-height: 40vh;
+      z-index: 50;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+      font-size: 4vw;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      overscroll-behavior: contain;
+      scroll-snap-type: y mandatory;
+    }
+    .dropdown-list div {
+      padding: 3vw 4vw;
+      color: #000;
+      font-weight: 500;
+      cursor: pointer;
+      scroll-snap-align: center;
+    }
+    .dropdown-list div.active {
+      color: #1bb6c9;
     }
     #startBtn {
-      margin-top: 18px;
-      width: 58%;
+      margin-top: 22px;
+      width: min(58%, 240px);
       min-width: 170px;
       display: block;
       margin-left: auto;
@@ -220,40 +271,11 @@
       color: #fff;
       cursor: pointer;
     }
-    .signal-row .dropdown-list {
-      font-size: 0.96rem;
-    }
-
-    /* ----- SHARED SIGNALS CONTROLS ----- */
-    .icon-box {
-      width: 14vw; height: 14vw; max-width: 64px; max-height: 64px;
-      border-radius: 14px; display: flex; align-items: center; justify-content: center;
-      font-size: 6vw; font-weight: 700;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 4px 10px rgba(0,0,0,0.4);
-    }
-    .icon-box.usd { background: linear-gradient(180deg,#134b7a,#0f365e); color: #7dd3fc; }
-    .icon-box.btc { background: linear-gradient(180deg,#0b233e,#091d33); color: #fff; }
-
-    .dropdown-btn {
-      background: linear-gradient(180deg,#1bb6c9,#0ea5b7); color: #fff; font-weight: 600;
-      padding: 3vw 4vw; border-radius: 12px; display: flex; justify-content: space-between;
-      align-items: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
-      cursor: pointer; font-size: 4vw; border: none; width: 100%;
-    }
-    .dropdown-list {
-      position: absolute; top: calc(100% + 0.5vw); left: 0; width: 100%;
-      background: #fff; border-radius: 12px; overflow-y: auto; max-height: 40vh;
-      z-index: 50; box-shadow: 0 12px 35px rgba(0,0,0,0.45); font-size: 4vw;
-      -webkit-overflow-scrolling: touch; scroll-behavior: smooth; overscroll-behavior: contain;
-      scroll-snap-type: y mandatory;
-    }
-    .dropdown-list div {
-      padding: 3vw 4vw; color: #000; font-weight: 500; cursor: pointer;
-      scroll-snap-align: center; transition: transform 0.2s, font-size 0.2s, color 0.2s;
-    }
-    .dropdown-list div.active { transform: scale(1.1); font-size: 4.5vw; color: #1bb6c9; }
-    #warn {
+    .warn-text {
+      margin-top: 8px;
+      text-align: center;
       color: #f87171;
+      font-size: 0.75rem;
     }
 
     /* ----- CHAT LIST ----- */
@@ -630,7 +652,7 @@
       cursor: pointer; text-align: center;
     }
 
-    /* ---------- ACTIVATION MODAL (VERIFICATION REQUIRED) ---------- */
+    /* ---------- ACTIVATION MODAL ---------- */
     .activation-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85); z-index: 400;
@@ -668,13 +690,12 @@
 
     /* Responsive */
     @media (max-width: 420px) {
-      #startBtn { width: 62%; }
-      .dropdown-btn { padding: 3vw 4vw; font-size: 4.5vw; }
-      .signals-card { min-height: 590px; padding: 20px 16px 22px; }
-      .signals-logo img { width: 118px; }
+      .signals-screen { padding: 14px 12px 110px; }
       .signals-title { font-size: 1.65rem; }
       .signals-subtitle { font-size: 1.05rem; }
       .signals-desc { max-width: 230px; font-size: 0.9rem; }
+      .dropdown-btn { min-height: 58px; font-size: 0.92rem; padding: 12px 14px; }
+      #startBtn { width: 62%; }
     }
   </style>
 </head>
@@ -704,11 +725,11 @@
 
   <!-- Page container -->
   <div class="page-container" id="pageContainer">
-    <!-- SIGNALS PAGE -->
+    <!-- SIGNALS PAGE (NEW FULL-WIDTH) -->
     <div id="signalsPage" class="page active">
       <div class="signals-wrap">
-        <div class="signals-card">
-          <div class="signals-card-top">
+        <div class="signals-screen">
+          <div class="signals-top">
             <div class="signals-logo">
               <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
             </div>
@@ -717,11 +738,16 @@
 
           <h1 class="signals-title">TRADING BOT</h1>
           <h2 class="signals-subtitle">SETTINGS</h2>
-          <p class="signals-desc">(First select Currency Pair and Timeframe and then click on Start Signals.)</p>
+          <p class="signals-desc">
+            (First select Currency Pair and Timeframe and then click on Start Signals.)
+          </p>
 
           <div class="signal-row">
             <div class="dropdown-wrap">
-              <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">Choose Currency <span class="text-sm">▾</span></div>
+              <div class="dropdown-btn" onclick="toggleDropdown('currencyList')">
+                <span class="dropdown-text">Choose Currency</span>
+                <span class="dropdown-arrow">▾</span>
+              </div>
               <div id="currencyList" class="dropdown-list hidden">
                 <div onclick="selectCurrency('USD/JPY')">USD/JPY</div>
                 <div onclick="selectCurrency('USD/CHF')">USD/CHF</div>
@@ -731,8 +757,12 @@
                 <div onclick="selectCurrency('AUD/USD')">AUD/USD</div>
               </div>
             </div>
+
             <div class="dropdown-wrap">
-              <div class="dropdown-btn" onclick="toggleDropdown('timeList')">Timeframe <span class="text-sm">▾</span></div>
+              <div class="dropdown-btn" onclick="toggleDropdown('timeList')">
+                <span class="dropdown-text">Timeframe</span>
+                <span class="dropdown-arrow">▾</span>
+              </div>
               <div id="timeList" class="dropdown-list hidden">
                 <div onclick="selectTime('1 Minute')">1 Minute</div>
                 <div onclick="selectTime('5 Minutes')">5 Minutes</div>
@@ -744,7 +774,7 @@
           </div>
 
           <button id="startBtn" onclick="startSignals()">Start Signals</button>
-          <p id="warn" class="text-red-400 text-xs text-center hidden mt-2">Please select currency and timeframe</p>
+          <p id="warn" class="warn-text hidden">Please select currency and timeframe</p>
         </div>
       </div>
     </div>
@@ -876,7 +906,7 @@
     <div class="profile-modal-container" id="profileModalContent"></div>
   </div>
 
-  <!-- ACTIVATION MODAL (VERIFICATION REQUIRED) -->
+  <!-- ACTIVATION MODAL -->
   <div class="activation-modal" id="activationModal">
     <div class="activation-card">
       <div class="activation-icon"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
@@ -975,16 +1005,24 @@
 
     // Signals logic
     let currency = null, timeframe = null;
-    window.toggleDropdown = (id) => document.getElementById(id).classList.toggle("hidden");
+    window.toggleDropdown = (id) => {
+      const list = document.getElementById(id);
+      if (!list) return;
+      // Close other dropdowns
+      document.querySelectorAll('.dropdown-list').forEach(d => { if (d.id !== id) d.classList.add('hidden'); });
+      list.classList.toggle('hidden');
+    };
     window.selectCurrency = (val) => {
       currency = val;
-      document.querySelectorAll('.dropdown-btn')[0].innerHTML = val + ' <span class="text-sm">▾</span>';
+      const btn = document.querySelectorAll('.dropdown-btn')[0];
+      btn.innerHTML = `<span class="dropdown-text">${val}</span><span class="dropdown-arrow">▾</span>`;
       document.getElementById('currencyList').classList.add("hidden");
       highlightOption('currencyList', val);
     };
     window.selectTime = (val) => {
       timeframe = val;
-      document.querySelectorAll('.dropdown-btn')[1].innerHTML = val + ' <span class="text-sm">▾</span>';
+      const btn = document.querySelectorAll('.dropdown-btn')[1];
+      btn.innerHTML = `<span class="dropdown-text">${val}</span><span class="dropdown-arrow">▾</span>`;
       document.getElementById('timeList').classList.add("hidden");
       highlightOption('timeList', val);
     };
@@ -1084,7 +1122,7 @@
     lightboxClose.onclick = () => lightboxOverlay.classList.remove('active');
     lightboxOverlay.addEventListener('click', (e) => { if(e.target === lightboxOverlay) lightboxOverlay.classList.remove('active'); });
 
-    // Voice recording (unchanged)
+    // Voice recording
     voiceBtn.addEventListener('click', async () => {
       if (isRecording) return;
       try {
@@ -1120,12 +1158,12 @@
     };
     emojiBtn.onclick = () => { chatInput.value += '😊'; updateComposer(); };
 
-    // ========== COMMUNITY CHANNEL (TELEGRAM LINK) ==========
+    // ========== COMMUNITY CHANNEL ==========
     window.openCommunityChannel = function() {
       window.open('https://t.me/+C5haF9_WbbVlNTdk', '_blank');
     };
 
-    // ========== ONLINE COUNT SIMULATION (63-137) ==========
+    // ========== ONLINE COUNT SIMULATION ==========
     function updateOnlineCount() {
       const count = Math.floor(Math.random() * (137 - 63 + 1)) + 63;
       if (onlineSpan) onlineSpan.innerText = count + ' online';
@@ -1197,7 +1235,7 @@
     function closeProfileModal() { profileModal.classList.remove('active'); }
     profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
 
-    // ========== ACTIVATION MODAL (VERIFICATION REQUIRED) ==========
+    // ========== ACTIVATION MODAL ==========
     function showActivationModal() { activationModal.classList.add('active'); }
     function hideActivationModal() { activationModal.classList.remove('active'); }
     
@@ -1269,7 +1307,7 @@
       finally { isHydrating = false; }
     }
 
-    // ========== CHAT API INTEGRATION FOR AI ENGINE ==========
+    // ========== CHAT API INTEGRATION ==========
     window.__activeChatRoom = null;
 
     function notifyChatRoomChange(room) {
@@ -1363,7 +1401,6 @@
         el.addEventListener('click', (e) => { e.stopPropagation(); showLightbox(el.src, el.tagName.toLowerCase()); });
       });
       
-      // Profile modal triggers
       const avatarDiv = row.querySelector('.chat-avatar-bubble');
       const nameSpan = bubble.querySelector('.chat-sender-name');
       if (msgData.personaId && msgData.personaId !== 'user') {
