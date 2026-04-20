@@ -4,13 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>ABROX AI · Signals & Chat</title>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0d4f8b">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -100,43 +93,6 @@
     .chat-header .header-titles h1 { font-size: 18px; font-weight: 700; color: #fff; line-height: 1.2; }
     .chat-header .header-titles .subtitle { font-size: 12px; color: #8b9bb5; margin-top: 2px; }
 
-    /* ----- INSTALL BUTTON (PWA) - BLUE & SLIDING ----- */
-    .install-btn {
-      background: #3b82f6;
-      border: none;
-      border-radius: 30px;
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-      transition: all 0.2s;
-      transform: translateX(0);
-      opacity: 1;
-      visibility: visible;
-      white-space: nowrap;
-      margin-left: auto;
-      animation: slideInInstall 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .install-btn.hidden {
-      display: none !important;
-    }
-    @keyframes slideInInstall {
-      0% { transform: translateX(100%); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
-    }
-    .install-btn:hover {
-      background: #2563eb;
-    }
-    .install-btn i {
-      width: 18px;
-      height: 18px;
-    }
-
     /* ----- PAGE CONTAINER & BOTTOM NAV ----- */
     .page-container {
       position: relative;
@@ -169,7 +125,7 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- SIGNALS AREA (FULL-WIDTH) ----- */
+    /* ----- SIGNALS AREA (NEW FULL-WIDTH) ----- */
     .signals-wrap {
       width: 100%;
       min-height: calc(100dvh - 80px);
@@ -959,7 +915,7 @@
     <div class="lang-switch" id="langSwitch">🇺🇸 en</div>
   </div>
 
-  <!-- CHAT HEADER (with Install Button) -->
+  <!-- CHAT HEADER -->
   <div id="chatGlobalHeader" class="chat-header" style="display:none;">
     <div class="header-logo">
       <img src="assets/logo.png" alt="ABROX" onerror="this.parentElement.innerHTML='✨';">
@@ -968,10 +924,6 @@
       <h1>Abrox AI</h1>
       <div class="subtitle" id="globalSubtitle">6,324 members</div>
     </div>
-    <button class="install-btn hidden" id="installPwaBtnHeader">
-      <i data-lucide="smartphone"></i>
-      <span>Install App</span>
-    </button>
   </div>
 
   <!-- Page container -->
@@ -1032,21 +984,12 @@
 
     <!-- TRAINING PAGE -->
     <div id="trainingPage" class="page">
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/logo.png" alt="ABROX" style="width: 36px; height: 36px; border-radius: 10px;" onerror="this.parentElement.innerHTML='✨';">
-          <div>
-            <h2 style="font-size: 18px; font-weight: 700; color: #fff;">Training Center</h2>
-            <div style="font-size: 12px; color: #8b9bb5;">Learn to trade</div>
-          </div>
+      <div class="placeholder-content" style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+          <i data-lucide="book-open" style="width: 32px; height: 32px; color: #3b82f6;"></i>
+          <h2 style="font-size: 24px; font-weight: 700; color: #fff;">Training Center</h2>
         </div>
-        <button class="install-btn hidden" id="installPwaBtnTraining">
-          <i data-lucide="smartphone"></i>
-          <span>Install App</span>
-        </button>
-      </div>
-      
-      <div class="placeholder-content" style="padding: 20px; padding-top: 0;">
+        
         <!-- VIDEO CARD -->
         <div class="video-card">
           <div class="video-title">
@@ -1151,21 +1094,11 @@
 
     <!-- REFERRALS PAGE -->
     <div id="referralsPage" class="page">
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/logo.png" alt="ABROX" style="width: 36px; height: 36px; border-radius: 10px;" onerror="this.parentElement.innerHTML='✨';">
-          <div>
-            <h2 style="font-size: 18px; font-weight: 700; color: #fff;">Refer & Earn</h2>
-            <div style="font-size: 12px; color: #8b9bb5;">Invite friends</div>
-          </div>
+      <div class="placeholder-content" style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+          <i data-lucide="users" style="width: 32px; height: 32px; color: #3b82f6;"></i>
+          <h2 style="font-size: 24px; font-weight: 700; color: #fff;">Refer & Earn</h2>
         </div>
-        <button class="install-btn hidden" id="installPwaBtnReferrals">
-          <i data-lucide="smartphone"></i>
-          <span>Install App</span>
-        </button>
-      </div>
-      
-      <div class="placeholder-content" style="padding: 20px; padding-top: 0;">
         <p style="color: #8b9bb5; margin-bottom: 16px;">Invite friends and earn up to 20% commission on their trades.</p>
         
         <div class="referral-card">
@@ -1214,21 +1147,12 @@
 
     <!-- PROGRESS PAGE -->
     <div id="progressPage" class="page">
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <img src="assets/logo.png" alt="ABROX" style="width: 36px; height: 36px; border-radius: 10px;" onerror="this.parentElement.innerHTML='✨';">
-          <div>
-            <h2 style="font-size: 18px; font-weight: 700; color: #fff;">Your Progress</h2>
-            <div style="font-size: 12px; color: #8b9bb5;">Track milestones</div>
-          </div>
+      <div class="placeholder-content" style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <i data-lucide="trending-up" style="width: 32px; height: 32px; color: #3b82f6;"></i>
+          <h2 style="font-size: 24px; font-weight: 700; color: #fff;">Your Progress</h2>
         </div>
-        <button class="install-btn hidden" id="installPwaBtnProgress">
-          <i data-lucide="smartphone"></i>
-          <span>Install App</span>
-        </button>
-      </div>
-      
-      <div class="placeholder-content" style="padding: 20px; padding-top: 0;">
+        
         <div class="video-card">
           <div style="text-align: center; padding: 8px;">
             <div style="font-size: 14px; color: #8b9bb5; margin-bottom: 8px;">Learning Progress</div>
@@ -1387,60 +1311,6 @@
 </div>
 
 <script>
-  // ========== PWA INSTALL LOGIC (IMPROVED) ==========
-  (function() {
-    let deferredPrompt;
-    const installButtons = [
-      document.getElementById('installPwaBtnHeader'),
-      document.getElementById('installPwaBtnTraining'),
-      document.getElementById('installPwaBtnReferrals'),
-      document.getElementById('installPwaBtnProgress')
-    ].filter(Boolean);
-
-    // Hide buttons by default
-    installButtons.forEach(btn => btn.classList.add('hidden'));
-
-    // Only show when installation is available
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installButtons.forEach(btn => btn.classList.remove('hidden'));
-    });
-
-    // Hide after installation
-    window.addEventListener('appinstalled', () => {
-      installButtons.forEach(btn => btn.classList.add('hidden'));
-      deferredPrompt = null;
-    });
-
-    // Check if already in standalone mode (installed)
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
-      installButtons.forEach(btn => btn.classList.add('hidden'));
-    }
-
-    async function handleInstallClick() {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        installButtons.forEach(btn => btn.classList.add('hidden'));
-      }
-      deferredPrompt = null;
-    }
-
-    installButtons.forEach(btn => btn.addEventListener('click', handleInstallClick));
-
-    // Service Worker registration
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(
-        URL.createObjectURL(new Blob([`
-          self.addEventListener('install', () => self.skipWaiting());
-          self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
-        `], { type: 'application/javascript' }))
-      ).catch(console.warn);
-    }
-  })();
-
   // ========== 20 TELEGRAM-STYLE NAME COLORS ==========
   const NAME_COLORS = [
     '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
@@ -1541,6 +1411,7 @@
         return;
       }
       document.getElementById("warn").classList.add("hidden");
+      // Show activation modal instead of alert
       showActivationModal();
     };
     function highlightOption(listId, value) {
@@ -1660,11 +1531,10 @@
     let pendingMedia = null;
     let mediaRecorder = null, isRecording = false, audioStream = null;
     
-    // LocalStorage persistence with fallback
+    // LocalStorage persistence
     const ROOM_STORAGE_PREFIX = 'abrox_chat_';
     let isHydrating = false;
     let currentRoom = 'general';
-    const memoryStorage = new Map();
 
     function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
     function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
@@ -1812,6 +1682,7 @@
         <div class="profile-view-link" id="profileViewFullLink">View Full Profile ›</div>
       `;
       
+      // FIXED: Avatar tap opens lightbox with full avatar
       document.getElementById('profileAvatarTap').onclick = () => {
         if (personaData.senderAvatar) {
           showLightbox(personaData.senderAvatar, 'img');
@@ -1844,20 +1715,7 @@
     activationCloseBtn.onclick = hideActivationModal;
     activationModal.addEventListener('click', (e) => { if (e.target === activationModal) hideActivationModal(); });
 
-    // ========== LOCAL STORAGE PERSISTENCE (WITH FALLBACK) ==========
-    function isLocalStorageAvailable() {
-      try {
-        const test = '__test__';
-        localStorage.setItem(test, test);
-        localStorage.removeItem(test);
-        return true;
-      } catch(e) {
-        return false;
-      }
-    }
-    
-    const storageAvailable = isLocalStorageAvailable();
-    
+    // ========== LOCAL STORAGE PERSISTENCE ==========
     function roomStorageKey(room) { return ROOM_STORAGE_PREFIX + room; }
     
     function saveMessagesToStorage(room) {
@@ -1890,26 +1748,13 @@
             text, time, imageUrl: image, videoUrl: video, audioUrl: audio, tickStatus
           });
         });
-        const serialized = JSON.stringify(messages);
-        if (storageAvailable) {
-          localStorage.setItem(roomStorageKey(room), serialized);
-        } else {
-          memoryStorage.set(roomStorageKey(room), serialized);
-        }
+        localStorage.setItem(roomStorageKey(room), JSON.stringify(messages));
       } catch(e) { console.warn('Save failed:', e); }
     }
     
     function loadMessagesFromStorage(room) {
       const key = roomStorageKey(room);
-      let stored = null;
-      try {
-        if (storageAvailable) {
-          stored = localStorage.getItem(key);
-        } else {
-          stored = memoryStorage.get(key) || null;
-        }
-      } catch(e) { stored = null; }
-      
+      const stored = localStorage.getItem(key);
       if (!stored) return;
       try {
         const messages = JSON.parse(stored);
