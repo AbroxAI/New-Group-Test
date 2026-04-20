@@ -125,7 +125,7 @@
     .nav-item.active { color: #3b82f6; }
     .nav-item i { font-size: 22px; }
 
-    /* ----- SIGNALS AREA (FULL-WIDTH) ----- */
+    /* ----- SIGNALS AREA (NEW FULL-WIDTH) ----- */
     .signals-wrap {
       width: 100%;
       min-height: calc(100dvh - 80px);
@@ -839,7 +839,7 @@
     }
     .stat-row:last-child { border-bottom: none; }
     .stat-label { color: #8b9bb5; }
-    .stat-value { font-weight: 500; color: #e2e8f0; }
+    .stat-value { font-weight: 700; color: #e2e8f0; }
     .profit-positive { color: #4ade80; }
     .profit-negative { color: #f87171; }
     .profile-id { font-size: 11px; color: #6b7280; margin-top: 12px; font-family: monospace; }
@@ -1411,7 +1411,7 @@
         return;
       }
       document.getElementById("warn").classList.add("hidden");
-      // Show activation modal
+      // Show activation modal instead of alert
       showActivationModal();
     };
     function highlightOption(listId, value) {
@@ -1534,7 +1534,6 @@
     // LocalStorage persistence
     const ROOM_STORAGE_PREFIX = 'abrox_chat_';
     let isHydrating = false;
-    let isLoadingFromStorage = false;
     let currentRoom = 'general';
 
     function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
@@ -1683,7 +1682,7 @@
         <div class="profile-view-link" id="profileViewFullLink">View Full Profile ›</div>
       `;
       
-      // Avatar tap opens lightbox with full avatar
+      // FIXED: Avatar tap opens lightbox with full avatar
       document.getElementById('profileAvatarTap').onclick = () => {
         if (personaData.senderAvatar) {
           showLightbox(personaData.senderAvatar, 'img');
@@ -1716,11 +1715,11 @@
     activationCloseBtn.onclick = hideActivationModal;
     activationModal.addEventListener('click', (e) => { if (e.target === activationModal) hideActivationModal(); });
 
-    // ========== LOCAL STORAGE PERSISTENCE (ROBUST) ==========
+    // ========== LOCAL STORAGE PERSISTENCE ==========
     function roomStorageKey(room) { return ROOM_STORAGE_PREFIX + room; }
     
     function saveMessagesToStorage(room) {
-      if (isHydrating || isLoadingFromStorage) return;
+      if (isHydrating) return;
       try {
         const messages = [];
         document.querySelectorAll('#chatMessagesContainer .chat-msg-row').forEach(row => {
@@ -1756,10 +1755,10 @@
     function loadMessagesFromStorage(room) {
       const key = roomStorageKey(room);
       const stored = localStorage.getItem(key);
-      if (!stored) return false;
+      if (!stored) return;
       try {
         const messages = JSON.parse(stored);
-        isLoadingFromStorage = true;
+        isHydrating = true;
         messages.forEach(msg => {
           if (msg.side === 'outgoing') {
             addMessageToFeed('outgoing', msg.text, msg.time, msg.tickStatus, msg.imageUrl, msg.videoUrl, msg.audioUrl, false);
@@ -1773,9 +1772,8 @@
             }, false);
           }
         });
-        return true;
-      } catch(e) { console.warn('Load failed:', e); return false; }
-      finally { isLoadingFromStorage = false; }
+      } catch(e) { console.warn('Load failed:', e); }
+      finally { isHydrating = false; }
     }
 
     // ========== CHAT API INTEGRATION ==========
@@ -1827,7 +1825,7 @@
           <div class="chat-bubble incoming" style="background:#1e3a5f;">${msgData.text}<div class="chat-bubble-time">${msgData.time || getTime()}</div></div>`;
         container.appendChild(row);
         scrollIfNeeded();
-        if (!isHydrating && !isLoadingFromStorage) saveMessagesToStorage(currentRoom);
+        if (!isHydrating) saveMessagesToStorage(currentRoom);
       },
 
       isChatRoomActive: function() {
@@ -1883,7 +1881,7 @@
       container.appendChild(row);
       scrollIfNeeded();
       lucide.createIcons();
-      if (shouldSave && !isHydrating && !isLoadingFromStorage) saveMessagesToStorage(currentRoom);
+      if (shouldSave && !isHydrating) saveMessagesToStorage(currentRoom);
       return row;
     }
 
@@ -1904,29 +1902,21 @@
       container.appendChild(row);
       scrollIfNeeded();
       lucide.createIcons();
-      if (shouldSave && !isHydrating && !isLoadingFromStorage) saveMessagesToStorage(currentRoom);
+      if (shouldSave && !isHydrating) saveMessagesToStorage(currentRoom);
       return row;
     }
 
-    // ========== CHAT ROOM OPEN/CLOSE (WITH PERSISTENCE) ==========
+    // ========== CHAT ROOM OPEN/CLOSE ==========
     window.openChatRoom = function(room) {
       currentRoom = room;
       const shell = document.getElementById('chatRoomShell');
       const container = document.getElementById('chatMessagesContainer');
-      
-      // Clear container and add fresh date sticker
-      container.innerHTML = `<div class="chat-date-sticker" id="chatDateSticker">Today • ${new Date().toISOString().split('T')[0]}</div>`;
-      
-      // Load saved messages BEFORE notifying engine
-      const hasSavedMessages = loadMessagesFromStorage(room);
-      
+      if (container) container.innerHTML = `<div class="chat-date-sticker" id="chatDateSticker">Today • ${new Date().toISOString().split('T')[0]}</div>`;
       shell.classList.add('is-open');
       const roomTitle = shell.querySelector('.room-info h2');
       if (room === 'general') roomTitle.innerText = 'Abrox General Chat';
-      
-      // Notify engine after messages are loaded
       notifyChatRoomChange(room);
-      
+      loadMessagesFromStorage(room);
       setTimeout(() => scrollToBottom(), 50);
     };
 
