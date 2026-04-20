@@ -968,7 +968,7 @@
       <h1>Abrox AI</h1>
       <div class="subtitle" id="globalSubtitle">6,324 members</div>
     </div>
-    <button class="install-btn" id="installPwaBtnHeader">
+    <button class="install-btn hidden" id="installPwaBtnHeader">
       <i data-lucide="smartphone"></i>
       <span>Install App</span>
     </button>
@@ -1040,7 +1040,7 @@
             <div style="font-size: 12px; color: #8b9bb5;">Learn to trade</div>
           </div>
         </div>
-        <button class="install-btn" id="installPwaBtnTraining">
+        <button class="install-btn hidden" id="installPwaBtnTraining">
           <i data-lucide="smartphone"></i>
           <span>Install App</span>
         </button>
@@ -1159,7 +1159,7 @@
             <div style="font-size: 12px; color: #8b9bb5;">Invite friends</div>
           </div>
         </div>
-        <button class="install-btn" id="installPwaBtnReferrals">
+        <button class="install-btn hidden" id="installPwaBtnReferrals">
           <i data-lucide="smartphone"></i>
           <span>Install App</span>
         </button>
@@ -1222,7 +1222,7 @@
             <div style="font-size: 12px; color: #8b9bb5;">Track milestones</div>
           </div>
         </div>
-        <button class="install-btn" id="installPwaBtnProgress">
+        <button class="install-btn hidden" id="installPwaBtnProgress">
           <i data-lucide="smartphone"></i>
           <span>Install App</span>
         </button>
@@ -1387,7 +1387,7 @@
 </div>
 
 <script>
-  // ========== PWA INSTALL LOGIC ==========
+  // ========== PWA INSTALL LOGIC (IMPROVED) ==========
   (function() {
     let deferredPrompt;
     const installButtons = [
@@ -1397,30 +1397,29 @@
       document.getElementById('installPwaBtnProgress')
     ].filter(Boolean);
 
-    // Only show the button if the browser supports installation
+    // Hide buttons by default
+    installButtons.forEach(btn => btn.classList.add('hidden'));
+
+    // Only show when installation is available
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      // Button is already visible, keep it
+      installButtons.forEach(btn => btn.classList.remove('hidden'));
     });
 
-    // Hide button if app is already installed
+    // Hide after installation
     window.addEventListener('appinstalled', () => {
       installButtons.forEach(btn => btn.classList.add('hidden'));
       deferredPrompt = null;
     });
 
-    // Check if already in standalone mode
+    // Check if already in standalone mode (installed)
     if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
       installButtons.forEach(btn => btn.classList.add('hidden'));
     }
 
     async function handleInstallClick() {
-      if (!deferredPrompt) {
-        // Fallback for browsers that don't support beforeinstallprompt
-        alert('To install the app, use "Add to Home Screen" from your browser menu.');
-        return;
-      }
+      if (!deferredPrompt) return;
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
