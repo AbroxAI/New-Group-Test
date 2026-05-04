@@ -1,9 +1,9 @@
-// ====================== AI PERSONA ENGINE v18 FINAL – NO DUPLICATE JOIN ======================
-// JOIN type removed from persona allowedTypes & messageBanks
-// Only system alert via simulateJoin (party popper + real name)
-// JOIN_CHANCE 0.15, media cooldowns 15 min global / 8 min per‑persona
-// All expanded phrase banks, all 150 personas, full humanlike tuning
-// ============================================================================================
+// ====================== AI PERSONA ENGINE v18 FINAL – NO DUPLICATE JOIN MESSAGES ======================
+// JOIN type removed from MessageType, persona allowed types, and message banks.
+// Only system alert via simulateJoin (party popper) – no AI sender.
+// JOIN_CHANCE 0.15, media cooldowns 15 min global / 8 min per‑persona.
+// Expanded phrases, 150 personas, full humanlike tuning.
+// ======================================================================================================
 
 (function(){
   "use strict";
@@ -28,7 +28,7 @@
   const MessageType = {
     QUESTION: "question", RESULT: "result", REACTION: "reaction", ADVICE: "advice",
     HYPE: "hype", GREETING: "greeting", CONFUSED: "confused", FLEX: "flex",
-    COMMUNITY: "community", TESTIMONIAL: "testimonial", JOIN: "join",
+    COMMUNITY: "community", TESTIMONIAL: "testimonial",         // no JOIN
     SARCASTIC: "sarcastic", FUNNY: "funny", ANALYTICAL: "analytical"
   };
 
@@ -43,7 +43,6 @@
     [MessageType.FLEX]:       [MessageType.REACTION, MessageType.HYPE, MessageType.TESTIMONIAL, MessageType.SARCASTIC],
     [MessageType.COMMUNITY]:  [MessageType.REACTION, MessageType.QUESTION, MessageType.GREETING],
     [MessageType.TESTIMONIAL]: [MessageType.REACTION, MessageType.QUESTION, MessageType.HYPE],
-    [MessageType.JOIN]:       [MessageType.GREETING, MessageType.REACTION, MessageType.COMMUNITY],
     [MessageType.SARCASTIC]:  [MessageType.REACTION, MessageType.FLEX, MessageType.QUESTION],
     [MessageType.FUNNY]:      [MessageType.REACTION, MessageType.HYPE, MessageType.COMMUNITY],
     [MessageType.ANALYTICAL]: [MessageType.ADVICE, MessageType.QUESTION, MessageType.REACTION]
@@ -93,7 +92,7 @@
     thoughtful: { archetype: 'analytical', experience: 'intermediate', intent: 'community' }
   };
 
-  // 150 personas
+  // 150 personas (all 100 real + 50 fallback)
   const customPersonas = [
     { name: "oladapo ogunsakin", gender: "men", country: "Nigeria", isFallback: false },
     { name: "narciso panganiban", gender: "men", country: "Mexico", isFallback: false },
@@ -334,7 +333,7 @@
     });
   });
 
-  // Expanded phrase banks (full)
+  // ---------- PHRASE BANKS (expanded, no join) ----------
   const globalPhraseBank = {
     question: [
       "how do you enter this trade?", "is this signal safe?", "what timeframe?", "anyone tested this strategy?", "how long have you been trading?",
@@ -501,16 +500,6 @@
       "The psychology lessons helped more than the signals themselves.", "I can finally show consistent profits to my wife!",
       "passed my challenge account with these signals.", "even my broker noticed my improvement", "this is the real deal"
     ],
-    join: [  // Only used by simulateJoin system message – persona banks have this deleted
-      "just joined the group! 👋", "hello everyone, new here!", "happy to be part of this community 🚀", "joined! looking forward to learning.",
-      "new member here. excited to trade with you all.", "hey guys, just got added. what's up?", "finally in the chat! let's get it 💪",
-      "hello world! ready to make some pips.", "greetings from [country]. newbie here!", "added by support. thanks for having me.",
-      "new trader here. be gentle 😅", "just signed up. any tips for a beginner?", "excited to start this journey with you all!",
-      "long time lurker, finally joined.", "heard great things about this group. happy to be here.", "let's make some money together!",
-      "ready to learn from the best.", "I'm here to soak up all the knowledge.", "hope to contribute as I learn.", "thanks for the add!",
-      "what's good fam, just joined", "another newbie here", "just got in, let's get this bread", "hey everyone, excited to be here",
-      "joined after watching the testimonials"
-    ],
     sarcastic: [
       "oh wow, another winner 😏", "sure, that definitely works... not", "easy money they said", "I'm sure this time it's different",
       "great, another loss, just what I needed", "my stop loss is my best friend", "trading is so relaxing they said",
@@ -540,6 +529,17 @@
     ]
   };
 
+  const joinPhrases = [   // only used by simulateJoin system alert
+    "just joined the group! 👋", "hello everyone, new here!", "happy to be part of this community 🚀", "joined! looking forward to learning.",
+    "new member here. excited to trade with you all.", "hey guys, just got added. what's up?", "finally in the chat! let's get it 💪",
+    "hello world! ready to make some pips.", "greetings from [country]. newbie here!", "added by support. thanks for having me.",
+    "new trader here. be gentle 😅", "just signed up. any tips for a beginner?", "excited to start this journey with you all!",
+    "long time lurker, finally joined.", "heard great things about this group. happy to be here.", "let's make some money together!",
+    "ready to learn from the best.", "I'm here to soak up all the knowledge.", "hope to contribute as I learn.", "thanks for the add!",
+    "what's good fam, just joined", "another newbie here", "just got in, let's get this bread", "hey everyone, excited to be here",
+    "joined after watching the testimonials"
+  ];
+
   const regionalPhrases = {
     Nigeria: ["how far", "this thing legit?", "make I try am", "abeg", "no wahala", "I dey observe", "na wa", "oya", "chop life", "e choke", "na so", "wetin dey happen?", "I go follow", "e be like say", "no shaking"],
     "United Kingdom": ["cheers", "proper", "mate", "innit", "sorted", "brilliant", "lovely", "fancy that", "spot on", "cracking", "bloody hell", "chuffed", "gobsmacked", "knackered", "taking the piss"],
@@ -553,10 +553,9 @@
     Mexico: ["órale", "ándale", "qué padre", "wey", "neta", "chido", "no manches", "a huevo", "chingón", "padrísimo", "qué onda", "güey", "chale", "ándale pues", "simón"]
   };
 
-  // Populate message banks (remove join)
+  // Populate message banks (no join)
   personas.forEach(p => {
     const bank = { ...globalPhraseBank };
-    delete bank.join;                      // no persona can send join messages
     if (regionalPhrases[p.country]) {
       bank.greeting = [...bank.greeting, ...regionalPhrases[p.country].slice(0,5)];
       bank.reaction = [...bank.reaction, ...regionalPhrases[p.country].slice(2,7)];
@@ -637,7 +636,7 @@
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
     const lastMediaTime = personaLastMediaTime.get(personaId) || 0;
-    if (Date.now() - lastMediaTime < 8 * 60 * 1000) return null;   // per‑persona 8 min
+    if (Date.now() - lastMediaTime < 8 * 60 * 1000) return null;   // 8 min per‑persona
     let queue = personaMediaQueue.get(personaId);
     if (!queue || !queue.length) return null;
     for (let i = 0; i < queue.length; i++) {
@@ -826,12 +825,12 @@
     scheduleTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(3000, 6000));
   };
 
-  // ========== SIMULATE JOIN (SYSTEM MESSAGE ONLY) ==========
+  // ========== SIMULATE JOIN (SYSTEM MESSAGE ONLY – NO AI SENDER) ==========
   function simulateJoin(){
     if (!isGeneralChatActive()) return;
     const p = pick(personas.filter(p => !p.isFallback || Math.random() > 0.5));
     if(!p) return;
-    const joinText = pick(globalPhraseBank.join).replace('[country]', p.country);
+    const joinText = pick(joinPhrases).replace('[country]', p.country);
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
     const api = getChatAPI();
     if(api.addSystemMessage) api.addSystemMessage({ text: `🎉 ${p.name} ${joinText}`, time: timeStr });
@@ -950,5 +949,5 @@
     if(recentMessages.length > 50) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v18 final – duplicate join removed, all systems go.`);
+  log(`🤖 AI Persona Engine v18 – duplicate join messages exterminated.`);
 })();
