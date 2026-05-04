@@ -1,14 +1,15 @@
-// ====================== AI PERSONA ENGINE v16 (Humanlike Tuning, Less Spam, Smarter Replies) ======================
-// Increased media cooldown · Reduced reply preview spam · Context‑aware replies with images · More natural pacing
-// =================================================================================================================
+// ====================== AI PERSONA ENGINE v17 (FULL, FIXED) ======================
+// All phrases included, 150 personas, regional phrases, media manifest
+// Fixes: cascading reply chain prevented, timeout memory leak fixed, polling removed, type guard added
+// ================================================================================
 
 (function(){
   "use strict";
 
-  // ---------- CONFIGURATION (TUNED FOR HUMANLIKE BEHAVIOR) ----------
+  // ---------- CONFIGURATION ----------
   const CONFIG = {
-    BASE_INTERVAL: 12000,                // Slower average time between messages
-    BURST_CHANCE: 0.08,                  // Fewer random bursts
+    BASE_INTERVAL: 12000,
+    BURST_CHANCE: 0.08,
     TRADE_RESULT_INTERVAL: 25000,
     TRADE_RESULT_CHANCE: 0.55,
     TESTIMONIAL_CHANCE: 0.30,
@@ -16,12 +17,12 @@
     MAX_BURST_MESSAGES: 2,
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
-    REPLY_CHANCE: 0.45,                  // Much lower – fewer forced replies, more natural
-    REPLY_WITH_MEDIA_CHANCE: 0.15,       // When replying to testimonial, chance to attach image
-    MEDIA_COOLDOWN_MINUTES: 12           // Longer cooldown prevents repetition
+    REPLY_CHANCE: 0.45,
+    REPLY_WITH_MEDIA_CHANCE: 0.15,
+    MEDIA_COOLDOWN_MINUTES: 12,
+    FORCED_REPLY_COOLDOWN: 8000
   };
 
-  // ---------- MESSAGE TYPES ----------
   const MessageType = {
     QUESTION: "question", RESULT: "result", REACTION: "reaction", ADVICE: "advice",
     HYPE: "hype", GREETING: "greeting", CONFUSED: "confused", FLEX: "flex",
@@ -50,7 +51,6 @@
   const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const log = (...args) => CONFIG.ENABLE_LOGGING && console.log('[AI]', ...args);
 
-  // ---------- TIMEZONE HELPER ----------
   function getTimezoneForCountry(country) {
     const map = {
       Nigeria: "Africa/Lagos", "United Kingdom": "Europe/London", UAE: "Asia/Dubai",
@@ -61,7 +61,6 @@
     return map[country] || "UTC";
   }
 
-  // ---------- AVATAR SYSTEM (relative paths only) ----------
   function getAvatarUrl(displayName, gender, country, isFallback) {
     if (!isFallback) {
       let safeName = displayName
@@ -79,7 +78,6 @@
     }
   }
 
-  // ---------- PERSONALITY PRESETS ----------
   const personalityPresets = {
     boss:       { archetype: 'leader', experience: 'advanced', intent: 'flex' },
     analyst:    { archetype: 'analytical', experience: 'advanced', intent: 'engaged' },
@@ -91,7 +89,7 @@
     thoughtful: { archetype: 'analytical', experience: 'intermediate', intent: 'community' }
   };
 
-  // ---------- 150 CUSTOM PERSONAS (100 real + 50 fallback) ----------
+  // 150 personas
   const customPersonas = [
     { name: "oladapo ogunsakin", gender: "men", country: "Nigeria", isFallback: false },
     { name: "narciso panganiban", gender: "men", country: "Mexico", isFallback: false },
@@ -249,7 +247,6 @@
     { name: "Thomas Schulz", gender: "men", country: "Germany", isFallback: true }
   ];
 
-  // Map real names to personality presets
   const nameToPersonality = {
     "oladapo ogunsakin": 'boss', "Anthony Onyinkwa": 'expert', "victor e keyz 🎹🎺📉": 'analyst',
     "Stanley Ezeorjika 💰": 'boss', "Das Haruna Fearless": 'expert', "Boaster Friday": 'joker',
@@ -269,7 +266,6 @@
     "Julibel Golilao": 'newbie', "Chidi Eze": 'newbie', "Carlos Mendez": 'expert'
   };
 
-  // ---------- ARCHETYPE DEFINITIONS ----------
   const archetypeDefs = {
     watcher: { name: "watcher", activityMult: 0.15, traits: ["quiet","observant"], messageTypes: [MessageType.REACTION, MessageType.COMMUNITY] },
     active: { name: "active", activityMult: 1.0, traits: ["talkative","friendly"], messageTypes: Object.values(MessageType) },
@@ -279,7 +275,7 @@
     funny: { name: "funny", activityMult: 0.7, traits: ["humorous","joker"], messageTypes: [MessageType.FUNNY, MessageType.REACTION, MessageType.HYPE] }
   };
 
-  // ---------- BUILD PERSONAS ----------
+  // Build personas array
   const personas = [];
   let idCounter = 1;
 
@@ -328,7 +324,7 @@
     });
   });
 
-  // ---------- FULL PHRASE BANKS ----------
+  // Global phrase bank (all categories)
   const globalPhraseBank = {
     question: [
       "how do you enter this trade?", "is this signal safe?", "what timeframe?", "anyone tested this strategy?", "how long have you been trading?",
@@ -525,9 +521,7 @@
     p.messageBank = bank;
   });
 
-  // ################################################################
-  // ##########          EMBEDDED MEDIA MANIFEST          ##########
-  // ################################################################
+  // Media manifest
   const EMBEDDED_MANIFEST = {
     "Paul jande": { images: ["paul_jande_1.jpg"], voices: [], videos: [] },
     "Das Haruna Fearless": { images: ["das_haruna_fearless_1.jpg"], voices: [], videos: [] },
@@ -566,7 +560,6 @@
     "Mates nsikak": { images: ["mates_nsikak_1.jpg"], voices: [], videos: [] }
   };
 
-  // ---------- MEDIA QUEUE (WITH LONGER COOLDOWN & PER‑PERSONA COOLDOWN) ----------
   const personaMediaQueue = new Map();
   const recentlyUsed = new Map();
   const personaLastMediaTime = new Map();
@@ -594,13 +587,10 @@
 
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
-
     const lastMediaTime = personaLastMediaTime.get(personaId) || 0;
     if (Date.now() - lastMediaTime < 2 * 60 * 1000) return null;
-
     let queue = personaMediaQueue.get(personaId);
     if (!queue || !queue.length) return null;
-
     for (let i = 0; i < queue.length; i++) {
       const item = queue[i];
       if (!preferredTypes.includes(item.type)) continue;
@@ -608,22 +598,30 @@
       queue.splice(i, 1); queue.push(item);
       recentlyUsed.set(item.url, Date.now());
       personaLastMediaTime.set(personaId, Date.now());
-      log(`🎯 Media: ${item.url}`);
       return item;
     }
     const oldest = queue[0];
     recentlyUsed.set(oldest.url, Date.now());
     personaLastMediaTime.set(personaId, Date.now());
-    log(`⏳ Cooldown bypassed: ${oldest.url}`);
     return oldest;
   }
 
   // ---------- SIMULATION STATE ----------
   let activeTimeouts = [], lastMessageType = null, lastPersonaId = null, simulationActive = false, tradeResultInterval = null;
   const recentMessages = [];
-  const chatAPI = window.chatAPI || {};
+  let lastForcedReplyTime = 0;
+  const getChatAPI = () => window.chatAPI || {};
 
-  function isPersonaOnline(p){ try{ const h = new Date(new Date().toLocaleString('en-US',{timeZone:p.timezone})).getHours(); return h>=p.onlineHours[0] && h<p.onlineHours[1]; }catch{ return true; } }
+  function scheduleTimeout(fn, delay) {
+    const id = setTimeout(() => {
+      activeTimeouts = activeTimeouts.filter(t => t !== id);
+      fn();
+    }, delay);
+    activeTimeouts.push(id);
+    return id;
+  }
+
+  function isPersonaOnline(p){ try{ const h = new Date(new Date().toLocaleString('en-US',{timeZone:p.timezone})).getHours(); return h>=p.onlineHours[0] && h<p.onlineHours[1]; } catch{ return true; } }
   function getActivePersonas(){ return personas.filter(p=>isPersonaOnline(p) && (Math.random() < (1 - CONFIG.WATCHER_ACTIVITY_PENALTY * (p.archetype === 'watcher' ? 1 : 0)))); }
   function pickDifferentPersona(){ const active = getActivePersonas(); if(!active.length) return null; let f = active.filter(p=>p.id!==lastPersonaId); if(!f.length) f=active; return pick(f); }
 
@@ -649,7 +647,10 @@
       }
       if(!type) type = pick(allowed.filter(t => persona.messageBank[t]?.length) || [MessageType.GREETING]);
     }
-    if(!persona.messageBank[type]?.length) type = pick(Object.keys(persona.messageBank));
+    if (!persona.messageBank[type] || !persona.messageBank[type].length) {
+      const validTypes = Object.keys(persona.messageBank).filter(k => persona.messageBank[k]?.length);
+      type = validTypes.length ? pick(validTypes) : 'greeting';
+    }
     let text = pick(persona.messageBank[type]);
     if(persona.slangLevel > 0.6 && Math.random() > 0.5) text = text.replace(/going to/g,'gonna').replace(/want to/g,'wanna');
     if(persona.grammar === 'informal' && Math.random() > 0.6) text = text.replace(/you are/g,'you\'re').replace(/I am/g,'I\'m');
@@ -664,14 +665,14 @@
   }
 
   function getTypingDelay(p, len){ return Math.min(randomBetween(p.typingSpeed[0], p.typingSpeed[1]) * len, 7000); }
-  function showTyping(p, typingType = 'text'){ if(chatAPI.showTypingForPersona) chatAPI.showTypingForPersona(p, typingType); }
-  function hideTyping(){ if(chatAPI.hideTyping) chatAPI.hideTyping(); }
-  function isGeneralChatActive() { return window.__activeChatRoom === 'general' && chatAPI.isChatRoomActive?.(); }
+  function showTyping(p, typingType = 'text'){ if(getChatAPI().showTypingForPersona) getChatAPI().showTypingForPersona(p, typingType); }
+  function hideTyping(){ if(getChatAPI().hideTyping) getChatAPI().hideTyping(); }
+  function isGeneralChatActive() { return window.__activeChatRoom === 'general' && getChatAPI().isChatRoomActive?.(); }
 
   function getLastReplyTarget(excludePersonaId = null) {
-    const target = [...recentMessages].reverse().find(m => m.text && m.personaId !== excludePersonaId);
+    const target = [...recentMessages].reverse().find(m => m.text && m.personaId !== excludePersonaId && !m.isForcedReply);
     if (!target) return null;
-    return { senderName: target.senderName, text: target.text.substring(0, 50), messageType: target.messageType };
+    return { senderName: target.senderName, text: target.text.substring(0, 50), messageType: target.messageType, id: target.id };
   }
 
   function buildReplyText(lastText, targetMessageType) {
@@ -721,14 +722,13 @@
     const replyTarget = replyTo || getLastReplyTarget(persona.id);
     if(replyTarget) msgData.replyTo = replyTarget;
 
-    setTimeout(() => {
+    const api = getChatAPI();
+    scheduleTimeout(() => {
       hideTyping();
-      if(chatAPI.addIncomingMessage){
-        const el = chatAPI.addIncomingMessage(msgData);
-        if(el) {
-          recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, messageType: type, element: el });
-          if(recentMessages.length>30) recentMessages.shift();
-        }
+      if(api.addIncomingMessage){
+        api.addIncomingMessage(msgData);
+        recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: msgData.text, messageType: type, isForcedReply: false });
+        if(recentMessages.length>50) recentMessages.shift();
       }
       lastPersonaId = persona.id;
       log(`${persona.name}: ${msgData.text} ${mediaItem ? '[media]' : ''}`);
@@ -737,7 +737,9 @@
 
   function forceReplyToLastAIMessage() {
     if(!simulationActive || !isGeneralChatActive() || Math.random() > CONFIG.REPLY_CHANCE) return;
-    const lastAIMessage = [...recentMessages].reverse().find(m => m.personaId !== 'user');
+    if(Date.now() - lastForcedReplyTime < CONFIG.FORCED_REPLY_COOLDOWN) return;
+
+    const lastAIMessage = [...recentMessages].reverse().find(m => m.personaId !== 'user' && !m.isForcedReply);
     if(!lastAIMessage) return;
     const persona = pickDifferentPersona();
     if(!persona) return;
@@ -752,18 +754,27 @@
 
     const msgData = {
       senderName: persona.name, senderAvatar: persona.avatar, text: replyText, time: timeStr, personaId: persona.id,
-      replyTo: { senderName: lastAIMessage.senderName, text: lastAIMessage.text.substring(0, 50) }
+      replyTo: { senderName: lastAIMessage.senderName, text: lastAIMessage.text.substring(0, 50) },
+      messageType: MessageType.REACTION
     };
     if (mediaItem) { msgData.mediaType = mediaItem.mediaType; msgData.mediaUrl = mediaItem.url; }
 
-    log(`🤖 ${persona.name} reply to ${lastAIMessage.senderName} ${mediaItem ? '[with image]' : ''}`);
-    if(chatAPI.addIncomingMessage) chatAPI.addIncomingMessage(msgData);
-    lastPersonaId = persona.id;
+    const api = getChatAPI();
+    showTyping(persona, msgData.mediaType === 'audio' ? 'audio' : 'text');
+    scheduleTimeout(() => {
+      hideTyping();
+      if(api.addIncomingMessage) {
+        api.addIncomingMessage(msgData);
+        recentMessages.push({ id: persona.id+'_'+Date.now(), personaId: persona.id, senderName: persona.name, text: replyText, messageType: MessageType.REACTION, isForcedReply: true });
+        if(recentMessages.length>50) recentMessages.shift();
+        lastForcedReplyTime = Date.now();
+      }
+    }, 2500);
   }
 
   const sendPersonaMessage = function(persona, replyTo=null) {
     sendPersonaMessageOriginal(persona, replyTo);
-    setTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(3000, 6000));
+    scheduleTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(3000, 6000));
   };
 
   function simulateJoin(){
@@ -772,24 +783,42 @@
     if(!p) return;
     const joinText = pick(globalPhraseBank.join).replace('[country]', p.country);
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    if(chatAPI.addSystemMessage) chatAPI.addSystemMessage({ text: `🎉 ${p.name} ${joinText}`, time: timeStr });
-    setTimeout(()=>{ if(!simulationActive) return; showTyping(p); setTimeout(()=>{ hideTyping(); if(chatAPI.addIncomingMessage) chatAPI.addIncomingMessage({ senderName:p.name, senderAvatar:p.avatar, text: pick(["thanks for the warm welcome!","excited to be here","hello everyone!"]), time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}), personaId:p.id }); },1500); },3000);
+    const api = getChatAPI();
+    if(api.addSystemMessage) api.addSystemMessage({ text: `🎉 ${p.name} ${joinText}`, time: timeStr });
+    scheduleTimeout(()=>{ 
+      if(!simulationActive) return; 
+      showTyping(p);
+      scheduleTimeout(()=>{
+        hideTyping(); 
+        if(api.addIncomingMessage) {
+          api.addIncomingMessage({
+            senderName:p.name, senderAvatar:p.avatar,
+            text: pick(["thanks for the warm welcome!","excited to be here","hello everyone!"]),
+            time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
+            personaId:p.id
+          });
+        }
+      }, 1500);
+    }, 3000);
   }
 
   function triggerBurst(){
-    const count = randomBetween(2, CONFIG.MAX_BURST_MESSAGES);
     let sent = 0;
-    const int = setInterval(()=>{
-      if(sent>=count){ clearInterval(int); return; }
+    function sendNext() {
+      if(!simulationActive || sent >= CONFIG.MAX_BURST_MESSAGES) return;
       const p = pickDifferentPersona();
       if(p && !(p.archetype === 'watcher' && Math.random() > 0.2)){
         const {text} = generateMessage(p);
         showTyping(p);
-        setTimeout(()=>{ hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length));
+        scheduleTimeout(()=>{ hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length));
         sent++;
-      } else { sent++; }
-    }, randomBetween(800, 2000));
-    activeTimeouts.push(int);
+        scheduleTimeout(sendNext, randomBetween(800, 2000));
+      } else {
+        sent++;
+        if(sent < CONFIG.MAX_BURST_MESSAGES) scheduleTimeout(sendNext, randomBetween(800, 2000));
+      }
+    }
+    sendNext();
   }
 
   function simulationTick(){
@@ -801,24 +830,26 @@
       if(p && !(p.archetype === 'watcher' && Math.random() > 0.2)){
         const {text} = generateMessage(p);
         showTyping(p);
-        activeTimeouts.push(setTimeout(()=>{ hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length)+randomBetween(1000,4000)));
+        scheduleTimeout(()=>{ hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length)+randomBetween(1000,4000));
       }
     }
-    activeTimeouts.push(setTimeout(simulationTick, CONFIG.BASE_INTERVAL+randomBetween(-2000,5000)));
+    scheduleTimeout(simulationTick, CONFIG.BASE_INTERVAL+randomBetween(-2000,5000));
   }
 
   function injectTradeResult(){
     if (!isGeneralChatActive()) return;
     const pair = pick(["EUR/USD","GBP/USD","USD/JPY","AUD/USD","EUR/GBP","USD/CHF","NZD/USD","US30","GER40"]);
     const percent = pick(["+92%","+87%","+78%","+95%","+83%","+91%","+76%","+88%","+84%","+79%","+96%","+81%","+73%","+89%"]);
+    const api = getChatAPI();
     if(Math.random() > 0.5){
       const p = pickDifferentPersona();
       if(p && !(p.archetype === 'watcher' && Math.random() > 0.2)){
         const text = pick([`just closed ${pair} at ${percent} 🎯`,`${pair} hit TP ${percent}`,`easy ${percent} on ${pair}`]);
         const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-        if(chatAPI.addIncomingMessage) {
-          const el = chatAPI.addIncomingMessage({ senderName: p.name, senderAvatar: p.avatar, text, time: timeStr, personaId: p.id, messageType: MessageType.RESULT });
-          if (el) { recentMessages.push({ id: p.id+'_'+Date.now(), personaId: p.id, senderName: p.name, text, messageType: MessageType.RESULT, element: el }); if(recentMessages.length>30) recentMessages.shift(); }
+        if(api.addIncomingMessage) {
+          api.addIncomingMessage({ senderName: p.name, senderAvatar: p.avatar, text, time: timeStr, personaId: p.id, messageType: MessageType.RESULT });
+          recentMessages.push({ id: p.id+'_'+Date.now(), personaId: p.id, senderName: p.name, text, messageType: MessageType.RESULT, isForcedReply: false });
+          if(recentMessages.length>50) recentMessages.shift();
         }
         lastPersonaId = p.id; lastMessageType = MessageType.RESULT;
         return;
@@ -826,26 +857,42 @@
     }
     const text = `📊 Signal Result: ${pair} ${percent} ✅`;
     const now = new Date(); const timeStr = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    if(chatAPI.addSystemMessage) chatAPI.addSystemMessage({ text, time: timeStr });
+    if(api.addSystemMessage) api.addSystemMessage({ text, time: timeStr });
   }
 
   function startSimulation(){ if(simulationActive) return; simulationActive=true; lastMessageType=null; lastPersonaId=null; log('🚀 Simulation started'); simulationTick(); }
-  function stopSimulation(){ simulationActive=false; activeTimeouts.forEach(clearTimeout); activeTimeouts=[]; hideTyping(); log('🛑 Simulation stopped'); }
-  function startTradeResultInjection(){ if(tradeResultInterval) clearInterval(tradeResultInterval); tradeResultInterval = setInterval(()=>{ if(!simulationActive||!isGeneralChatActive()) return; if(Math.random()<CONFIG.TRADE_RESULT_CHANCE) injectTradeResult(); }, CONFIG.TRADE_RESULT_INTERVAL); }
+  function stopSimulation(){
+    simulationActive=false;
+    activeTimeouts.forEach(clearTimeout); activeTimeouts=[];
+    hideTyping(); log('🛑 Simulation stopped');
+  }
+  function startTradeResultInjection(){
+    if(tradeResultInterval) clearInterval(tradeResultInterval);
+    tradeResultInterval = setInterval(()=>{
+      if(!simulationActive||!isGeneralChatActive()) return;
+      if(Math.random()<CONFIG.TRADE_RESULT_CHANCE) injectTradeResult();
+    }, CONFIG.TRADE_RESULT_INTERVAL);
+  }
 
   const originalStartSimulation = startSimulation;
   startSimulation = function() {
     if(simulationActive) return;
     originalStartSimulation();
-    setTimeout(() => {
+    scheduleTimeout(() => {
       if(simulationActive && isGeneralChatActive()) {
         let count = 0;
-        const interval = setInterval(() => {
-          if(count >= 3 || !simulationActive) { clearInterval(interval); return; }
+        function sendNextWarmup() {
+          if(count >= 3 || !simulationActive) return;
           const p = pickDifferentPersona();
-          if(p) { const {text} = generateMessage(p); showTyping(p); setTimeout(() => { hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length)); }
+          if(p) {
+            const {text} = generateMessage(p);
+            showTyping(p);
+            scheduleTimeout(() => { hideTyping(); sendPersonaMessage(p); }, getTypingDelay(p, text.length));
+          }
           count++;
-        }, 2500);
+          scheduleTimeout(sendNextWarmup, 2500);
+        }
+        sendNextWarmup();
       }
     }, 2000);
   };
@@ -857,7 +904,6 @@
   }
 
   window.addEventListener('chat-room-changed', () => { syncSimulationState(); });
-  setInterval(syncSimulationState, 1000);
 
   function initMedia() { buildMediaQueues(); }
   initMedia();
@@ -865,9 +911,9 @@
 
   window.AIPersonaSimulator = { isActive: ()=>simulationActive, getPersonas: ()=>personas, injectTradeResult: ()=>injectTradeResult() };
   window.onUserMessage = function(msg) {
-    recentMessages.push({ id: 'user_'+Date.now(), personaId:'user', senderName:msg.senderName, text:msg.text, element:null });
-    if(recentMessages.length > 30) recentMessages.shift();
+    recentMessages.push({ id: 'user_'+Date.now(), personaId:'user', senderName:msg.senderName, text:msg.text, isForcedReply: false });
+    if(recentMessages.length > 50) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v16 loaded. Humanlike tuning, less spam, smarter replies.`);
+  log(`🤖 AI Persona Engine v17 (full, fixed) loaded.`);
 })();
