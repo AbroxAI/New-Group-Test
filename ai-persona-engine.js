@@ -1,6 +1,6 @@
-// ====================== AI PERSONA ENGINE v18 FINAL – NO DUPLICATE JOIN MESSAGES ======================
-// JOIN type removed from MessageType, persona allowed types, and message banks.
-// Only system alert via simulateJoin (party popper) – no AI sender.
+// ====================== AI PERSONA ENGINE v18 FINAL (NO DUPLICATE JOIN MESSAGES) ======================
+// JOIN type removed from persona allowedTypes and messageBanks.
+// Only system alert via simulateJoin (party popper). No AI sender.
 // JOIN_CHANCE 0.15, media cooldowns 15 min global / 8 min per‑persona.
 // Expanded phrases, 150 personas, full humanlike tuning.
 // ======================================================================================================
@@ -92,7 +92,7 @@
     thoughtful: { archetype: 'analytical', experience: 'intermediate', intent: 'community' }
   };
 
-  // 150 personas (all 100 real + 50 fallback)
+  // 150 personas
   const customPersonas = [
     { name: "oladapo ogunsakin", gender: "men", country: "Nigeria", isFallback: false },
     { name: "narciso panganiban", gender: "men", country: "Mexico", isFallback: false },
@@ -636,7 +636,7 @@
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
     const lastMediaTime = personaLastMediaTime.get(personaId) || 0;
-    if (Date.now() - lastMediaTime < 8 * 60 * 1000) return null;   // 8 min per‑persona
+    if (Date.now() - lastMediaTime < 8 * 60 * 1000) return null;
     let queue = personaMediaQueue.get(personaId);
     if (!queue || !queue.length) return null;
     for (let i = 0; i < queue.length; i++) {
@@ -949,5 +949,5 @@
     if(recentMessages.length > 50) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v18 – duplicate join messages exterminated.`);
+  log(`🤖 AI Persona Engine v18 final – no duplicate join messages.`);
 })();
