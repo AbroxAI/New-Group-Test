@@ -1,9 +1,9 @@
-// ====================== AI PERSONA ENGINE v18 (FINAL) ======================
-// More join alerts (0.08 chance), increased media cooldown (5 min per persona, 10 min global)
-// All media types (images, videos, voice) enabled for testimonials
-// Humanlike parameters refined – more slang, varied typing speeds, more emojis
-// Join system messages restored – no follow‑up AI message
-// ===================================================================================
+// ====================== AI PERSONA ENGINE v18 FINAL – NO DUPLICATE JOIN ======================
+// JOIN type removed from persona allowedTypes & messageBanks
+// Only system alert via simulateJoin (party popper + real name)
+// JOIN_CHANCE 0.15, media cooldowns 15 min global / 8 min per‑persona
+// All expanded phrase banks, all 150 personas, full humanlike tuning
+// ============================================================================================
 
 (function(){
   "use strict";
@@ -15,13 +15,13 @@
     TRADE_RESULT_INTERVAL: 25000,
     TRADE_RESULT_CHANCE: 0.55,
     TESTIMONIAL_CHANCE: 0.35,
-    JOIN_CHANCE: 0.08,                    // More join alerts
+    JOIN_CHANCE: 0.15,
     MAX_BURST_MESSAGES: 2,
     ENABLE_LOGGING: true,
     WATCHER_ACTIVITY_PENALTY: 0.65,
     REPLY_CHANCE: 0.45,
-    REPLY_WITH_MEDIA_CHANCE: 0.40,        // Higher chance to attach screenshot/voice
-    MEDIA_COOLDOWN_MINUTES: 10,           // Global cooldown (minutes)
+    REPLY_WITH_MEDIA_CHANCE: 0.40,
+    MEDIA_COOLDOWN_MINUTES: 15,
     FORCED_REPLY_COOLDOWN: 8000
   };
 
@@ -270,12 +270,20 @@
   };
 
   const archetypeDefs = {
-    watcher: { name: "watcher", activityMult: 0.15, traits: ["quiet","observant"], messageTypes: [MessageType.REACTION, MessageType.COMMUNITY] },
-    active: { name: "active", activityMult: 1.0, traits: ["talkative","friendly"], messageTypes: Object.values(MessageType) },
-    leader: { name: "leader", activityMult: 0.9, traits: ["confident","authority"], messageTypes: [MessageType.ADVICE, MessageType.FLEX, MessageType.HYPE] },
-    sarcastic: { name: "sarcastic", activityMult: 0.7, traits: ["witty","sarcastic"], messageTypes: [MessageType.SARCASTIC, MessageType.REACTION, MessageType.FLEX] },
-    analytical: { name: "analytical", activityMult: 0.8, traits: ["logical","detailed"], messageTypes: [MessageType.ANALYTICAL, MessageType.ADVICE, MessageType.QUESTION] },
-    funny: { name: "funny", activityMult: 0.7, traits: ["humorous","joker"], messageTypes: [MessageType.FUNNY, MessageType.REACTION, MessageType.HYPE] }
+    watcher: { name: "watcher", activityMult: 0.15, traits: ["quiet","observant"],
+               messageTypes: [MessageType.REACTION, MessageType.COMMUNITY] },
+    active: { name: "active", activityMult: 1.0, traits: ["talkative","friendly"],
+              messageTypes: [MessageType.QUESTION, MessageType.RESULT, MessageType.REACTION, MessageType.ADVICE, MessageType.HYPE,
+                             MessageType.GREETING, MessageType.CONFUSED, MessageType.FLEX, MessageType.COMMUNITY,
+                             MessageType.TESTIMONIAL, MessageType.SARCASTIC, MessageType.FUNNY, MessageType.ANALYTICAL] },
+    leader: { name: "leader", activityMult: 0.9, traits: ["confident","authority"],
+              messageTypes: [MessageType.ADVICE, MessageType.FLEX, MessageType.HYPE] },
+    sarcastic: { name: "sarcastic", activityMult: 0.7, traits: ["witty","sarcastic"],
+                 messageTypes: [MessageType.SARCASTIC, MessageType.REACTION, MessageType.FLEX] },
+    analytical: { name: "analytical", activityMult: 0.8, traits: ["logical","detailed"],
+                  messageTypes: [MessageType.ANALYTICAL, MessageType.ADVICE, MessageType.QUESTION] },
+    funny: { name: "funny", activityMult: 0.7, traits: ["humorous","joker"],
+             messageTypes: [MessageType.FUNNY, MessageType.REACTION, MessageType.HYPE] }
   };
 
   const personas = [];
@@ -292,7 +300,6 @@
 
     const arch = archetypeDefs[personality.archetype] || archetypeDefs.active;
 
-    // Humanlike typing speeds
     let typingBase;
     if (personality.experience === 'beginner') typingBase = [2500, 4500];
     else if (personality.experience === 'intermediate') typingBase = [1500, 2800];
@@ -327,7 +334,7 @@
     });
   });
 
-  // Expanded phrase banks
+  // Expanded phrase banks (full)
   const globalPhraseBank = {
     question: [
       "how do you enter this trade?", "is this signal safe?", "what timeframe?", "anyone tested this strategy?", "how long have you been trading?",
@@ -494,7 +501,7 @@
       "The psychology lessons helped more than the signals themselves.", "I can finally show consistent profits to my wife!",
       "passed my challenge account with these signals.", "even my broker noticed my improvement", "this is the real deal"
     ],
-    join: [
+    join: [  // Only used by simulateJoin system message – persona banks have this deleted
       "just joined the group! 👋", "hello everyone, new here!", "happy to be part of this community 🚀", "joined! looking forward to learning.",
       "new member here. excited to trade with you all.", "hey guys, just got added. what's up?", "finally in the chat! let's get it 💪",
       "hello world! ready to make some pips.", "greetings from [country]. newbie here!", "added by support. thanks for having me.",
@@ -546,9 +553,10 @@
     Mexico: ["órale", "ándale", "qué padre", "wey", "neta", "chido", "no manches", "a huevo", "chingón", "padrísimo", "qué onda", "güey", "chale", "ándale pues", "simón"]
   };
 
-  // Populate message banks
+  // Populate message banks (remove join)
   personas.forEach(p => {
     const bank = { ...globalPhraseBank };
+    delete bank.join;                      // no persona can send join messages
     if (regionalPhrases[p.country]) {
       bank.greeting = [...bank.greeting, ...regionalPhrases[p.country].slice(0,5)];
       bank.reaction = [...bank.reaction, ...regionalPhrases[p.country].slice(2,7)];
@@ -629,8 +637,7 @@
   function pickMediaForPersona(personaId, preferredTypes = ['images','videos','voices']) {
     cleanRecentlyUsed();
     const lastMediaTime = personaLastMediaTime.get(personaId) || 0;
-    // Per‑persona 5‑minute cooldown
-    if (Date.now() - lastMediaTime < 5 * 60 * 1000) return null;
+    if (Date.now() - lastMediaTime < 8 * 60 * 1000) return null;   // per‑persona 8 min
     let queue = personaMediaQueue.get(personaId);
     if (!queue || !queue.length) return null;
     for (let i = 0; i < queue.length; i++) {
@@ -819,7 +826,7 @@
     scheduleTimeout(() => { forceReplyToLastAIMessage(); }, randomBetween(3000, 6000));
   };
 
-  // ========== SIMULATE JOIN (SYSTEM MESSAGE ONLY, NO FOLLOW-UP AI MESSAGE) ==========
+  // ========== SIMULATE JOIN (SYSTEM MESSAGE ONLY) ==========
   function simulateJoin(){
     if (!isGeneralChatActive()) return;
     const p = pick(personas.filter(p => !p.isFallback || Math.random() > 0.5));
@@ -943,5 +950,5 @@
     if(recentMessages.length > 50) recentMessages.shift();
   };
 
-  log(`🤖 AI Persona Engine v18 loaded. All features active.`);
+  log(`🤖 AI Persona Engine v18 final – duplicate join removed, all systems go.`);
 })();
