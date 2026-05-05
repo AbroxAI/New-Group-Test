@@ -945,6 +945,24 @@
 
     window.switchPage('signals');
   })();
+
+  // ========== AVATAR PRELOADER ==========
+  // Once the engine is loaded, preload all persona avatars to speed up chat.
+  (function preloadAvatars() {
+    const checkInterval = setInterval(() => {
+      if (window.AIPersonaSimulator && typeof window.AIPersonaSimulator.getPersonas === 'function') {
+        clearInterval(checkInterval);
+        const personas = window.AIPersonaSimulator.getPersonas();
+        personas.forEach(p => {
+          if (p.avatar && !p.avatar.includes('ui-avatars.com')) {
+            const img = new Image();
+            img.src = p.avatar;   // start downloading immediately
+          }
+        });
+        console.log('✅ Preloaded persona avatars');
+      }
+    }, 200);
+  })();
 </script>
 <script src="media-manifest.js"></script>
 <script src="ai-persona-engine.js"></script>
